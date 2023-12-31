@@ -1,0 +1,109 @@
+%%% -*-BibTeX-*-
+%%% Do NOT edit. File created by BibTeX with style
+%%% ACM-Reference-Format-Journals [18-Jan-2012].
+
+\begin{thebibliography}{4}
+
+%%% ====================================================================
+%%% NOTE TO THE USER: you can override these defaults by providing
+%%% customized versions of any of these macros before the \bibliography
+%%% command.  Each of them MUST provide its own final punctuation,
+%%% except for \shownote{}, \showDOI{}, and \showURL{}.  The latter two
+%%% do not use final punctuation, in order to avoid confusing it with
+%%% the Web address.
+%%%
+%%% To suppress output of a particular field, define its macro to expand
+%%% to an empty string, or better, \unskip, like this:
+%%%
+%%% \newcommand{\showDOI}[1]{\unskip}   % LaTeX syntax
+%%%
+%%% \def \showDOI #1{\unskip}           % plain TeX syntax
+%%%
+%%% ====================================================================
+
+\ifx \showCODEN    \undefined \def \showCODEN     #1{\unskip}     \fi
+\ifx \showDOI      \undefined \def \showDOI       #1{#1}\fi
+\ifx \showISBNx    \undefined \def \showISBNx     #1{\unskip}     \fi
+\ifx \showISBNxiii \undefined \def \showISBNxiii  #1{\unskip}     \fi
+\ifx \showISSN     \undefined \def \showISSN      #1{\unskip}     \fi
+\ifx \showLCCN     \undefined \def \showLCCN      #1{\unskip}     \fi
+\ifx \shownote     \undefined \def \shownote      #1{#1}          \fi
+\ifx \showarticletitle \undefined \def \showarticletitle #1{#1}   \fi
+\ifx \showURL      \undefined \def \showURL       {\relax}        \fi
+% The following commands are used for tagged output and should be
+% invisible to TeX
+\providecommand\bibfield[2]{#2}
+\providecommand\bibinfo[2]{#2}
+\providecommand\natexlab[1]{#1}
+\providecommand\showeprint[2][]{arXiv:#2}
+
+\bibitem[\protect\citeauthoryear{Dunlop and Nemeroff}{Dunlop and
+  Nemeroff}{2007}]%
+        {dunlopRoleDopaminePathophysiology2007}
+\bibfield{author}{\bibinfo{person}{Boadie~W. Dunlop} {and}
+  \bibinfo{person}{Charles~B. Nemeroff}.} \bibinfo{year}{2007}\natexlab{}.
+\newblock \showarticletitle{The {{Role}} of {{Dopamine}} in the
+  {{Pathophysiology}} of {{Depression}}}.
+\newblock \bibinfo{journal}{\emph{Archives of General Psychiatry}}
+  \bibinfo{volume}{64}, \bibinfo{number}{3} (\bibinfo{date}{March}
+  \bibinfo{year}{2007}), \bibinfo{pages}{327--337}.
+\newblock
+\showISSN{0003-990X}
+\urldef\tempurl%
+\url{https://doi.org/10.1001/archpsyc.64.3.327}
+\showDOI{\tempurl}
+
+
+\bibitem[\protect\citeauthoryear{Koob, Sanna, and Bloom}{Koob
+  et~al\mbox{.}}{1998}]%
+        {koobNeuroscienceAddiction1998}
+\bibfield{author}{\bibinfo{person}{George~F Koob},
+  \bibinfo{person}{Pietro~Paolo Sanna}, {and} \bibinfo{person}{Floyd~E Bloom}.}
+  \bibinfo{year}{1998}\natexlab{}.
+\newblock \showarticletitle{Neuroscience of {{Addiction}}}.
+\newblock \bibinfo{journal}{\emph{Neuron}} \bibinfo{volume}{21},
+  \bibinfo{number}{3} (\bibinfo{date}{Sept.} \bibinfo{year}{1998}),
+  \bibinfo{pages}{467--476}.
+\newblock
+\showISSN{08966273}
+\urldef\tempurl%
+\url{https://doi.org/10.1016/S0896-6273(00)80557-7}
+\showDOI{\tempurl}
+
+
+\bibitem[\protect\citeauthoryear{Schultz}{Schultz}{2015}]%
+        {schultzNeuronalRewardDecision2015}
+\bibfield{author}{\bibinfo{person}{Wolfram Schultz}.}
+  \bibinfo{year}{2015}\natexlab{}.
+\newblock \showarticletitle{Neuronal {{Reward}} and {{Decision Signals}}:
+  {{From Theories}} to {{Data}}}.
+\newblock \bibinfo{journal}{\emph{Physiological Reviews}} \bibinfo{volume}{95},
+  \bibinfo{number}{3} (\bibinfo{date}{July} \bibinfo{year}{2015}),
+  \bibinfo{pages}{853--951}.
+\newblock
+\showISSN{0031-9333}
+\urldef\tempurl%
+\url{https://doi.org/10.1152/physrev.00023.2014}
+\showDOI{\tempurl}
+
+
+\bibitem[\protect\citeauthoryear{Solinas, Belujon, Fernagut, Jaber, and
+  Thiriet}{Solinas et~al\mbox{.}}{2019}]%
+        {solinasDopamineAddictionWhat2019}
+\bibfield{author}{\bibinfo{person}{Marcello Solinas}, \bibinfo{person}{Pauline
+  Belujon}, \bibinfo{person}{Pierre~Olivier Fernagut}, \bibinfo{person}{Mohamed
+  Jaber}, {and} \bibinfo{person}{Nathalie Thiriet}.}
+  \bibinfo{year}{2019}\natexlab{}.
+\newblock \showarticletitle{Dopamine and Addiction: What Have We Learned from
+  40~Years of Research}.
+\newblock \bibinfo{journal}{\emph{Journal of Neural Transmission}}
+  \bibinfo{volume}{126}, \bibinfo{number}{4} (\bibinfo{date}{April}
+  \bibinfo{year}{2019}), \bibinfo{pages}{481--516}.
+\newblock
+\showISSN{1435-1463}
+\urldef\tempurl%
+\url{https://doi.org/10.1007/s00702-018-1957-2}
+\showDOI{\tempurl}
+
+
+\end{thebibliography}
