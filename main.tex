@@ -9,6 +9,29 @@
 % \acmYear{2023}
 % \copyrightyear{2023}
 
+%%%%%% Todo utilities
+\usepackage{todonotes}
+\setuptodonotes{
+  linecolor=my-bluepurple,
+  backgroundcolor=my-bluepurple,
+  textcolor=white,
+  bordercolor=white,
+}
+%%%%% End: Todo utilities
+
+%%%%% Roman number
+\newcounter{num}
+\newcommand{\rnum}[1]{\setcounter{num}{#1}(\roman{num})}
+%%%%% End: Roman number
+
+%%%%% MDP
+\newcommand{\M}{\mathcal{M}} % MDP
+\newcommand{\A}{\mathcal{A}} % Actions
+\newcommand{\X}{\mathcal{S}} % States
+\newcommand{\ah}{\hat{A}} % Estimation of Advantage
+\newcommand{\vh}{\hat{V}} % Estimation of Value
+%%%%% End: MDP
+
 %% end of the preamble, start of the body of the document source.
 \begin{document}
 
