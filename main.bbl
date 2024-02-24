@@ -1,4 +1,4 @@
-\begin{thebibliography}{8}
+\begin{thebibliography}{14}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
@@ -46,6 +46,47 @@ Stefan Elfwing, Eiji Uchibe, Kenji Doya, and Henrik~I Christensen.
 \newblock ISSN 1059-7123.
 \newblock \doi{10.1177/1059712310397633}.
 
+\bibitem[Gompertz(1825)]{gompertzXXIVNatureFunction1825}
+Benjamin Gompertz.
+\newblock {{XXIV}}. {{On}} the nature of the function expressive of the law of
+  human mortality, and on a new mode of determining the value of life
+  contingencies. {{In}} a letter to {{Francis Baily}}, {{Esq}}. {{F}}. {{R}}.
+  {{S}}. \&c.
+\newblock \emph{Philosophical Transactions of the Royal Society of London},
+  115:\penalty0 513--583, January 1825.
+\newblock \doi{10.1098/rstl.1825.0026}.
+
+\bibitem[Hinton \& Nowlan(1987)Hinton and Nowlan]{hintonHowLearningCan1987}
+Geoffrey~E Hinton and Steven~J Nowlan.
+\newblock How {{Learning Can Guide Evolution}}.
+\newblock 1987.
+
+\bibitem[Kirkwood(2015)]{kirkwoodDecipheringDeathCommentary2015}
+Thomas B.~L. Kirkwood.
+\newblock Deciphering death: A commentary on {{Gompertz}} (1825) `{{On}} the
+  nature of the function expressive of the law of human mortality, and on a new
+  mode of determining the value of life contingencies'.
+\newblock \emph{Philosophical Transactions of the Royal Society B: Biological
+  Sciences}, 370\penalty0 (1666):\penalty0 20140379, April 2015.
+\newblock \doi{10.1098/rstb.2014.0379}.
+
+\bibitem[Makeham(1860)]{makehamLawMortalityConstruction1860}
+William~Matthew Makeham.
+\newblock On the {{Law}} of {{Mortality}} and the {{Construction}} of {{Annuity
+  Tables}}.
+\newblock \emph{Journal of the Institute of Actuaries}, 8\penalty0
+  (6):\penalty0 301--310, January 1860.
+\newblock ISSN 2046-1658.
+\newblock \doi{10.1017/S204616580000126X}.
+
+\bibitem[Richards(1959)]{richardsFlexibleGrowthFunction1959}
+F.~J. Richards.
+\newblock A {{Flexible Growth Function}} for {{Empirical Use}}.
+\newblock \emph{Journal of Experimental Botany}, 10\penalty0 (2):\penalty0
+  290--301, June 1959.
+\newblock ISSN 0022-0957.
+\newblock \doi{10.1093/jxb/10.2.290}.
+
 \bibitem[Schultz(2015)]{schultzNeuronalRewardDecision2015}
 Wolfram Schultz.
 \newblock Neuronal {{Reward}} and {{Decision Signals}}: {{From Theories}} to
@@ -54,6 +95,14 @@ Wolfram Schultz.
   July 2015.
 \newblock ISSN 0031-9333.
 \newblock \doi{10.1152/physrev.00023.2014}.
+
+\bibitem[Sutton \& Barto(2018)Sutton and
+  Barto]{suttonReinforcementLearningIntroduction2018}
+Richard~S. Sutton and Andrew~G. Barto.
+\newblock \emph{Reinforcement Learning: An Introduction}.
+\newblock Adaptive Computation and Machine Learning Series. {The MIT Press},
+  {Cambridge, Massachusetts}, second edition edition, 2018.
+\newblock ISBN 978-0-262-03924-6.
 
 \bibitem[Uchibe \& Doya(2008)Uchibe and
   Doya]{uchibeFindingIntrinsicRewards2008}

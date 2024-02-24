@@ -17,7 +17,7 @@
 \usepackage{subcaption}         % Allows for the use of subfigures and subcaptions
 \usepackage[space]{grffile}     % For spaces in image names
 \usepackage{url}                % For displaying urls
-
+\usepackage{cleveref}
 
 %%%%%% Todo utilities
 \usepackage{todonotes}
@@ -41,6 +41,25 @@
 \newcommand{\ah}{\hat{A}} % Estimation of Advantage
 \newcommand{\vh}{\hat{V}} % Estimation of Value
 %%%%% End: MDP
+
+%%%%% Table
+\usepackage{booktabs}
+\usepackage{longtable} % tables that can span several pages
+%%%%% End: Table
+
+%%%%% Pseudo codes
+\usepackage{algpseudocodex}
+\usepackage{algorithm}
+\makeatletter
+\algnewcommand\algorithmiconce{\textbf{Once}}%
+\algdef{SE}[ONCE]{Once}{EndOnce}[1]{\algpx@startIndent\algpx@startCodeCommand\algorithmiconce\ #1\ \algorithmicdo%
+}{\algpx@endIndent\algpx@startEndBlockCommand\algorithmicend\ \algorithmiconce}%
+\pretocmd{\Once}{\algpx@endCodeCommand}{}{}
+\algtext*{EndOnce}%
+\apptocmd{\EndOnce}{\algpx@endIndent}{}{}%
+\pretocmd{\EndOnce}{\algpx@endCodeCommand[1]}{}{}%
+\makeatother
+%%%%% End: Pseudo Codes
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Title Page Specification

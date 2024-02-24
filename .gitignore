@@ -13,7 +13,8 @@
 *.pdf
 *.xcp
 *.synctex.gz
-.auctex-auto/*
+**/.auctex-auto/*
 minted-main/*
 **/node_modules
 **/build
+local-bib.bib
