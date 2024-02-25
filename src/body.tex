@@ -28,6 +28,31 @@ They tried to evolve shaping rewards and meta parameters of reinforcement learni
 
 \section{Simulation Model and Environment}\label{sec:3}
 
+\begin{figure}[t]
+  \centering{}
+  \includegraphics[width=15cm]{hazard_and_survival.pdf}
+  \caption{
+    \textbf{Left:} Designed hazard function $h(t)$ used for RL agents.
+    \textbf{Right:} Designed survival distribution $S(t)$ corresponding to that hazard function.
+  }\label{figure:hs}
+\end{figure}
+
+\begin{figure}[t]
+  \begin{subfigure}[t]{6cm}
+    \centering
+    \includegraphics[width=6cm]{birth.pdf}
+  \end{subfigure}
+  \begin{subfigure}[t]{8cm}
+    \centering
+    \includegraphics[width=8cm]{n_children.pdf}
+  \end{subfigure}
+  \caption{
+    \textbf{Left:} Designed birth rate $b(e)$ for RL agents.
+    \textbf{Center:} AAA
+    \textbf{Right:} Expected reproduction number $R$ for RL agents corresponding to the designed hazard and birth functions.
+  }\label{figure:b}
+\end{figure}
+
 \paragraph{Energy-based birth and death model}
 We assume that each agent has its own energy level $e$ and age $t$. We let $b(e)$ the birth function that evaluates the probability that an agents give birth to its child. Similarly, we let $h(t, e)$ be the hazard function for agents that evaluates the probability for an agent to die. Note that we only consider asexual reproduction model and our agents don't have sex, so all agents are evaluated whether they can make child. We design $b$ and $h$ as follows:
 
@@ -36,7 +61,7 @@ We assume that each agent has its own energy level $e$ and age $t$. We let $b(e)
   h(t, e) &= \kappa_{h} \left(1 - \frac{1}{1 + \alpha_{he} \exp(d_{h} - e)} \right) + \alpha_{ht} \exp(\beta t). \label{eq:h}
 \end{align}
 
-Modeled as a generalized logistic function \citep{richardsFlexibleGrowthFunction1959}, the birth function\label{eq:b} means that birth probability increases with $e$ following a sigmoidal curve where $\kappa_{b}$ is the scale, $\d_{b}$ controls the delay of reaction, and $\alpha_{e}$ defines the shape of when $e=d_{b}$. The hazard function\label{eq:h} consists of two terms. The first term increases as energy levels decrease follows a sigmoidal curve similar to the birth function, where $\kappa_{h}, d_{h}$, and $\alpha_{he}$ are hyper parameters that define the shape. The latter term $\alpha_{ht} \exp(\beta t)$ exponentially increases when the agent gets older, where $\alpha_{ht}$ and $\beta$ are hyper parameters. This is called Gompertz hazard model\citep{gompertzXXIVNatureFunction1825,kirkwoodDecipheringDeathCommentary2015} in population statistics.
+Modeled as a generalized logistic function \citep{richardsFlexibleGrowthFunction1959}, the birth function\label{eq:b} means that birth probability increases with $e$ following a sigmoidal curve where $\kappa_{b}$ is the scale, $d_{b}$ controls the delay of reaction, and $\alpha_{e}$ defines the shape of when $e=d_{b}$. The hazard function\label{eq:h} consists of two terms. The first term increases as energy levels decrease follows a sigmoidal curve similar to the birth function, where $\kappa_{h}, d_{h}$, and $\alpha_{he}$ are hyper parameters that define the shape. The latter term $\alpha_{ht} \exp(\beta t)$ exponentially increases when the agent gets older, where $\alpha_{ht}$ and $\beta$ are hyper parameters. This is called Gompertz hazard model\citep{gompertzXXIVNatureFunction1825,kirkwoodDecipheringDeathCommentary2015} in population statistics.
 
 \paragraph{Environment}
 

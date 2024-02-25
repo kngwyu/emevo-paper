@@ -1,4 +1,4 @@
-\begin{thebibliography}{17}
+\begin{thebibliography}{16}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
@@ -78,15 +78,6 @@ Thomas B.~L. Kirkwood.
 \newblock \emph{Philosophical Transactions of the Royal Society B: Biological
   Sciences}, 370\penalty0 (1666):\penalty0 20140379, April 2015.
 \newblock \doi{10.1098/rstb.2014.0379}.
-
-\bibitem[Makeham(1860)]{makehamLawMortalityConstruction1860}
-William~Matthew Makeham.
-\newblock On the {{Law}} of {{Mortality}} and the {{Construction}} of {{Annuity
-  Tables}}.
-\newblock \emph{Journal of the Institute of Actuaries}, 8\penalty0
-  (6):\penalty0 301--310, January 1860.
-\newblock ISSN 2046-1658.
-\newblock \doi{10.1017/S204616580000126X}.
 
 \bibitem[Richards(1959)]{richardsFlexibleGrowthFunction1959}
 F.~J. Richards.
