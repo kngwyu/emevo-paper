@@ -1,4 +1,4 @@
-\begin{thebibliography}{14}
+\begin{thebibliography}{17}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
@@ -13,6 +13,15 @@ Kent~C. Berridge and Morten~L. Kringelbach.
   August 2008.
 \newblock ISSN 1432-2072.
 \newblock \doi{10.1007/s00213-008-1099-6}.
+
+\bibitem[Bradbury et~al.(2018)Bradbury, Frostig, Hawkins, Johnson, Leary,
+  Maclaurin, Necula, Paszke, VanderPlas, {Wanderman-Milne}, and
+  Zhang]{jax2018github}
+James Bradbury, Roy Frostig, Peter Hawkins, Matthew~James Johnson, Chris Leary,
+  Dougal Maclaurin, George Necula, Adam Paszke, Jake VanderPlas, Skye
+  {Wanderman-Milne}, and Qiao Zhang.
+\newblock {{JAX}}: Composable transformations of {{Python}}+{{NumPy}} programs,
+  2018.
 
 \bibitem[Bredeche et~al.(2018)Bredeche, Haasdijk, and
   Prieto]{bredecheEmbodiedEvolutionCollective2018}
@@ -87,6 +96,11 @@ F.~J. Richards.
 \newblock ISSN 0022-0957.
 \newblock \doi{10.1093/jxb/10.2.290}.
 
+\bibitem[Schulman et~al.(2017)Schulman, Wolski, Dhariwal, Radford, and
+  Klimov]{schulmanProximalPolicyOptimization2017}
+John Schulman, Filip Wolski, Prafulla Dhariwal, Alec Radford, and Oleg Klimov.
+\newblock Proximal {{Policy Optimization Algorithms}}, August 2017.
+
 \bibitem[Schultz(2015)]{schultzNeuronalRewardDecision2015}
 Wolfram Schultz.
 \newblock Neuronal {{Reward}} and {{Decision Signals}}: {{From Theories}} to
@@ -95,6 +109,10 @@ Wolfram Schultz.
   July 2015.
 \newblock ISSN 0031-9333.
 \newblock \doi{10.1152/physrev.00023.2014}.
+
+\bibitem[Singh et~al.()Singh, Lewis, and Barto]{singhWhereRewardsCome}
+Satinder Singh, Richard~L Lewis, and Andrew~G Barto.
+\newblock Where {{Do Rewards Come From}}?
 
 \bibitem[Sutton \& Barto(2018)Sutton and
   Barto]{suttonReinforcementLearningIntroduction2018}

@@ -9,27 +9,25 @@ Due to its significant contribution to our lives, how our reward system have evo
 While biological studies on both evolutionary biology and neuroscience are highly important to address these questions, we argue that computational study can also contribute to this area by providing a simplified model of real evolution. A good example is the relationship between biological and computational RL, which have evolved closely. While computational RL has provided us with useful engineering techniques, it has also provided a promising computational model for how animals learn. We aim to make a similar contribution to the problem of reward evolution.
 
 % Why population-based model is important
-For this purpose, what kind of simulation model is suitable? Natural selection is the idea that genetic traits that contribute to more offspring will survive and evolve. Indicators such as the average number of births that assess this reproductive success are also called fitness. Some classical studies on the evolution of learning \citep{hintonHowLearningCan1987} have conducted simulations by explicitly designing a fitness function for a particular task. This approach has an advantage that evaluation of genetic traits is computational cheap, whereas to evaluate genetic traits from reproductive success alone would require simulations over several generations in a given population. However, this method has a disadvantage that the design of the fitness function is not always natural because of the designer's bias. Since we are interested in how biologically plausible rewards evolve, we prefer to use more natural measures such as reproductive success. Furthermore, today, the available computational resources are much greater than they were then, and simulations of somewhat larger populations are possible.
+For this purpose, what kind of simulation model is suitable? Natural selection is the idea that genetic traits that contribute to more offspring will survive and evolve. Indicators such as the average number of births that assess this reproductive success are also called fitness. Some classical studies on the evolution of learning \citep{hintonHowLearningCan1987} have conducted simulations by explicitly designing a fitness function for a particular task. This approach has an advantage that evaluation of genetic traits is computational cheap, whereas to evaluate genetic traits from reproductive success alone would require simulations over several generations in a given population. However, this method has a disadvantage that the design of the fitness function is not always natural because of the designer's bias. Since we are interested in how biologically plausible rewards evolve, we prefer to use more natural measures such as reproductive success. Furthermore, today, we have much greater computational resources that enable larger populations are possible.
 
 % Proposed simulation model
-To this end, we propose an evolutionary simulation model of reward function.
-
-embodied evolution (EE)~\cite{watsonEmbodiedEvolutionDistributing2002}.
-In the broader literature of evolutionary robotics, EE b
+To this end, we propose a distributed evolutionary model of reward function and an ecologically-plausible environment to conduct simulation. Inspired by the concept posed by embodied evolution (EE)~\cite{watsonEmbodiedEvolutionDistributing2002}, we design the simulation model.
 
 Since our aim is to confirm the environmental effects to reward functions in a biologically plausible way, EE is a good choice.
-
 
 % Result
 
 \section{Related Work}
+RL community has contributed to \citet{singhWhereRewardsCome} is also important.
+
+Therefore, \citet{watsonEmbodiedEvolutionDistributing2002} proposed a scheme called embodied evolution (EE). In EE, all the evaluation, reproduction, and selection are performed by individual robots in a decentralized manner, while traditional ER employs a centralized selection similar to GA\@. Robots die based on a defined lifespan and mortality rate, and newly born ones replace the programs of the dead robots.
+
 The series of studies by \citet{elfwingBiologicallyInspiredEmbodied2005,elfwingDarwinianEmbodiedEvolution2011a,elfwingEmergencePolymorphicMating2014} drew the main inspiration to this work.
 They tried to evolve shaping rewards and meta parameters of reinforcement learning agents using mobile robots called Cyber Rodents. In particular, \citet{elfwingDarwinianEmbodiedEvolution2011a} evolved reward-shaping parameters of RL agents, showing that rewards that make learning easier had evolved, while \citet{elfwingEmergencePolymorphicMating2014} evolved agents with a hierarchical RL mechanism, where the higher module chooses either foraging or mating, and the lower module outputs more primitive actions. They evolved only the higher decision-making parameters, while the lower modules were learned by RL. In their experiments, they observed two different groups: one that favors mating behavior and the other that favors foraging behavior. In our study, we try to evolve primary rewards instead of shaping rewards or the hierarchical decision-making mechanism they use. \citet{uchibeFindingIntrinsicRewards2008} also experimented with a similar mobile robot where primitive rewards such as food were predefined, but intrinsic rewards such as curiosity were evolved. In contrast, our study attempts to evolve primitive rewards. A drawback of EE is that reproduction is often done by replacing the genome of the same robot \citep{bredecheEmbodiedEvolutionCollective2018}. This makes it challenging to reproduce population increases and decreases by simulation. While the Darwinian EE framework proposed by \citet{elfwingDarwinianEmbodiedEvolution2011a} partially addressed this by having multiple agents as a virtual population inside a robot, we allow for population increase and decrease in simulation.
 
-\citet{singhWhereRewardsCome} is also important.
-
-\section{Simulation Model and Environment}
-Simulating evolution using the fitness function has some problems. Therefore, in this study, I employ an EE approach that does not use a fitness function. While most EE studies assume a fixed number of robots due to hardware limitations, my preliminary experiments only consider simulation where population change is much easier. So, I used a simple setting that all agents share the same hazard rate $h$ and birth rate $b$. I expect $h$ and $b$ to increase as agents learn foraging behavior, thereby increasing their lifespan, the number of offspring, and the expected reproduction number $R$. Therefore, I assigned each agent an energy state $e$, which increases or decreases depending on the agent's behavior. Eating food increases $e$, but learning or moving consumes energy and decreases $e$. Using $e$, I modeled hazard function $h (t,e)$ and $b (e)$, where $t$ is the age of an agent. Note that $b$ also can depend on $t$, but I employed a more straightforward form in my preliminary experiments.
+\section{Simulation Model}
+% Simulating evolution using the fitness function has some problems. Therefore, in this study, I employ an EE approach that does not use a fitness function. While most EE studies assume a fixed number of robots due to hardware limitations, my preliminary experiments only consider simulation where population change is much easier. So, I used a simple setting that all agents share the same hazard rate $h$ and birth rate $b$. I expect $h$ and $b$ to increase as agents learn foraging behavior, thereby increasing their lifespan, the number of offspring, and the expected reproduction number $R$. Therefore, I assigned each agent an energy state $e$, which increases or decreases depending on the agent's behavior. Eating food increases $e$, but learning or moving consumes energy and decreases $e$. Using $e$, I modeled hazard function $h (t,e)$ and $b (e)$, where $t$ is the age of an agent. Note that $b$ also can depend on $t$, but I employed a more straightforward form in my preliminary experiments.
 
 So what is an appropriate functional form for $h$ and $b$? $h$ should decrease with increasing $e$, and $b$ should increase, but at the same time, I want to avoid too steep changes, which could lead to extinction and population explosion. Thus, I modeled $h$ and $b$ with a generalized logistic function \citep{richardsFlexibleGrowthFunction1959} as follows:
 \begin{align}
@@ -58,21 +56,23 @@ $r = r_{\textrm{agent}}c_{t}^{\textrm{agent}} + r_{\textrm{food}}c_{t}^{\textrm{
     \ForAll{$agent \in Pop$}
       \State{$s \gets agent$'s observation in $Env$}
       \State{Sample an action $a$ from $agent$'s policy $\pi_{agent}(\cdot|s)$}
+      \State{Update $agent$'s energy level $e$ based on the taken action $a$ and eaten food}
       \Once{in $N$ steps}
         \State{Update $agent$'s policy $\pi_{agent}$ and value function $\vh_{agent}$ via RL}
       \EndOnce{}
-      \State{Update $agent$'s energy level $e$ based on $a$, eaten food, and whether it did RL}
     \EndFor{}
+
     \State{Step the simulated environment $Env$ one step using collected actions}
     \LComment{Process death and birth}
     \ForAll{$agent \in Pop$ whose energy level is $e$ and age is $t$}
-      \If{$H \sim h(s, e)$ and $H=1$}
+      \With{Probability $h(s, e)$}
         \State{$agent$ is removed from $Pop$ and $Env$}
         \Comment{agent is dead}
-      \ElsIf{$B \sim b(e)$, $B=1$, and $Env$ has space to place a new agent}
+      \EndWith{}
+      \With{Probability $b(e)$}
         \State{$\mathbf{r}_{\textrm{new}} \gets$ $agent$'s $\mathbf{r}~ + $ sampled noise}
         \State{Add a new agent with $\mathbf{r}_{\textrm{new}}$ to $Pop$ and $Env$}
-      \EndIf{}
+      \EndWith{}
     \EndFor{}
   \EndLoop{}
 \end{algorithmic}

@@ -58,6 +58,14 @@
 \algtext*{EndOnce}%
 \apptocmd{\EndOnce}{\algpx@endIndent}{}{}%
 \pretocmd{\EndOnce}{\algpx@endCodeCommand[1]}{}{}%
+
+\algnewcommand\algorithmicWith{\textbf{With}}%
+\algdef{SE}[WITH]{With}{EndWith}[1]{\algpx@startIndent\algpx@startCodeCommand\algorithmicWith\ #1\ \algorithmicdo%
+}{\algpx@endIndent\algpx@startEndBlockCommand\algorithmicend\ \algorithmicWith}%
+\pretocmd{\With}{\algpx@endCodeCommand}{}{}
+\algtext*{EndWith}%
+\apptocmd{\EndWith}{\algpx@endIndent}{}{}%
+\pretocmd{\EndWith}{\algpx@endCodeCommand[1]}{}{}%
 \makeatother
 %%%%% End: Pseudo Codes
 
