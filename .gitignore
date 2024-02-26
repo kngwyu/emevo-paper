@@ -10,7 +10,6 @@
 *.run.xml
 *.lof
 *.dvi
-*.pdf
 *.xcp
 *.synctex.gz
 **/.auctex-auto/*
@@ -18,3 +17,4 @@ minted-main/*
 **/node_modules
 **/build
 local-bib.bib
+main.pdf

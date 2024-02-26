@@ -1,3 +1,36 @@
-\section{AAA}
+\section{Parameters used in experiments}\label{ap-a}
 
-\subsection{Part One}
+\begin{table}[t]
+  \centering
+  \caption{Parameters for $h$ and $e$}\label{tab:bd-learn-param}
+  \begin{tabular}{ccl}
+  \toprule
+    Parameter & Value & Description \\
+    \midrule
+    $\kappa_{h}$ & 0.1 & Scaling parameter of the energy-related term of the hazard function \\
+    $\alpha_{he}$ & 0.3 & Inverse initial value of the energy-related term of the hazard function \\
+    $d_{h}$ & 0.0 & Delay of energy-related term of the hazard function \\
+    $\alpha_{ht}$ & \num{1e-6} & Inverse initial value of the age-related term of the hazard function \\
+    $\beta$ & \num{1e-6} & Inverse initial value of the age-related term of the hazard function \\
+    $\kappa_{b}$ & \num{2e-5} & Scaling parameter of the birth function\\
+    $\alpha_{b}$ & 0.1 & Inverse initial value of the birth function \\
+    $d_{b}$ & 5.0 & Delay of the birth function \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\begin{table}[t]
+  \centering
+  \caption{RL parameters}\label{tab:rl-param}
+  \begin{tabular}{ccl}
+  \toprule
+    Parameter & Value & Description \\
+    \midrule
+    $\gamma$ & 0.995 & Discount factor \\
+    $N$ & 1024 & Rollout steps \\
+    $N_{B}$ & 8 & PPO Num. minibatches \\
+    $N_{E}$ & 4 & PPO Optimization epochs \\
+    $\epsilon$ & 0.2 & PPO Clip epsilon \\
+    $c_{H}$ & 0.005 & PPO entropy regulization coefficient \\
+  \end{tabular}
+\end{table}
