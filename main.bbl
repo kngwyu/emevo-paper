@@ -1,4 +1,4 @@
-\begin{thebibliography}{16}
+\begin{thebibliography}{18}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
@@ -30,6 +30,11 @@ Nicolas Bredeche, Evert Haasdijk, and Abraham Prieto.
 \newblock \emph{Frontiers in Robotics and AI}, 5, 2018.
 \newblock ISSN 2296-9144.
 
+\bibitem[Catto(2005)]{catto2005iterative}
+Erin Catto.
+\newblock Iterative dynamics with temporal coherence.
+\newblock In \emph{Game developer conference}, volume~2, 2005.
+
 \bibitem[Elfwing et~al.(2005)Elfwing, Uchibe, Doya, and
   Christensen]{elfwingBiologicallyInspiredEmbodied2005}
 S.~Elfwing, E.~Uchibe, K.~Doya, and H.I. Christensen.
@@ -46,15 +51,6 @@ Stefan Elfwing and Kenji Doya.
 \newblock ISSN 1932-6203.
 \newblock \doi{10.1371/journal.pone.0093622}.
 
-\bibitem[Elfwing et~al.(2011)Elfwing, Uchibe, Doya, and
-  Christensen]{elfwingDarwinianEmbodiedEvolution2011a}
-Stefan Elfwing, Eiji Uchibe, Kenji Doya, and Henrik~I Christensen.
-\newblock Darwinian embodied evolution of the learning ability for survival.
-\newblock \emph{Adaptive Behavior}, 19\penalty0 (2):\penalty0 101--120, April
-  2011.
-\newblock ISSN 1059-7123.
-\newblock \doi{10.1177/1059712310397633}.
-
 \bibitem[Gompertz(1825)]{gompertzXXIVNatureFunction1825}
 Benjamin Gompertz.
 \newblock {{XXIV}}. {{On}} the nature of the function expressive of the law of
@@ -64,6 +60,18 @@ Benjamin Gompertz.
 \newblock \emph{Philosophical Transactions of the Royal Society of London},
   115:\penalty0 513--583, January 1825.
 \newblock \doi{10.1098/rstl.1825.0026}.
+
+\bibitem[Hamon et~al.(2023)Hamon, Nisioti, and
+  {Moulin-Frier}]{hamonEcoevolutionaryDynamicsNonepisodic2023}
+Gautier Hamon, Eleni Nisioti, and Cl{\'e}ment {Moulin-Frier}.
+\newblock Eco-evolutionary {{Dynamics}} of {{Non-episodic Neuroevolution}} in
+  {{Large Multi-agent Environments}}.
+\newblock In \emph{Proceedings of the {{Companion Conference}} on {{Genetic}}
+  and {{Evolutionary Computation}}}, {{GECCO}} '23 {{Companion}}, pp.\
+  143--146, {New York, NY, USA}, July 2023. {Association for Computing
+  Machinery}.
+\newblock ISBN 9798400701207.
+\newblock \doi{10.1145/3583133.3590703}.
 
 \bibitem[Hinton \& Nowlan(1987)Hinton and Nowlan]{hintonHowLearningCan1987}
 Geoffrey~E Hinton and Steven~J Nowlan.
@@ -112,6 +120,13 @@ Richard~S. Sutton and Andrew~G. Barto.
 \newblock Adaptive Computation and Machine Learning Series. {The MIT Press},
   {Cambridge, Massachusetts}, second edition edition, 2018.
 \newblock ISBN 978-0-262-03924-6.
+
+\bibitem[Todorov et~al.(2012)Todorov, Erez, and Tassa]{todorov2012mujoco}
+Emanuel Todorov, Tom Erez, and Yuval Tassa.
+\newblock Mujoco: A physics engine for model-based control.
+\newblock In \emph{2012 IEEE/RSJ International Conference on Intelligent Robots
+  and Systems}, pp.\  5026--5033. IEEE, 2012.
+\newblock \doi{10.1109/IROS.2012.6386109}.
 
 \bibitem[Uchibe \& Doya(2008)Uchibe and
   Doya]{uchibeFindingIntrinsicRewards2008}
