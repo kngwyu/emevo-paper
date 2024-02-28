@@ -29,6 +29,19 @@
 }
 %%%%% End: Todo utilities
 
+%%%%% Math
+\newcommand{\defequal}{\mathrel{\overset{\makebox[0pt]{\mbox{\tiny def}}}{=}}}
+\newcommand{\ubcomment}[2]{\underbrace{#1}_{\mbox{\small #2}}}
+\newcommand{\sample}[1]{\ubcomment{#1}{sample}}
+\newcommand{\continuation}[1]{\ubcomment{#1}{sample(continuation)}}
+\newcommand{\E}{\mathbb{E}} % Expectation
+\newcommand{\1}{\mathbb{I} } % indicator with no arguments
+\newcommand{\indic}[1]{\1_{#1}} % indicator function
+\DeclareMathOperator*{\argmax}{\arg\max}
+\DeclareMathOperator*{\argmin}{\arg\min}
+\newcommand{\KL}{D_{\mathrm{KL}}}
+%%%%% End: Math
+
 %%%%% Roman number
 \newcounter{num}
 \newcommand{\rnum}[1]{\setcounter{num}{#1}(\roman{num})}

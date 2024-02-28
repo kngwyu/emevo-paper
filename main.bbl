@@ -1,4 +1,4 @@
-\begin{thebibliography}{18}
+\begin{thebibliography}{27}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
@@ -14,14 +14,32 @@ Kent~C. Berridge and Morten~L. Kringelbach.
 \newblock ISSN 1432-2072.
 \newblock \doi{10.1007/s00213-008-1099-6}.
 
+\bibitem[Berridge \& Kringelbach(2015)Berridge and
+  Kringelbach]{berridgePleasureSystemsBrain2015}
+Kent~C. Berridge and Morten~L. Kringelbach.
+\newblock Pleasure {{Systems}} in the {{Brain}}.
+\newblock \emph{Neuron}, 86\penalty0 (3):\penalty0 646--664, May 2015.
+\newblock ISSN 0896-6273.
+\newblock \doi{10.1016/j.neuron.2015.02.018}.
+
+\bibitem[Berridge et~al.(2009)Berridge, Robinson, and
+  Aldridge]{berridgeDissectingComponentsReward2009}
+Kent~C Berridge, Terry~E Robinson, and J~Wayne Aldridge.
+\newblock Dissecting components of reward: `liking', `wanting', and learning.
+\newblock \emph{Current Opinion in Pharmacology}, 9\penalty0 (1):\penalty0
+  65--73, February 2009.
+\newblock ISSN 1471-4892.
+\newblock \doi{10.1016/j.coph.2008.12.014}.
+
 \bibitem[Bradbury et~al.(2018)Bradbury, Frostig, Hawkins, Johnson, Leary,
-  Maclaurin, Necula, Paszke, VanderPlas, {Wanderman-Milne}, and
+  Maclaurin, Necula, Paszke, Vander{P}las, Wanderman-{M}ilne, and
   Zhang]{jax2018github}
 James Bradbury, Roy Frostig, Peter Hawkins, Matthew~James Johnson, Chris Leary,
-  Dougal Maclaurin, George Necula, Adam Paszke, Jake VanderPlas, Skye
-  {Wanderman-Milne}, and Qiao Zhang.
-\newblock {{JAX}}: Composable transformations of {{Python}}+{{NumPy}} programs,
+  Dougal Maclaurin, George Necula, Adam Paszke, Jake Vander{P}las, Skye
+  Wanderman-{M}ilne, and Qiao Zhang.
+\newblock {JAX}: composable transformations of {P}ython+{N}um{P}y programs,
   2018.
+\newblock URL \url{http://github.com/google/jax}.
 
 \bibitem[Bredeche et~al.(2018)Bredeche, Haasdijk, and
   Prieto]{bredecheEmbodiedEvolutionCollective2018}
@@ -34,6 +52,15 @@ Nicolas Bredeche, Evert Haasdijk, and Abraham Prieto.
 Erin Catto.
 \newblock Iterative dynamics with temporal coherence.
 \newblock In \emph{Game developer conference}, volume~2, 2005.
+
+\bibitem[Dayan(2022)]{dayanLikingEarlyEditable2022}
+Peter Dayan.
+\newblock ``{{Liking}}'' as an early and editable draft of long-run affective
+  value.
+\newblock \emph{PLOS Biology}, 20\penalty0 (1):\penalty0 e3001476, January
+  2022.
+\newblock ISSN 1545-7885.
+\newblock \doi{10.1371/journal.pbio.3001476}.
 
 \bibitem[Elfwing et~al.(2005)Elfwing, Uchibe, Doya, and
   Christensen]{elfwingBiologicallyInspiredEmbodied2005}
@@ -50,6 +77,23 @@ Stefan Elfwing and Kenji Doya.
 \newblock \emph{PLOS ONE}, 9\penalty0 (4):\penalty0 e93622, April 2014.
 \newblock ISSN 1932-6203.
 \newblock \doi{10.1371/journal.pone.0093622}.
+
+\bibitem[Elfwing et~al.(2011)Elfwing, Uchibe, Doya, and
+  Christensen]{elfwingDarwinianEmbodiedEvolution2011}
+Stefan Elfwing, Eiji Uchibe, Kenji Doya, and Henrik~I Christensen.
+\newblock Darwinian embodied evolution of the learning ability for survival.
+\newblock \emph{Adaptive Behavior}, 19\penalty0 (2):\penalty0 101--120, April
+  2011.
+\newblock ISSN 1059-7123.
+\newblock \doi{10.1177/1059712310397633}.
+
+\bibitem[Freeman et~al.(2021)Freeman, Frey, Raichuk, Girgin, Mordatch, and
+  Bachem]{brax2021github}
+C.~Daniel Freeman, Erik Frey, Anton Raichuk, Sertan Girgin, Igor Mordatch, and
+  Olivier Bachem.
+\newblock Brax - a differentiable physics engine for large scale rigid body
+  simulation, 2021.
+\newblock URL \url{http://github.com/google/brax}.
 
 \bibitem[Gompertz(1825)]{gompertzXXIVNatureFunction1825}
 Benjamin Gompertz.
@@ -87,6 +131,38 @@ Thomas B.~L. Kirkwood.
   Sciences}, 370\penalty0 (1666):\penalty0 20140379, April 2015.
 \newblock \doi{10.1098/rstb.2014.0379}.
 
+\bibitem[Mitchell(1998)]{mitchellIntroductionGeneticAlgorithms1998}
+Melanie Mitchell.
+\newblock \emph{An {{Introduction}} to {{Genetic Algorithms}}}.
+\newblock {The MIT Press}, March 1998.
+\newblock ISBN 978-0-262-28001-3.
+\newblock \doi{10.7551/mitpress/3927.001.0001}.
+
+\bibitem[Ng et~al.(1999)Ng, Harada, and Russell]{ngPolicyInvarianceReward1999}
+A.~Ng, Daishi Harada, and Stuart~J. Russell.
+\newblock Policy {{Invariance Under Reward Transformations}}: {{Theory}} and
+  {{Application}} to {{Reward Shaping}}.
+\newblock In \emph{International {{Conference}} on {{Machine Learning}}}, June
+  1999.
+
+\bibitem[Niekum et~al.(2011)Niekum, Spector, and
+  Barto]{niekumEvolutionRewardFunctions2011}
+Scott Niekum, Lee Spector, and Andrew Barto.
+\newblock Evolution of reward functions for reinforcement learning.
+\newblock In \emph{Proceedings of the 13th Annual Conference Companion on
+  {{Genetic}} and Evolutionary Computation}, {{GECCO}} '11, pp.\  177--178,
+  {New York, NY, USA}, July 2011. {Association for Computing Machinery}.
+\newblock ISBN 978-1-4503-0690-4.
+\newblock \doi{10.1145/2001858.2001957}.
+
+\bibitem[Nolfi \& Floreano(2004)Nolfi and
+  Floreano]{nolfiEvolutionaryRoboticsBiology2004}
+Stefano Nolfi and Dario Floreano.
+\newblock \emph{Evolutionary {{Robotics}}: {{The Biology}}, {{Intelligence}},
+  and {{Technology}} of {{Self-Organizing Machines}}}.
+\newblock January 2004.
+\newblock \doi{10.7551/mitpress/2889.001.0001}.
+
 \bibitem[Richards(1959)]{richardsFlexibleGrowthFunction1959}
 F.~J. Richards.
 \newblock A {{Flexible Growth Function}} for {{Empirical Use}}.
@@ -109,9 +185,11 @@ Wolfram Schultz.
 \newblock ISSN 0031-9333.
 \newblock \doi{10.1152/physrev.00023.2014}.
 
-\bibitem[Singh et~al.()Singh, Lewis, and Barto]{singhWhereRewardsCome}
+\bibitem[Singh et~al.(2009)Singh, Lewis, and Barto]{singhWhereRewardsCome2009}
 Satinder Singh, Richard~L Lewis, and Andrew~G Barto.
 \newblock Where {{Do Rewards Come From}}?
+\newblock \emph{Proceedings of the annual conference of the cognitive science
+  society}, 2009.
 
 \bibitem[Sutton \& Barto(2018)Sutton and
   Barto]{suttonReinforcementLearningIntroduction2018}
@@ -128,16 +206,6 @@ Emanuel Todorov, Tom Erez, and Yuval Tassa.
   and Systems}, pp.\  5026--5033. IEEE, 2012.
 \newblock \doi{10.1109/IROS.2012.6386109}.
 
-\bibitem[Uchibe \& Doya(2008)Uchibe and
-  Doya]{uchibeFindingIntrinsicRewards2008}
-Eiji Uchibe and Kenji Doya.
-\newblock Finding intrinsic rewards by embodied evolution and constrained
-  reinforcement learning.
-\newblock \emph{Neural Networks}, 21\penalty0 (10):\penalty0 1447--1455,
-  December 2008.
-\newblock ISSN 0893-6080.
-\newblock \doi{10.1016/j.neunet.2008.09.013}.
-
 \bibitem[Watson et~al.(2002)Watson, Ficici, and
   Pollack]{watsonEmbodiedEvolutionDistributing2002}
 Richard~A. Watson, Sevan~G. Ficici, and Jordan~B. Pollack.
@@ -147,5 +215,13 @@ Richard~A. Watson, Sevan~G. Ficici, and Jordan~B. Pollack.
   1--18, April 2002.
 \newblock ISSN 0921-8890.
 \newblock \doi{10.1016/S0921-8890(02)00170-7}.
+
+\bibitem[Zheng et~al.(2020)Zheng, Oh, Hessel, Xu, Kroiss, Hasselt, Silver, and
+  Singh]{zhengWhatCanLearned2020}
+Zeyu Zheng, Junhyuk Oh, Matteo Hessel, Zhongwen Xu, Manuel Kroiss, Hado~Van
+  Hasselt, David Silver, and Satinder Singh.
+\newblock What {{Can Learned Intrinsic Rewards Capture}}?
+\newblock In \emph{Proceedings of the 37th {{International Conference}} on
+  {{Machine Learning}}}, pp.\  11436--11446. {PMLR}, November 2020.
 
 \end{thebibliography}
