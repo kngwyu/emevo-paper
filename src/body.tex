@@ -82,10 +82,22 @@ When an agent makes a child, a new agent is placed in a random location sampled 
 
 Simulating many agents to maintain a reasonable size population (e.g., $50\sim 100$) is key in our evolution scheme. However, our preliminary CPU-based simulation experiments found that simulating collisions between many agents and foods could be a huge bottleneck in computation time. To overcome this challenge, we implement our environment using JAX Python library \citep{jax2018github} so that it can work on hardware accelerators such as GPU. Inspired by recent works on 3D rigid body physics simulation using JAX (e.g., \citet{brax2021github} and MuJoCo \citep{todorov2012mujoco} MJX\footnote{\url{https://mujoco.readthedocs.io/en/stable/mjx.html}}), we implement our 2D physics engine using JAX and build our environment on top of that. This design decision is made because many of the existing JAX-based physics simulation libraries are optimized for single-agent robot control and are not well suited for handling the multi-agent scenario we are dealing with. We explain implementation detail in \cref{ap:phys}.
 
-\paragraph{Reward Model}
-We assume that the reward function is innate and cannot be changed by learning during an agent's lifetime. As sensory inputs that can affect reward function, we select \rnum{1} collision to food, \rnum{2} collision to the wall, \rnum{3} collision to some other agent, and \rnum{4} the magnitude of motor output. We expect that the reward for eating evolves from the collision to food and that the negative reward for fatigue evolves from the magnitude of motor output. Collision to the wall and other agents is chosen to test if the reward function distinguishes between important and unrelevant signals. As a reward function model, we employ a 
+\paragraph{Reward Function with Evolving Parameters}
+We assume that the reward function is innate and cannot be changed by learning during an agent's lifetime. As sensory inputs that can affect reward function, we select \rnum{1} collision to food, \rnum{2} collision to the wall, \rnum{3} collision to some other agent, and \rnum{4} the magnitude of motor output. We expect that the reward for eating evolves from the collision to food and that the negative reward for fatigue evolves from the magnitude of motor output. Collision to the wall and other agents is chosen to test if the reward function can distinguish unrelevant signals for survival, as we do not penalize agents for colliding walls or each other.
+
+For ease of analysis, we model the proportion of reward for each sensory input separately and sum them to be the reward used by the agent for RL. For each collision event, we model the proportion of reward by two evolutionary parameters. For example, the reward for food is modeled as follows:
+
+\begin{align*}
+  r_{\mathrm{food}}^{t} =
+  \begin{dcases*}
+   10^{s_{\mathrm{food}}} w_{\mathrm{food}} & if the agent gets food at time t \\
+   0 & otherwise
+  \end{dcases*},
+\end{align*}
+where $s_{\mathrm{food} \in [0, 1]$ and $w_{\mathrm{food} \in [-1, 1]$ are evolvable parameters that represent scale and weight for the food reward.
 
 
+Let $c_{t}^{\mathrm{agent}}, c_{t}^{\mathrm{food}}$, and $c_{t}^{\mathrm{wall}}$ denote binary variables representing the agent's collision with other agents, food, and walls and obstacles at time $t$. For example, $c_{t}^{\mathrm{food}} = 1$ when an agent gets food at time $t$, otherwise it
 As a reward function, we used a simple linear function $\mathbf{r} = \left(r_{\textrm{agent}}, r_{\textrm{food}}, r_{\textrm{wall}}, r_{\textrm{action}} \right)^{\intercal} $ for an agent's collision and action. Let $c_{t}^{\textrm{agent}}, c_{t}^{\textrm{food}}$, and $c_{t}^{\textrm{wall}}$ be binary variables representing the agent's collision with other agents, food, and walls and obstacles at time $t$. In addition, let $J_{t}^{\textrm{norm}} = \frac{|J_{t}|}{\max{|J|}}$ denote the $[0, 1]-$normalized impulse an agent adds to itself at time $t$. Then, $\mathbf{r}$ maps these four values to a single scalar reward by $r = \mathbf{r}^{\intercal} (c_{t}^{\textrm{agent}}, c_{t}^{\textrm{food}}, c_{t}^{\textrm{wall}}, J_{t}^{\textrm{norm}})^{\intercal}$. $\mathbf{r}$ is the only genetically inheritable trait for the agent, with noise added by mutation at a certain probability. I may use a more complex reward function in future experiments, but for this preliminary experiment, I preferred simplicity. Mutation gives noise sampled from a mixture of binominal and Gaussian distribution. Specifically, uniform noise $[-0.1, 0.1]$ is added with probability $0.4$ to each element of $\mathbf{r}$.
 
 \begin{algorithm}
