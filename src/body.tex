@@ -38,10 +38,10 @@ While we are focusing on the distributed evolution of rewards in a multi-agent s
 As a simple but biologically plausible way of simulating the birth and death of agents, we employ an energy-based model similar to \citet{hamonEcoevolutionaryDynamicsNonepisodic2023}. Each agent maintains their energy level $e$. Energy level $e$ increases by eating and decreases by primary metabolism and taking action in the environment. We design the agent's death and birth model to maintain a higher energy level $e$, which leads to longer lives and many offspring. With $e$ and an agent's age $t$, we let $h(t, e)$ be the hazard function for agents that evaluates the probability of an agent dying:
 
 \begin{align}
-  h(t, e) = \kappa_{h} \left(1 - \frac{1}{1 + \alpha_{he} \exp(d_{h} - e)} \right) + \alpha_{ht} \exp(\beta t). \label{eq:h}
+  h(t, e) = \kappa_{h} \left(1 - \frac{1}{1 + \alpha_{he} \exp(\theta_{h} - e)} \right) + \alpha_{ht} \exp(\beta t). \label{eq:h}
 \end{align}
 
-This hazard function\label{eq:h} consists of two terms. The first term increases as energy levels decrease and follow a sigmoidal curve, where $\kappa_{h}, d_{h}$, and $\alpha_{he}$ are hyperparameters. The latter term $\alpha_{ht} \exp(\beta t)$ exponentially increases when the agent gets older, where $\alpha_{ht}$ and $\beta$ are hyperparameters. In population statistics, this is called the Gompertz hazard model\citep{gompertzXXIVNatureFunction1825,kirkwoodDecipheringDeathCommentary2015}. The left figure in \cref{figure:hs} shows the shape of the hazard function with the specific parameters used in our experiments. To intuitively understand the behavior $h$, we plot survival function $S(t, e) = \exp (-\int_{0}^{t}(h(t, e)) dt)$ in the right of \cref{figure:hs}. $S(t, e)$ is the probability for an agent to survive to the age $t$ if it keeps the same energy level $e$. We can see that the survival probability more sharply decays with aging when the energy level is low.
+This hazard function\label{eq:h} consists of two terms. The first term increases as energy levels decrease and follow a sigmoidal curve, where $\kappa_{h}, \theta_{h}$, and $\alpha_{he}$ are hyperparameters. The latter term $\alpha_{ht} \exp(\beta t)$ exponentially increases when the agent gets older, where $\alpha_{ht}$ and $\beta$ are hyperparameters. In population statistics, this is called the Gompertz hazard model\citep{gompertzXXIVNatureFunction1825,kirkwoodDecipheringDeathCommentary2015}. The left figure in \cref{figure:hs} shows the shape of the hazard function with the specific parameters used in our experiments. To intuitively understand the behavior $h$, we plot survival function $S(t, e) = \exp (-\int_{0}^{t}(h(t, e)) dt)$ in the right of \cref{figure:hs}. $S(t, e)$ is the probability for an agent to survive to the age $t$ if it keeps the same energy level $e$. We can see that the survival probability more sharply decays with aging when the energy level is low.
 
 \begin{figure}[t]
   \centering{}
@@ -55,9 +55,9 @@ This hazard function\label{eq:h} consists of two terms. The first term increases
 
 For simplicity, we employ an asexual reproduction model where all agents can have a chance to make their children. We let $b(e)$ the birth function that evaluates the probability for an agent with energy level $e$ to make its child. Similarly to the first term of \cref{eq:h}, we design the birth function $b$ as:
 \begin{align}
- b(e) &=  \frac{\kappa_{b}}{1 + \alpha_{b}\exp(d_{b} - e)}. \label{eq:b}
+ b(e) &=  \frac{\kappa_{b}}{1 + \alpha_{b}\exp(\theta_{b} - e)}. \label{eq:b}
 \end{align}
-Modeled as a generalized logistic function \citep{richardsFlexibleGrowthFunction1959}, $b(e)$ increases with $e$ following a sigmoidal curve where $\kappa_{b}$ is the scale, $d_{b}$ controls the delay of reaction, and $\alpha_{e}$ defines the shape of when $e=d_{b}$. The left figure of \cref{figure:bnc} shows the shape of $b$. For chosen $b$ and $h$, we plot the expected lifetime and number of children when an agent keeps the same energy level in the center and right figure in \cref{figure:bnc}. Parameters are chosen so that the maximum expected lifetime is around \num{200000} and the maximum expected number of children is around 40. All experiment parameters are shown in \cref{ap:param}.
+Modeled as a generalized logistic function \citep{richardsFlexibleGrowthFunction1959}, $b(e)$ increases with $e$ following a sigmoidal curve where $\kappa_{b}$ is the scale, $\theta_{b}$ controls the threshold of reaction, and $\alpha_{e}$ defines the shape of when $e = \theta_{b}$. The left figure of \cref{figure:bnc} shows the shape of $b$. For chosen $b$ and $h$, we plot the expected lifetime and number of children when an agent keeps the same energy level in the center and right figure in \cref{figure:bnc}. Parameters are chosen so that the maximum expected lifetime is around \num{200000} and the maximum expected number of children is around 40. All experiment parameters are shown in \cref{ap:param}.
 
 \paragraph{Environment}
 
@@ -80,12 +80,12 @@ As a simple simulation environment with biologically plausible sensorimotor inte
 
 When an agent makes a child, a new agent is placed in a random location sampled from a Gaussian distribution centered around its parent. The new agent inherits its reward function from its parent with some mutation, as described later. To avoid overlapping objects, we sample multiple random locations at one time and choose one that does not conflict with any other object. However, to speed up the simulation, reproduction fails when all sampled locations are not available. Thus, keeping away from other agents is beneficial for agents to make more children. When an agent dies, its body is immediately removed from the environment.
 
-Simulating many agents to maintain a reasonable size population (e.g., $50\sim 100$) is key in our evolution scheme. However, our preliminary CPU-based simulation experiments found that simulating collisions between many agents and foods could be a huge bottleneck in computation time. To overcome this challenge, we implement our environment using JAX Python library \citep{jax2018github} so that it can work on hardware accelerators such as GPU. Inspired by recent works on 3D rigid body physics simulation using JAX (e.g., \citet{brax2021github} and MuJoCo \citep{todorov2012mujoco} MJX\footnote{\url{https://mujoco.readthedocs.io/en/stable/mjx.html}}), we implement our 2D physics engine using JAX and build our environment on top of that. This design decision is made because many of the existing JAX-based physics simulation libraries are optimized for single-agent robot control and are not well suited for handling the multi-agent scenario we are dealing with. We explain implementation detail in \cref{ap:phys}.
+Simulating many agents to maintain a reasonable size population (e.g., $50\sim 100$) is key in our evolution scheme. However, our preliminary CPU-based simulation experiments found that simulating collisions between many agents and foods could be a massive bottleneck in computation time. To overcome this challenge, we implement our environment using JAX Python library \citep{jax2018github} so that it can work on hardware accelerators such as GPU. Inspired by recent works on 3D rigid body physics simulation using JAX (e.g., \citet{brax2021github} and MuJoCo \citep{todorov2012mujoco} MJX\footnote{\url{https://mujoco.readthedocs.io/en/stable/mjx.html}}), we implement our 2D physics engine using JAX and build our environment on top of that. This design decision is made because many of the existing JAX-based physics simulation libraries are optimized for single-agent robot control and are not well suited for handling the multi-agent scenario we are dealing with. We explain implementation detail in \cref{ap:phys}.
 
 \paragraph{Reward Function with Evolving Parameters}
-We assume that the reward function is innate and cannot be changed by learning during an agent's lifetime. As sensory inputs that can affect reward function, we select \rnum{1} collision to food, \rnum{2} collision to the wall, \rnum{3} collision to some other agent, and \rnum{4} the magnitude of motor output. We expect that the reward for eating evolves from the collision to food and that the negative reward for fatigue evolves from the magnitude of motor output. Collision to the wall and other agents is chosen to test if the reward function can distinguish unrelevant signals for survival, as we do not penalize agents for colliding walls or each other.
+We assume that the reward function is innate and cannot be changed by learning during an agent's lifetime. As sensory inputs that can affect reward function, we select \rnum{1} collision to food, \rnum{2} collision to the wall, \rnum{3} collision to some other agent, and \rnum{4} the magnitude of motor output. We expect that the reward for eating evolves from the collision to food and that the negative reward for fatigue evolves from the magnitude of motor output. Collision with the wall and other agents is chosen to test if the reward function can distinguish unrelevant signals for survival, as we do not penalize agents for colliding with walls or each other.
 
-For ease of analysis, we model the proportion of reward for each sensory input separately and sum them to be the reward used by the agent for RL. For each collision event, we model the proportion of reward by two evolutionary parameters. For example, the reward for food is modeled as follows:
+For ease of analysis, we model the reward for each sensory input separately. For example, the food reward is modeled as follows:
 
 \begin{align*}
   r_{\mathrm{food}}^{t} =
@@ -94,26 +94,22 @@ For ease of analysis, we model the proportion of reward for each sensory input s
    0 & otherwise
   \end{dcases*},
 \end{align*}
-where $s_{\mathrm{food} \in [0, 1]$ and $w_{\mathrm{food} \in [-1, 1]$ are evolvable parameters that represent scale and weight for the food reward.
-
-
-Let $c_{t}^{\mathrm{agent}}, c_{t}^{\mathrm{food}}$, and $c_{t}^{\mathrm{wall}}$ denote binary variables representing the agent's collision with other agents, food, and walls and obstacles at time $t$. For example, $c_{t}^{\mathrm{food}} = 1$ when an agent gets food at time $t$, otherwise it
-As a reward function, we used a simple linear function $\mathbf{r} = \left(r_{\textrm{agent}}, r_{\textrm{food}}, r_{\textrm{wall}}, r_{\textrm{action}} \right)^{\intercal} $ for an agent's collision and action. Let $c_{t}^{\textrm{agent}}, c_{t}^{\textrm{food}}$, and $c_{t}^{\textrm{wall}}$ be binary variables representing the agent's collision with other agents, food, and walls and obstacles at time $t$. In addition, let $J_{t}^{\textrm{norm}} = \frac{|J_{t}|}{\max{|J|}}$ denote the $[0, 1]-$normalized impulse an agent adds to itself at time $t$. Then, $\mathbf{r}$ maps these four values to a single scalar reward by $r = \mathbf{r}^{\intercal} (c_{t}^{\textrm{agent}}, c_{t}^{\textrm{food}}, c_{t}^{\textrm{wall}}, J_{t}^{\textrm{norm}})^{\intercal}$. $\mathbf{r}$ is the only genetically inheritable trait for the agent, with noise added by mutation at a certain probability. I may use a more complex reward function in future experiments, but for this preliminary experiment, I preferred simplicity. Mutation gives noise sampled from a mixture of binominal and Gaussian distribution. Specifically, uniform noise $[-0.1, 0.1]$ is added with probability $0.4$ to each element of $\mathbf{r}$.
+where $s_{\mathrm{food}} \in [0, 1]$ and $w_{\mathrm{food}} \in [-1, 1]$ are evolvable parameters that represent scale and weight for the food reward. We model the reward for a collision to wall $r_\mathrm{wall}$ and other agents $r_\mathrm{agent}$ in the same way. Our intention in using two independent parameters is to balance stability and plasticity. Our preliminary experiments found that rewards can be too unstable if we allow significant change via a single parameter. Having a parameter for adjusting the scale separately makes the significant reward change more challenging while still possible. Similarly, letting $|a_t|$ be the Euclid norm of the action taken by agent at time $t$, the reward for taking an action is modeled by $r_{\mathrm{act}}^{t} = 10^{s_{\mathrm{act}}} w_{\mathrm{act}} c_\mathrm{act} |a_t|$, where $\eta_\mathrm{act}$ is a coefficient to adjust the scale of reward. Note that $r_{\mathrm{act}}^{t}$ is scaled so that it should have much smaller value than collision rewards, because an agent gets $r_{\mathrm{act}}^{t}$ every step while collision rewards are often $0$. The sum of these rewards $r_t = r_{\mathrm{food}}^{t} + r_{\mathrm{wall}}^{t} + r_{\mathrm{agent}}^{t} + r_{\mathrm{action}}^{t}$ is given to an agent for the use in RL.
 
 \begin{algorithm}
-  \caption{Pseudo code of reward evolution with asexual reproduction}\label{alg:reward-evo}
+  \caption{Reward evolution with asexual reproduction}\label{alg:reward-evo}
   \begin{tabular}{lll}
-    \textbf{Input:} & $Pop$ & Initial population \\
-                    & $Env$ & Simulated environment \\
+    \textbf{Input:} & $Pop, Env$ & Initial population and simulation environment\\
                     & $N$ & Number of rollout steps used in RL \\
-                    & $h(s, e)$ & Hazard function for agents \\
-                    & $b(e)$ & Birth function for agents \\
+                    & $h(t, e)$, $b(e)$ & Hazard and birth function for agents \\
+                    & $mut(r)$ & Mutation function for reward function \\
+                    & $\eta$ & Energy share ratio used in reproduction
   \end{tabular}
   \begin{algorithmic}[1]
     \Loop{}
     \ForAll{$agent \in Pop$}
-      \State{$s \gets agent$'s observation in $Env$}
-      \State{Sample an action $a$ from $agent$'s policy $\pi_{agent}(\cdot|s)$}
+      \State{$o \gets agent$'s observation in $Env$}
+      \State{Sample an action $a$ from $agent$'s policy $\pi_{agent}(\cdot|o)$}
       \State{Update $agent$'s energy level $e$ based on the taken action $a$ and eaten food}
       \Once{in $N$ steps}
         \State{Update $agent$'s policy $\pi_{agent}$ and value function $\vh_{agent}$ via RL}
@@ -122,26 +118,26 @@ As a reward function, we used a simple linear function $\mathbf{r} = \left(r_{\t
 
     \State{Step the simulated environment $Env$ one step using collected actions}
     \LComment{Process death and birth}
-    \ForAll{$agent \in Pop$ whose energy level is $e$ and age is $t$}
-      \With{Probability $h(s, e)$}
+    \ForAll{$agent \in Pop$ with energy level $e$, age $t$, and reward function $r$}
+      \With{Probability $h(t, e)$}
         \State{$agent$ is removed from $Pop$ and $Env$}
         \Comment{agent is dead}
       \EndWith{}
       \With{Probability $b(e)$}
-        \State{$\mathbf{r}_{\textrm{new}} \gets$ $agent$'s $\mathbf{r}~ + $ sampled noise}
-        \State{Add a new agent with $\mathbf{r}_{\textrm{new}}$ to $Pop$ and $Env$}
+        \State{$e_\mathrm{new} \gets \eta e$, $r_\mathrm{new} \gets mut(r)$}
+        \State{Add a new agent with reward function $r_\mathrm{new}$ and energy level $e_\mathrm{new}$ to $Pop$ and $Env$}
+        \State{Update parent's energy to $(1 - \eta) e$}
       \EndWith{}
     \EndFor{}
   \EndLoop{}
 \end{algorithmic}
 \end{algorithm}
 
-I assume that each agent already knows how to learn from rewards. I used PPO\citep{schulmanProximalPolicyOptimization2017} as an RL algorithm because of its fast simulation performance. To estimate $A^{\pi}$, GAE (\cref{eq:gae}) is used with $N=1024$, so an agent learns only once every $1024$ step. As a neural network function approximation, I used a simple linear network shown by \cref{eq:v-nn} with additional layers for modeling $\pi$. Following the common practice in the literature, I modeled $\pi(\cdot|\textbf{s})$ as independent Gaussian distributions for each $ (J, \theta_{J}, \frac{d\theta_{\textrm{ang}}}{dt}) $ with state-independent variance. Other RL-related parameters are put in \cref{tab:rl-param}.
-
-$r = r_{\textrm{agent}}c_{t}^{\textrm{agent}} + r_{\textrm{food}}c_{t}^{\textrm{food}} + r_{\textrm{wall}}c_{t}^{\textrm{wall}} + r_{\textrm{action}}J_{t}^{\textrm{norm}}$
-
-
-To summarize, I show the whole simulation process of reward evolution with asexual reproduction \Cref{alg:reward-evo}. Sexual reproduction may be considered in future studies, but only asexual reproduction was considered in this preliminary experiment. Basically, each agent acts based on their policy, and they occasionally update their policy via RL. They consume energy by acting and learning but can get energy by eating food. At each simulation step, an agent dies with probability $h(t, e)$ and creates a child with probability $b(e)$. The new agent inherits the reward function of its parent but may also acquire a new one via mutation. The implementation is done via Jax framework (e.g., \citet{jax2018github} and MuJoCo) in Python to benefit from vectorization on both CPU and GPU. Further thread-level parallelization may be considered in future research.
+\paragraph{Simulation Procedure}
+We show the pseudocode of our entire simulation procedure in \cref{alg:reward-evo}. 
+This reward function uniform noise $[-0.1, 0.1]$ is added with probability $0.4$ to each element of $\mathbf{r}$. 
+PPO\citep{schulmanProximalPolicyOptimization2017} as an RL algorithm because of its fast computation time.
+Other RL-related parameters are put in \cref{tab:rl-param}.
 
 \section{Results}
 
