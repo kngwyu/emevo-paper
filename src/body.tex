@@ -83,6 +83,9 @@ When the parent's energy level is $e$, a proportion of energy level $\eta e$ is 
 
 Simulating many agents to maintain a reasonable size population (e.g., $50\sim 100$) is key in our evolution scheme. However, our preliminary CPU-based simulation experiments found that simulating collisions between many agents and foods could be a massive bottleneck in computation time. To overcome this challenge, we implement our environment using JAX Python library \citep{jax2018github} so that it can work on hardware accelerators such as GPU. Inspired by recent works on 3D rigid body physics simulation using JAX (e.g., \citet{brax2021github} and MuJoCo \citep{todorov2012mujoco} MJX\footnote{\url{https://mujoco.readthedocs.io/en/stable/mjx.html}}), we implement our 2D physics engine using JAX and build our environment on top of that. This design decision is made because many of the existing JAX-based physics simulation libraries are optimized for single-agent robot control and are not well suited for handling the multi-agent scenario we are dealing with. We explain implementation detail in \cref{ap:phys}.
 
+% Obs, action
+% partial observable
+
 \paragraph{Reward Function with Evolving Parameters}
 We assume that the reward function is innate and cannot be changed by learning during an agent's lifetime. As sensory inputs that can affect reward function, we select \rnum{1} collision to food, \rnum{2} collision to the wall, \rnum{3} collision to some other agent, and \rnum{4} the magnitude of motor output. We expect that the reward for eating evolves from the collision to food and that the negative reward for fatigue evolves from the magnitude of motor output. Collision with the wall and other agents is chosen to test if the reward function can distinguish unrelevant signals for survival, as we do not penalize agents for colliding with walls or each other.
 
@@ -95,7 +98,7 @@ For ease of analysis, we model the reward for each sensory input separately. For
    0 & otherwise
   \end{dcases*},
 \end{align*}
-where $s_{\mathrm{food}} \in [0, 1]$ and $w_{\mathrm{food}} \in [-1, 1]$ are evolvable parameters that represent scale and weight for the food reward. We model the reward for a collision to wall $r_\mathrm{wall}$ and other agents $r_\mathrm{agent}$ in the same way. Our intention in using two independent parameters is to balance stability and plasticity. Our preliminary experiments found that rewards can be too unstable if we allow significant change via a single parameter. Having a parameter for adjusting the scale separately makes the significant reward change more challenging while still possible. Similarly, letting $|a_t|$ be the Euclid norm of the action taken by agent at time $t$, the reward for taking an action is modeled by $r_{\mathrm{act}}^{t} = 10^{s_{\mathrm{act}}} w_{\mathrm{act}} c_\mathrm{act} |a_t|$, where $\eta_\mathrm{act}$ is a coefficient to adjust the scale of reward. Note that $r_{\mathrm{act}}^{t}$ is scaled so that it should have much smaller value than collision rewards, because an agent gets $r_{\mathrm{act}}^{t}$ every step while collision rewards are often $0$. The sum of these rewards $r_t = r_{\mathrm{food}}^{t} + r_{\mathrm{wall}}^{t} + r_{\mathrm{agent}}^{t} + r_{\mathrm{action}}^{t}$ is given to an agent for the use in RL.
+where $s_{\mathrm{food}} \in [0, 1]$ and $w_{\mathrm{food}} \in [-1, 1]$ are evolvable parameters that represent scale and weight for the food reward. We model the reward for a collision to wall $r_\mathrm{wall}$ and other agents $r_\mathrm{agent}$ in the same way. Our intention in using two independent parameters is to balance stability and plasticity. Our preliminary experiments found that rewards can be too unstable if we allow significant change via a single parameter. Having a parameter for adjusting the scale separately makes the significant reward change more challenging while still possible. Similarly, letting $|a_t|$ be the Euclid norm of the action taken by agent at time $t$, the reward for taking an action is modeled by $r_{\mathrm{act}}^{t} = 10^{s_{\mathrm{act}}} w_{\mathrm{act}} c_\mathrm{act} |a_t|$, where $\eta_\mathrm{act}$ is a coefficient to adjust the scale of reward. Note that $r_{\mathrm{act}}^{t}$ is scaled so that it should have a much smaller value than collision rewards because an agent gets $r_{\mathrm{act}}^{t}$ every step while collision rewards are often $0$. The sum of these rewards $r_t = r_{\mathrm{food}}^{t} + r_{\mathrm{wall}}^{t} + r_{\mathrm{agent}}^{t} + r_{\mathrm{action}}^{t}$ is given to an agent for the use in RL.
 
 \begin{algorithm}
   \caption{Reward evolution with asexual reproduction}\label{alg:reward-evo}
@@ -120,14 +123,14 @@ where $s_{\mathrm{food}} \in [0, 1]$ and $w_{\mathrm{food}} \in [-1, 1]$ are evo
     \State{Step the simulated environment $Env$ one step using collected actions}
     \LComment{Process death and birth}
     \ForAll{$agent \in Pop$ with energy level $e$, age $t$, and reward function $r$}
-      \With{Probability $h(t, e)$}
-        \State{$agent$ is removed from $Pop$ and $Env$}
-        \Comment{agent is dead}
-      \EndWith{}
       \With{Probability $b(e)$}
         \State{$e_\mathrm{new} \gets \eta e$, $r_\mathrm{new} \gets mut(r)$}
         \State{Add a new agent with reward function $r_\mathrm{new}$ and energy level $e_\mathrm{new}$ to $Pop$ and $Env$}
         \State{Update parent's energy to $(1 - \eta) e$}
+      \EndWith{}
+      \With{Probability $h(t, e)$}
+        \State{$agent$ is removed from $Pop$ and $Env$}
+        \Comment{agent is dead}
       \EndWith{}
     \EndFor{}
   \EndLoop{}
@@ -135,10 +138,7 @@ where $s_{\mathrm{food}} \in [0, 1]$ and $w_{\mathrm{food}} \in [-1, 1]$ are evo
 \end{algorithm}
 
 \paragraph{Simulation Procedure}
-We show the pseudocode of our entire simulation procedure in \cref{alg:reward-evo}. 
-This reward function uniform noise $[-0.1, 0.1]$ is added with probability $0.4$ to each element of $\mathbf{r}$. 
-PPO\citep{schulmanProximalPolicyOptimization2017} as an RL algorithm because of its fast computation time.
-Other RL-related parameters are put in \cref{tab:rl-param}.
+We show the pseudocode of our entire simulation procedure in \cref{alg:reward-evo}. Each agent has its innate, immutable reward function and learnable neural network policy. At each step, it observes sensory inputs from the environment and takes action. Once in $N$ steps, the agent updates its policy via RL using the past $N$ step experiences. We use Proximal Policy Optimization \citep{schulmanProximalPolicyOptimization2017} as an RL algorithm because of its fast computation time. We explain the details of our RL implementation in appendix. After environmental interaction, all agents can make a child and die based on the birth function $b$ and hazard function $h$. The new agent inherits a fraction of the parent's energy and mutated reward function. As mutation, we add uniform noise to each $s$ and $w$ with probability $0.4$. We put some relevant parameters in appendix.
 
 \section{Results}
 
