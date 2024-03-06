@@ -71,8 +71,8 @@ Modeled as a generalized logistic function \citep{richardsFlexibleGrowthFunction
     \includegraphics[width=8cm]{emevo-anno.png}
   \end{subfigure}
   \caption{
-    \textbf{Left:} Environment.
-    \textbf{Right:} Annotation
+    \textbf{Left:} Simulation environment we used in our experiments. Thin gray lines around agents indicates distance that can detect the distance to the closest object. Red circles indicate food. Outer gray lines are walls.
+    \textbf{Right:} Description of the environment. An agent can move by adding force to two indicated points.
   }\label{figure:env}
 \end{figure}
 
@@ -142,13 +142,27 @@ where $s_{\mathrm{food}} \in [0, 1]$ and $w_{\mathrm{food}} \in [-1, 1]$ are evo
 We show the pseudocode of our entire simulation procedure in \cref{alg:reward-evo}. Each agent has its innate, immutable reward function and learnable neural network policy. At each step, it observes sensory inputs from the environment and takes action. Once in $N$ steps, the agent updates its policy via RL using the past $N$ step experiences. We use Proximal Policy Optimization \citep{schulmanProximalPolicyOptimization2017} as an RL algorithm because of its fast computation time. We explain the details of our RL implementation in appendix. After environmental interaction, all agents can make a child and die based on the birth function $b$ and hazard function $h$. The new agent inherits a fraction of the parent's energy and mutated reward function. As mutation, we add uniform noise to each $s$ and $w$ with probability $0.4$. We show some relevant parameters in \cref{ap:param}.
 
 \section{Results}
+
+\begin{figure}[t]
+  \begin{subfigure}[t]{7cm}
+    \centering
+    \includegraphics[width=7cm]{baseline.png}
+  \end{subfigure}
+  \begin{subfigure}[t]{8cm}
+    \centering
+    \includegraphics[width=8cm]{comp_baseline_linep.png}
+  \end{subfigure}
+  \caption{
+    \textbf{Left:} Environment.
+    \textbf{Right:} Annotation
+  }\label{figure:baseline-result}
+\end{figure}
+
+
 As a baseline environment, we use the setting where food is always regenerated in the upper right of the room as the left figure in \cref{figure:env} shows, because we found this setting the easiest. In this environment, we tuned environmenal parameters (e.g., maxmimum number of foods and growth rate) so that the population is stable around $100$. We show all enviornmental parameters in \cref{ap:param}.
 Throughout experimetbnt
 
 Figure shows the evolved reward 
-
-
-
 
 
 Our aim is to test what condition can affect the evolution of food reward. For this purpose, we try the following 4 settings: \rnum{1}
