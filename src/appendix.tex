@@ -16,14 +16,13 @@ Similarly, letting $|a_t|$ be the Euclid norm of the action taken by agent at ti
   \toprule
     Parameter & Value & Description \\
     \midrule
-    $\kappa_{h}$ & 0.1 & Scaling parameter of the energy-related term of the hazard function \\
-    $\alpha_{he}$ & 0.3 & Inverse initial value of the energy-related term of the hazard function \\
-    $d_{h}$ & 0.0 & Delay of energy-related term of the hazard function \\
-    $\alpha_{ht}$ & \num{1e-6} & Inverse initial value of the age-related term of the hazard function \\
-    $\beta$ & \num{1e-6} & Inverse initial value of the age-related term of the hazard function \\
-    $\kappa_{b}$ & \num{2e-5} & Scaling parameter of the birth function\\
-    $\alpha_{b}$ & 0.1 & Inverse initial value of the birth function \\
-    $d_{b}$ & 5.0 & Delay of the birth function \\
+    $\kappa_{h}$ & 0.01 & Scaling parameter of the energy-related term in the hazard function \\
+    $\alpha_{he}$ & 0.1 & Steepness of energy-related term in the hazard function \\
+    $\alpha_{ht}$ & \num{1e-6} & Weight of the age-related term of the hazard function \\
+    $\beta_{t}$ & \num{1e-5} & Steepness of age-related term in the hazard function \\
+    $\kappa_{b}$ & \num{2e-4} & Scaling parameter for the birth function\\
+    $\alpha_{b}$ & 0.01 & Steepness of the birth function \\
+    $\theta_{b}$ & 10.0 & Reaction threshold for the birth function \\
     \bottomrule
   \end{tabular}
 \end{table}
