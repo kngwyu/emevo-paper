@@ -1,7 +1,13 @@
-\section{Physics Simulation}\label{ap:phys}
+\section{Implementation of 2D Physics in Jax}\label{ap:phys}
 Our simulator implements projected Gauss-Seidel method with position correction \citep{catto2005iterative} that is fairly common in 2D game physics engines such as Box2D\footnote{\url{https://box2d.org}} and Chipmunk\footnote{\url{https://chipmunk-physics.net}}.
 
-\section{Parameters used in experiments}\label{ap:param}
+\section{Reward Function}\label{ap:reward}
+As noted in \cref{sec:method}, we model reward weights for each sensory input by $r_{\mathrm{food}} = 10^{s_{\mathrm{food}}} w_{\mathrm{food}}, r_{\mathrm{agent}} = 10^{s_{\mathrm{agent}}} w_{\mathrm{agent}}, r_{\mathrm{wall}} = 10^{s_{\mathrm{wall}}} w_{\mathrm{wall}}$, and $r_{\mathrm{action}} = 10^{s_{\mathrm{action}}} w_{\mathrm{action}}$. For each collison events (e.g., collision to food), we let $c_{\mathrm{food}}, c_{\mathrm{wall}}$, and $c_{\mathrm{agent}}$ are
+
+Similarly, letting $|a_t|$ be the Euclid norm of the action taken by agent at time $t$, the reward for taking an action is modeled by $r_{\mathrm{act}}^{t} = 10^{s_{\mathrm{act}}} w_{\mathrm{act}} c_\mathrm{act} |a_t|$, where $\eta_\mathrm{act}$ is a coefficient to adjust the scale of reward. Note that $r_{\mathrm{act}}^{t}$ is scaled so that it should have a much smaller value than collision rewards because an agent gets $r_{\mathrm{act}}^{t}$ every step while collision rewards are often $0$. The sum of these rewards $r_t = r_{\mathrm{food}}^{t} + r_{\mathrm{wall}}^{t} + r_{\mathrm{agent}}^{t} + r_{\mathrm{action}}^{t}$ is given to an agent for the use in RL.
+
+
+\section{Hyperparameters}\label{ap:param}
 
 \begin{table}[t]
   \centering
@@ -25,16 +31,17 @@ Our simulator implements projected Gauss-Seidel method with position correction 
 \begin{table}[t]
   \centering
   \caption{RL parameters}\label{tab:rl-param}
-  \begin{tabular}{ccl}
+  \begin{tabular}{ll}
   \toprule
-    Parameter & Value & Description \\
+    Hyperparemeter & Value \\
     \midrule
-    $\gamma$ & 0.995 & Discount factor \\
-    $N$ & 1024 & Rollout steps \\
-    $N_{B}$ & 8 & PPO Num. minibatches \\
-    $N_{E}$ & 4 & PPO Optimization epochs \\
-    $\epsilon$ & 0.2 & PPO Clip epsilon \\
-    $c_{H}$ & 0.005 & PPO entropy regulization coefficient \\
+    Discount factor ($\gamma$) & 0.999 \\
+    PPO Rollout steps ($N$) & 1024 \\
+    PPO Minibatch size & 256 \\
+    PPO Number of optimization epochs & 4 \\
+    PPO Clipping parameter & 0.2 \\
+    PPO entropy coeff. & 0.0 \\
+    GAE parameter ($\gamma$) & 0.95 \\
   \end{tabular}
 \end{table}
 
