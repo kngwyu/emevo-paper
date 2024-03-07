@@ -89,17 +89,7 @@ Simulating many agents to maintain a reasonable size population (e.g., $50\sim 1
 \paragraph{Reward Function with Evolving Parameters}
 We assume that the reward function is innate and cannot be changed by learning during an agent's lifetime. As sensory inputs that can affect reward function, we select \rnum{1} collision to food, \rnum{2} collision to the wall, \rnum{3} collision to some other agent, and \rnum{4} the magnitude of motor output. We expect that the reward for eating evolves from the collision to food and that the negative reward for fatigue evolves from the magnitude of motor output. Collision with the wall and other agents is chosen to test if the reward function can distinguish unrelevant signals for survival, as we do not penalize agents for colliding with walls or each other.
 
-To make the result more interpretable,
-For ease of analysis, we model the reward for each sensory input separately. For example, the food reward is modeled as follows:
-
-\begin{align*}
-  r_{\mathrm{food}}^{t} =
-  \begin{dcases*}
-   10^{s_{\mathrm{food}}} w_{\mathrm{food}} & if the agent gets food at time t \\
-   0 & otherwise
-  \end{dcases*},
-\end{align*}
-where $s_{\mathrm{food}} \in [0, 1]$ and $w_{\mathrm{food}} \in [-1, 1]$ are evolvable parameters that represent scale and weight for the food reward. We model the reward for a collision to wall $r_\mathrm{wall}$ and other agents $r_\mathrm{agent}$ in the same way. Our intention in using two independent parameters is to balance stability and plasticity. Our preliminary experiments found that rewards can be too unstable if we allow significant change via a single parameter. Having a parameter for adjusting the scale separately makes the significant reward change more challenging while still possible. Similarly, letting $|a_t|$ be the Euclid norm of the action taken by agent at time $t$, the reward for taking an action is modeled by $r_{\mathrm{act}}^{t} = 10^{s_{\mathrm{act}}} w_{\mathrm{act}} c_\mathrm{act} |a_t|$, where $\eta_\mathrm{act}$ is a coefficient to adjust the scale of reward. Note that $r_{\mathrm{act}}^{t}$ is scaled so that it should have a much smaller value than collision rewards because an agent gets $r_{\mathrm{act}}^{t}$ every step while collision rewards are often $0$. The sum of these rewards $r_t = r_{\mathrm{food}}^{t} + r_{\mathrm{wall}}^{t} + r_{\mathrm{agent}}^{t} + r_{\mathrm{action}}^{t}$ is given to an agent for the use in RL.
+For ease of analysis, we model the reward for each sensory input separately. For example, the reward for getting food is modeled as $r_{\mathrm{food}}^{t} = 10^{s_{\mathrm{food}}} w_{\mathrm{food}}$, where $s_{\mathrm{food}} \in [0, 1]$ and $w_{\mathrm{food}} \in [-1, 1]$ are evolvable parameters that represent scale and weight for the food reward. We model the reward for other sensory inputs $r_\mathrm{wall}$ and other agents $r_\mathrm{agent}$ in the same way. Our intention in using two independent parameters is to balance stability and plasticity. Our preliminary experiments found that rewards can be too unstable if we allow significant change via a single parameter. Having a parameter for adjusting the scale separately makes the significant reward change more challenging while still possible. Similarly, letting $|a_t|$ be the Euclid norm of the action taken by agent at time $t$, the reward for taking an action is modeled by $r_{\mathrm{act}}^{t} = 10^{s_{\mathrm{act}}} w_{\mathrm{act}} c_\mathrm{act} |a_t|$, where $\eta_\mathrm{act}$ is a coefficient to adjust the scale of reward. Note that $r_{\mathrm{act}}^{t}$ is scaled so that it should have a much smaller value than collision rewards because an agent gets $r_{\mathrm{act}}^{t}$ every step while collision rewards are often $0$. The sum of these rewards $r_t = r_{\mathrm{food}}^{t} + r_{\mathrm{wall}}^{t} + r_{\mathrm{agent}}^{t} + r_{\mathrm{action}}^{t}$ is given to an agent for the use in RL.
 
 \begin{algorithm}
   \caption{Reward evolution with asexual reproduction}\label{alg:reward-evo}
@@ -153,13 +143,12 @@ We show the pseudocode of our entire simulation procedure in \cref{alg:reward-ev
     \includegraphics[width=8cm]{comp_baseline_linep.png}
   \end{subfigure}
   \caption{
-    \textbf{Left:} Environment.
+    \textbf{Left:} Evolved rewards in the baseline environment. X-axis shows the birthtime of each agent, and y-axis shows the value of rewards.
     \textbf{Right:} Annotation
   }\label{figure:baseline-result}
 \end{figure}
 
-
-As a baseline environment, we use the setting where food is always regenerated in the upper right of the room as the left figure in \cref{figure:env} shows, because we found this setting the easiest. In this environment, we tuned environmenal parameters (e.g., maxmimum number of foods and growth rate) so that the population is stable around $100$. We show all enviornmental parameters in \cref{ap:param}.
+As a baseline environment, we use the setting where food is always regenerated in the upper right of the room as the left figure in \cref{figure:env} shows. In this environment, we tuned environmenal parameters (e.g., maxmimum number of foods and growth rate) so that the population is stable around $100$. We show all enviornmental parameters in \cref{ap:param}.
 Throughout experimetbnt
 
 Figure shows the evolved reward 
