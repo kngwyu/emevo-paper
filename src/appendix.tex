@@ -6,6 +6,7 @@ As noted in \cref{sec:method}, we model reward weights for each sensory input by
 
 Similarly, letting $|a_t|$ be the Euclid norm of the action taken by agent at time $t$, the reward for taking an action is modeled by $r_{\mathrm{act}}^{t} = 10^{s_{\mathrm{act}}} w_{\mathrm{act}} c_\mathrm{act} |a_t|$, where $\eta_\mathrm{act}$ is a coefficient to adjust the scale of reward. Note that $r_{\mathrm{act}}^{t}$ is scaled so that it should have a much smaller value than collision rewards because an agent gets $r_{\mathrm{act}}^{t}$ every step while collision rewards are often $0$. The sum of these rewards $r_t = r_{\mathrm{food}}^{t} + r_{\mathrm{wall}}^{t} + r_{\mathrm{agent}}^{t} + r_{\mathrm{action}}^{t}$ is given to an agent for the use in RL.
 
+\section{Environment Design}\label{ap:env}
 
 \section{Hyperparameters}\label{ap:param}
 
