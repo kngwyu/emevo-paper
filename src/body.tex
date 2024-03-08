@@ -3,7 +3,7 @@ Producing reward signals is a fundamental function of the brain of animals to li
 
 % Problem: Reward evolution
 % Why this topic has been underexplored, and how we can find some interesting points from this line of research
-In addition to RL, how the system for producing rewards has evolved is an interesting open question to understand our reward system. A common explanation is based on natural selection, arguing that rewards have evolved to help animals survive in the environment and successfully reproduce offspring (e.g., by~\cite{schultzNeuronalRewardDecision2015}). While this hypothesis sounds reasonable, the essential condition for the evolution of rewards to happen remains unclear, although some neuroscientists guess the external threat is.
+In addition to RL, how the system for producing rewards has evolved is an interesting open question to understand our reward system. A common explanation is based on natural selection, arguing that rewards have evolved to help animals survive in the environment and successfully reproduce offspring (e.g., by~\cite{schultzNeuronalRewardDecision2015}). While this hypothesis sounds reasonable, the essential condition for the evolution of rewards to happen remains unclear, although some neuroscientists guess external threat and the need of hunting could be infuential~\citep{ledouxSoonThereWas2022a}.
 
 % Aim
 This paper aims to contribute to this question from a computational perspective. While biological studies are essential, we argue that computational study can complement them by providing a simplified model of natural evolution, as the computational RL has provided promising computational models for biological learning.
@@ -48,15 +48,13 @@ This hazard function\label{eq:h} consists of two terms. The first term increases
   \centering{}
   \includegraphics[width=15cm]{birth_and_nc.pdf}
   \caption{
-    \textbf{Left:} Designed birth rate $b(e)$ for RL agents.
-    \textbf{Center:} Expected lifetime for each agent
-    \textbf{Right:} Expected reproduction number $R$ for RL agents corresponding to the designed hazard and birth functions.
+    The left figure shows the designed birth rate $b(e)$ for RL agents, the center figure shows the expected lifetime for each agent, and the right figure shows the expected reproduction number $R$ for RL agents corresponding to the designed hazard and birth functions.
   }\label{figure:bnc}
 \end{figure}
 
 For simplicity, we employ an asexual reproduction model where all agents can have a chance to make their children. We let $b(e)$ the birth function that evaluates the probability for an agent with energy level $e$ to make its child. Similarly to the first term of \cref{eq:h}, we design the birth function $b$ as:
 \begin{align}
- b(e) &=  \frac{\kappa_{b}}{1 + \alpha_{b}\exp(\theta_{b} - e)}. \label{eq:b}
+ b(e) &= \frac{\kappa_{b}}{1 + \alpha_{b}\exp(\theta_{b} - e)}. \label{eq:b}
 \end{align}
 Modeled as a generalized logistic function \citep{richardsFlexibleGrowthFunction1959}, $b(e)$ increases with $e$ following a sigmoidal curve where $\kappa_{b}$ is the scale, $\theta_{b}$ controls the threshold of reaction, and $\alpha_{e}$ defines the shape of when $e = \theta_{b}$. The left figure of \cref{figure:bnc} shows the shape of $b$. For chosen $b$ and $h$, we plot the expected lifetime and number of children when an agent keeps the same energy level in the center and right figure in \cref{figure:bnc}. Parameters are chosen so that the maximum expected lifetime is around \num{200000} and the maximum expected number of children is around 40. All experiment parameters are shown in \cref{ap:param}.
 
@@ -66,14 +64,16 @@ Modeled as a generalized logistic function \citep{richardsFlexibleGrowthFunction
   \begin{subfigure}[t]{6cm}
     \centering
     \includegraphics[width=6cm]{emevo-ss.png}
+    \subcaption{Simulation environment we used in our experiments.}
   \end{subfigure}
   \begin{subfigure}[t]{8cm}
     \centering
     \includegraphics[width=8cm]{emevo-anno.png}
+    \subcaption{Description of the environment}
   \end{subfigure}
   \caption{
-    \textbf{Left:} Simulation environment we used in our experiments. Thin gray lines around agents indicate distance that can detect the distance to the closest object. Red circles indicate food. Outer gray lines are walls.
-    \textbf{Right:} Description of the environment. An agent can move by adding force to two indicated points.
+    In the right figure, thin gray lines around agents indicate distance that can detect the distance to the closest object. Red circles indicate food. Outer gray lines are walls.
+    In the right figure, An agent can move by adding force to two indicated points.
   }\label{figure:env}
 \end{figure}
 
@@ -133,13 +133,42 @@ We show the pseudocode of our entire simulation procedure in \cref{alg:reward-ev
 \section{Results}
 
 \begin{figure}[t]
-  \begin{subfigure}[t]{7cm}
-    \centering
-    \includegraphics[width=7cm]{baseline.png}
-  \end{subfigure}
   \begin{subfigure}[t]{8cm}
     \centering
-    \includegraphics[width=8cm]{comp_baseline_linep.png}
+    \includegraphics[width=8cm]{baseline.png}
+    \subcaption{Evolved rewards in the baseline environment.}\label{subfigure:bl}
+  \end{subfigure}
+  \begin{subfigure}[t]{7cm}
+    \centering
+    \includegraphics[width=7cm]{seed5-corr.png}
+    \subcaption{A case study for decreasing food reward.}\label{subfigure:bcomp}
+  \end{subfigure}
+  \caption{
+    In the left figure, the X-axis shows the birth time of each agent, and the y-axis shows the value of rewards for food, agent, wall, and action from top to bottom. The difference in colors and shapes of dots corresponds to the difference in the random seed.
+    In the right figure, each line shows the reward weight averaged over all agents alive, and different colors indicate different settings.
+  }\label{figure:baseline-result}
+\end{figure}
+
+As a baseline environment, we use the setting where food is always regenerated in the upper right of the room, as the left figure in \cref{figure:env} shows. In this environment, we tuned environmental parameters (e.g., maximum number of foods and growth rate) to stabilize the population around $100$. We show all environmental parameters in \cref{ap:param}. All experiments start with $50$ agents that have energy level $40.0$ and randomly initialized reward weights. We conducted \num{1e7} step of the simulation, resulting in 10 \todo{actual number} generations, which takes $14\sim16$ hours on NVIDIA P100 GPUs.
+
+\Cref{subfigure:bl} shows the evolved reward weights with 5 random seeds in the baseline environment. Surprisingly, the food reward weight is only stable positive for one random seed. It unstably goes up and down or stays negative in one random seed. On the contrary, reward weights for colliding with walls and other agents are stably negative, which is reasonable because sticking around walls is not good for foraging, and sticking to other agents might reduce the chance of making a child. The reward weight for action tends to be positive, which contradicts our expectations that it would evolve to negative to represent fatigue.
+
+To investigate the reason why the evolution of food reward can be unstable, we closely look at our simulation run with seed $5$, where food reward decreases. \cref{figure}
+
+To confirm that
+the right figure in \cref{figure:baseline-result} shows the evolved reward weights with multiple settings.
+
+\begin{figure}[t]
+  \setkeys{Gin}{width=15.0cm, keepaspectratio}
+  \begin{subfigure}[t]{9cm}
+    \centering
+    \includegraphics[width=9cm]{seed5-corr.png}
+  \end{subfigure}
+  \begin{subfigure}[t]{6cm}
+    \centering
+    \includegraphics[width=6cm]{seed5-scatter-red.png}
+    \includegraphics[width=6cm]{seed5-scatter-green.png}
+    \subcaption{Comparison between multiple settings.}\label{subfigure:bcomp}
   \end{subfigure}
   \caption{
     \textbf{Left:} Evolved rewards in the baseline environment. The X-axis shows the birth time of each agent, and the y-axis shows the value of rewards for food, agent, wall, and action from top to bottom. The difference in colors and shapes of dots corresponds to the difference in the random seed.
@@ -147,10 +176,6 @@ We show the pseudocode of our entire simulation procedure in \cref{alg:reward-ev
   }\label{figure:baseline-result}
 \end{figure}
 
-As a baseline environment, we use the setting where food is always regenerated in the upper right of the room, as the left figure in \cref{figure:env} shows. In this environment, we tuned environmental parameters (e.g., maximum number of foods and growth rate) to stabilize the population around $100$. We show all environmental parameters in \cref{ap:param}. All experiments start with $50$ agents that have energy level $40.0$ and randomly initialized reward weights. We conducted \num{1e7} step of the simulation, resulting in 10 \todo{actual number} generations, which takes $14\sim16$ hours on NVIDIA P100 GPUs.
-
-The left figure in \cref{figure:baseline-result} shows the evolved reward weights with 5 random seeds in the baseline environment. Surprisingly, the food reward weight is only stable positive for one random seed. It unstably goes up and down or stays negative in one random seed. On the contrary, reward weights for colliding with walls and other agents are stably negative, which is reasonable because sticking around walls is not good for foraging, and sticking to other agents might reduce the chance of making a child. The reward weight for action tends to be positive, which contradicts our expectations that it would evolve to negative to represent fatigue.
-
-To confirm that The right figure in \cref{figure:baseline-result} shows the evolved reward weights with multiple settings.
+Here is the conclusion.
 
 \section{Conclusion}
