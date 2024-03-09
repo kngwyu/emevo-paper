@@ -20,7 +20,9 @@ Previous studies on the evolution of learning \citep{hintonHowLearningCan1987,si
 % This approach is simple and computationally efficient but sacrifices the biological reality. Instead, 
 Our simulation model employs birth and death conditions depending on the energy level and the age. Each agent inherits a reward function from its parent and learns to get more rewards by RL during its lifetime. %Through this process, we expect that naturalistic reward functions will evolve.
 
-We implement this framework using JAX\citep{jax2018github} to accelerate simulation by utilizing GPU. Our simulation results show that the evolution of food reward is surprisingly unstable due to space and food resource constraints.
+We implement this framework using JAX\citep{jax2018github} to accelerate simulation by utilizing GPU. Our simulation results show that the evolution of food reward is surprisingly unstable due to space and food resource constraints. In our qualitative analysis, we found that 
+
+We show that the sparseness of the population and foods can be an important factor in the evolution of stable food rewards.
 
 \section{Preliminaries and Related Works}\label{sec:related}
 We follow the standard computational RL framework \citep{suttonReinforcementLearningIntroduction2018} based on the Markov decision process (MDP). MDP $\M{}$ consists of a tuple $(\X{}, \A{}, p, r, \gamma)$, where $\X{}$ is state space, $\A{}$ is action space, $p: \X\times\A\times \X \rightarrow [0, 1]$ is state transition function, $r: \X\times\A \rightarrow \mathcal{R}$ is reward function, and $\gamma \in [0, 1]$ is the discount factor. A standard objective in MDP is the discounted cumulative return $G \defequal{} \sum_{t=0}^{\infty}\gamma^t R_{t}$, where $R_t$ is the reward received at time $t$. An RL agent has policy $\pi: \X \times \A \rightarrow [0, 1]$ and seeks to find the the optimal policy $\pi^{*}$ that maximizes $\E \left[G|\pi\right]$. The state-value function $V^\pi(s) \defequal \sum_{a \in \A} \pi(a|s) \left( r(s, a) + \gamma \sum_{s' \in \X} P(s'|s, a) V^\pi(s') \right)$ is often used in RL algorithms. Observation $o \in \Omega~(\Omega \subseteq \X)$ often refers to a part of the state that an agent can observe.
@@ -205,7 +207,7 @@ We explain the details of implementation in \cref{ap:reward}.
 \end{algorithm}
 
 \paragraph{Simulation Procedure}
-We show the pseudocode of our entire simulation procedure in \cref{alg:reward-evo}. Each agent has its innate, immutable reward function and learnable neural network policy. At each step, it observes sensory inputs from the environment and takes action. Once in $N$ steps, the agent updates its policy via RL using the past $N$ step experiences. We use Proximal Policy Optimization \citep{schulmanProximalPolicyOptimization2017} as an RL algorithm because of its fast computation time. We explain the details of our RL implementation in appendix \todo{Write appendix}. After environmental interaction, all agents can make a child and die based on the birth function $b$ and hazard function $h$. The new agent inherits a fraction of the parent's energy and mutated reward function. As mutation, we add uniform noise to each $s$ and $w$ with probability $0.4$. We show some relevant parameters in \cref{ap:param}.
+We show the pseudocode of our entire simulation procedure in \cref{alg:reward-evo}. Each agent has its innate, immutable reward function and learnable neural network policy. At each step, it observes sensory inputs from the environment and takes action. Once in $N$ steps, the agent updates its policy via RL using the past $N$ step experiences. We use Proximal Policy Optimization \citep{schulmanProximalPolicyOptimization2017} as an RL algorithm because of its fast computation time. We explain the details of our RL implementation in appendix. After environmental interaction, all agents can make a child and die based on the birth function $b$ and hazard function $h$. The new agent inherits a fraction of the parent's energy and mutated reward function. As mutation, we add uniform noise to each $s$ and $w$ with probability $0.4$. We show some relevant parameters in \cref{ap:param}.
 
 \section{Results}
 
@@ -259,26 +261,45 @@ Although we don't see significant differences in agents' trajectories, we can se
   \begin{subfigure}[t]{6cm}
     \centering
     \includegraphics[width=6cm]{comp_baseline_linep2.png}
-    \subcaption{Evolved rewards.}\label{subfigure:blcomp}
+    \subcaption{Comparison of evolved rewards between food locations settings.}\label{subfigure:blcomp}
   \end{subfigure}
   \begin{subfigure}[t]{4.5cm}
     \centering
-    \includegraphics[width=4.5cm]{seed5-frdecay.png}
-    \subcaption{Decreasing food reward.}\label{subfigure:s4.5}
+    \includegraphics[width=4.5cm]{lv-s1.png}
+    \subcaption{Unstable food reward in \texttt{spread food} setting}\label{subfigure:lv1}
   \end{subfigure}
   \begin{subfigure}[t]{4.5cm}
     \centering
-    \includegraphics[width=4.5cm]{seed2-frstable.png}
-    \subcaption{Stable food reward.}\label{subfigure:s2}
+    \includegraphics[width=4.5cm]{season-s4.png}
+    \subcaption{Unstable food reward in \texttt{food reloc.} setting}\label{subfigure:season4}
   \end{subfigure}
   \caption{
     The left figure shows evolved rewards in multiple settings, including the baseline environment.
     Each line shows the reward weight averaged over all agents alive at that time.
     Different colors indicate different settings.
-    In the left figure, the X-axis shows the birth time of each agent, and the y-axis shows the value of rewards for food, agent, wall, and action from top to bottom. The difference in colors and shapes of dots corresponds to the difference in the random seed. In the center and right figures, reward weights are colorized per food reward weight. The center figure shows the case where food reward decreases (seed $5$), and the right figure shows one with stable food reward,  from \num{4e6} to \num{9e6} steps.
+    In the center and right figures, reward weights are colorized per food reward weight, as in \cref{sigure:s5-lh}
   }\label{figure:baseline-result}
 \end{figure}
 
-In the baseline environment, agents are densely located in the food location, which seems to influence the evolution of rewards. For example, negative rewards for food or another agent would help them move to sparser locations where they are more likely to produce offspring. Therefore, we conduct another experiment with different food location settings with moving food location (\texttt{food reloc.} in the figure) and more distributed food regeneration (\texttt{spread foods} in the figure). \Cref{subfigure:blcomp} compares the evolved reward functions with the baseline. Although food rewards can be unstable with all these three settings, the \texttt{spread foods}
+In the baseline environment, agents are densely located in the food location, which seems to influence the evolution of rewards. For example, negative rewards for food or another agent would help them move to sparser locations where they are more likely to produce offspring. Therefore, we conduct another experiment with more distributed food regeneration (\texttt{spread foods} in the figure) and moving food location after eating $1000$ foods (\texttt{food reloc.} in the figure).
+
+\Cref{subfigure:blcomp} compares the evolved reward functions with the baseline. Although food rewards can be unstable with all these three settings, the \texttt{spread foods}
+
+\begin{figure}[t]
+  \begin{subfigure}[t]{7cm}
+    \centering
+    \includegraphics[width=7cm]{lv-lh-orange.png}
+    \subcaption{A case study for decreasing food reward.}\label{subfigure:lvlh}
+  \end{subfigure}
+  \begin{subfigure}[t]{7cm}
+    \centering
+    \includegraphics[width=7cm]{season-lh-orange.png}
+    \subcaption{A case study for decreasing food reward.}\label{subfigure:seasonlh}
+  \end{subfigure}
+  \caption{
+    Agent's life history. The left figure corresponds to the period filled with orange in \cref{subfigure:s5}, and the right figure corresponds to the period filled with orange in \cref{subfigure:s2}. Lines show the trajectories of agents, and dots show places where agents made a child. Colors correspond to negative and positive food rewards.
+  }\label{figure:s5-lh}
+\end{figure}
 
 \section{Conclusion}
+In this paper, we propose a distributed evolutionary simulation to investigate the evolution of reward function. Our simulation results show that the evolution of food reward is often unstable under many conditions because of food regeneration and spatial constraints. We show that the sparseness of the population and foods can be an important factor in the evolution of stable food rewards.
