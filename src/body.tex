@@ -140,16 +140,36 @@ An agent can eat food by touching it and gain energy $e_{\mathrm{food}}$. After 
 %The rate of food regeneration follows logistic growth function $\frac{dN_{food}}{dt} = g N_{food} (1 - \frac{N_{food}}{N_{food}^{\mathrm{max}}}$, where $N_{food}$ is the number of food, $g$ is growth rate, and $N_{food}^{\mathrm{max}}$ is the maximum number of food. 
 Eating food increases an agent's internal energy by $e_{\mathrm{food}}$. In some experiments, we use poisonous food that decreases energy level by $e_{\mathrm{poison}}$.
 
-When an agent makes a child, a new agent is placed in a random location sampled from a Gaussian distribution centered around its parent. #However, to speed up the simulation, r
-Reproduction fails when all sampled locations are not available. Thus, keeping away from other agents is beneficial for agents in order to make more children. When the parent's energy level is $e$, a proportion of energy level $\eta e$ is given to the child, and the parent loses it, where $\eta \in [0, 1]$ is the ratio of energy sharing. The child also inherits its reward function from the parent with some mutation.
+When an agent makes a child, a new agent is placed in a random location sampled from a Gaussian distribution centered around its parent. %However, to speed up the simulation, r
+Reproduction fails when all
+% report how many times.
+sampled locations are not available. Thus, keeping away from the wall and other agents is beneficial for agents in order to make more children. When a child is produced
+%the parent's energy level is $e$, 
+a proportion of the parent's energy $\eta e \in [0, 1]$ is given to the child and the parent's energy level decreases to $(1-\eta)e$.
+%, where $\eta \in [0, 1]$ is the ratio of energy sharing. 
+The child also inherits its reward function from the parent with some mutation.
 
-Simulating many agents to maintain a reasonable size population (e.g., $50\sim 100$) is key in our evolution scheme. To speed up the simulation, we implement our environment using JAX Python library \citep{jax2018github} to utilize GPU or other hardware accelerators. Inspired by recent works on 3D rigid body physics simulation using JAX (e.g., \citet{brax2021github} and MuJoCo \citep{todorov2012mujoco} MJX\footnote{\url{https://mujoco.readthedocs.io/en/stable/mjx.html}}), we implement our 2D physics engine using JAX and build our environment on top of that, optimizing it for multi-agent setting. We explain the implementation detail in \cref{ap:phys}.
+%Simulating many agents to maintain a reasonable size population (e.g., $50\sim 100$) is key in our evolution scheme. 
+To speed up the simulation, we implement our environment using JAX Python library \citep{jax2018github} to utilize GPU or other hardware accelerators. Inspired by recent works on 3D rigid body physics simulation using JAX (e.g., \citet{brax2021github} and MuJoCo \citep{todorov2012mujoco} MJX\footnote{\url{https://mujoco.readthedocs.io/en/stable/mjx.html}}), we implement our 2D physics engine using JAX and build our environment on top of that, optimizing it for multi-agent setting. We explain the implementation detail in \cref{ap:phys}.
 
-\paragraph{Reward Function with Evolving Parameters}
-We assume that the reward function is innate and cannot be changed by learning during an agent's lifetime. As inputs to the reward function, we select \rnum{1} collision to food, \rnum{2} collision to the wall, \rnum{3} collision to some other agent, and \rnum{4} the magnitude of agent's action (motor output). In experiments with poisonous food, the collision with food is also included. We expect that the reward for eating evolves from the collision to food and that the negative reward for fatigue evolves from the magnitude of motor output. Collision with the wall and other agents is chosen to test if the reward function can distinguish unrelevant signals for survival, as we do not penalize agents for colliding with walls or each other.
+\paragraph{Reward Function with Evolving Weights} %Parameters}
+We assume that the reward function is detemined at birth with mutation and does not changed during an agent's lifetime. As inputs to the reward function, we consider \rnum{1} collision to food (eating), \rnum{2} collision to the wall, \rnum{3} collision to some other agent, and \rnum{4} the magnitude of agent's action (motor output). In experiments with poisonous food, the collision with food is also included. 
+We expect that positive reward for food evolves to acquire energy
+and negative reward for action  evolves to save energy. Collisions with the wall and other agents are chosen to test if the reward function can distinguish unrelevant signals for survival, as we do not penalize agents for colliding with walls or each other.
 
-We model the reward weights for each sensory input separately for ease of analysis. For example, the reward weight for getting food is modeled as $r_{\mathrm{food}} = 10^{s_{\mathrm{food}}} w_{\mathrm{food}}$, where $s_{\mathrm{food}} \in [0, 1]$ and $w_{\mathrm{food}} \in [-1, 1]$ are evolvable parameters that represent scale and weight for the food reward weight. We model reward weights for other sensory inputs by $r_\mathrm{wall}$, $r_\mathrm{agent}$, and $r_\mathrm{agent}$ in the same way. Our intention in using two independent parameters $s$ and $w$ is to balance stability and plasticity. Our preliminary experiments found that rewards can be too unstable if we allow significant change via a single parameter. Having a parameter for adjusting the scale separately makes the significant reward change more challenging while still possible. Reward weights are multiplied by collision events or action magnitude and then summed up to the reward that an agent uses in RL. We explain the detail in \cref{ap:reward}.
+We take a linear model the reward function with weights for each sensory input
+\begin{align}
+  r = \sum_i r_i = \sum_i w_i f_i
+  \label{eq:reward}
+\end{align}
+where $w_i$ is the weight for a sensorimotor event $f_i$ for $i\in{\mbox{\{foood, wall, agent,  action\}}}$.
+% This redundant coding is better put to Appendix
+%For example, the reward weight for getting food is modeled as $r_{\mathrm{food}} = 10^{s_{\mathrm{food}}} w_{\mathrm{food}}$, where $s_{\mathrm{food}} \in [0, 1]$ and $w_{\mathrm{food}} \in [-1, 1]$ are evolvable parameters that represent scale and weight for the food reward weight. 
+%We model reward weights for other sensory inputs by $r_\mathrm{wall}$, $r_\mathrm{agent}$, and $r_\mathrm{agent}$ in the same way. 
+%Our intention in using two independent parameters $s$ and $w$ is to balance stability and plasticity. Our preliminary experiments found that rewards can be too unstable if we allow significant change via a single parameter. Having a parameter for adjusting the scale separately makes the significant reward change more challenging while still possible. Reward weights are multiplied by collision events or action magnitude and then summed up to the reward that an agent uses in RL. 
+We explain the detail of implementation in \cref{ap:reward}.
 
+% Add a line for reward acquisition; after observation or action?
 \begin{algorithm}
   \caption{Reward evolution with asexual reproduction}\label{alg:reward-evo}
   \begin{tabular}{lll}
