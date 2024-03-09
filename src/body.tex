@@ -1,28 +1,49 @@
 \section{Introduction}\label{sec:intro}
-Producing reward signals is a fundamental function of the brain of animals to live and reproduce. Positive rewards, such as pleasure, encourage us to eat and find partners, while negative rewards, such as fatigue, help us protect ourselves. These reward signals affect our behavior through reinforcement learning (RL). Our brain produces a reward signal to a specific stimulus, such as good food, reinforcing our behavior to get more rewards. RL has been extensively studied in neuroscience and computer science. Neuroscientists have revealed that our brain has some hot or cold spots that respond to good or bad events~\citep{berridgeAffectiveNeurosciencePleasure2008}, and how those signals are used for learning~\citep{schultzNeuronalRewardDecision2015}, while computational reinforcement learning has provided theoretical models and several applications including game-playing agents and robotics~\citep{suttonReinforcementLearningIntroduction2018}.
+%Producing r
+Reward is a fundamental signal that shapes our behavior through reinforcement learning (RL). 
+Positive rewards encourage us to eat food and find mating partners, while negative rewards, such as pain and fatigue, help us protect ourselves. 
+%Our brain produces a reward signal to a specific stimulus, such as good food, reinforcing our behavior to get more rewards. RL has been extensively studied in neuroscience and computer science. Neuroscientists have revealed that our brain has some hot or cold spots that respond to good or bad events~\citep{berridgeAffectiveNeurosciencePleasure2008}, and how those signals are used for learning~\citep{schultzNeuronalRewardDecision2015}, while computational reinforcement learning has provided theoretical models and several applications including game-playing agents and robotics~\citep{suttonReinforcementLearningIntroduction2018}.
 
 % Problem: Reward evolution
 % Why this topic has been underexplored, and how we can find some interesting points from this line of research
-In addition to RL, how the system for producing rewards has evolved is an interesting open question to understand our reward system. A common explanation is based on natural selection, arguing that rewards have evolved to help animals survive in the environment and successfully reproduce offspring (e.g., by~\cite{schultzNeuronalRewardDecision2015}). While this hypothesis sounds reasonable, the essential condition for the evolution of rewards to happen remains unclear, although some neuroscientists guess external threat and the need of hunting could be infuential~\citep{ledouxSoonThereWas2022a}.
+%In addition to RL, how the system for producing rewards has evolved is an interesting open question to understand our reward system. A common explanation is based on natural selection, arguing that 
+Reward signals are supposed to have evolved to help animals survive and reproduce offspring (e.g., by~\cite{schultzNeuronalRewardDecision2015}), but how the variety or rewards, such as smells of foods or vision of s partners, 
+evolved remains unclear.
+%, although some neuroscientists guess external threat and the need of hunting could be infuential~\citep{ledouxSoonThereWas2022a}.
 
 % Aim
-This paper aims to contribute to this question from a computational perspective. While biological studies are essential, we argue that computational study can complement them by providing a simplified model of natural evolution, as the computational RL has provided promising computational models for biological learning.
-
+This paper addresses this question from a computational perspective. 
+Becase it is difficlt to observe the biological prosess of evolution of reward signals, we develop a simplified model of birth and death of RL agents in a 2D environment and examine what types of rewards evolve in a
 % Why the population-based model is important
-For this purpose, we propose to use a population-based distributed evolution framework to simulate the evolution of rewards. Classical studies on the evolution of learning \citep{hintonHowLearningCan1987,singhWhereRewardsCome2009} often employed a centralized evolution scheme where some tightly evaluated elites are selected as parents. While this approach is simple and computationally efficient, it sacrifices the biological reality. Instead, our simulation model employs birth and death conditions for each agent. Each agent inherits a reward function from its parent and learns to get more rewards during its lifetime. Through this process, we expect that naturalistic reward functions will evolve.
+%For this purpose, we propose to use a population-based 
+distributed evolution framework.
+Previous studies on the evolution of learning \citep{hintonHowLearningCan1987,singhWhereRewardsCome2009} employed a centralized evolution scheme where all agents in the population are ranked and elites are selected as parents.
+%While this approach is simple and computationally efficient, it sacrifices the biological reality. Instead, 
+Our simulation model employs birth and death conditions depending on the energy level and the age. Each agent inherits a reward function from its parent and learns to get more rewards by RL during its lifetime. %Through this process, we expect that naturalistic reward functions will evolve.
 
 We implement this framework using JAX\citep{jax2018git} to accelerate simulation by utilizing GPU. Our simulation results show that the evolution of food reward is surprisingly unstable due to the constraint of space and food resources.
 
 \section{Preliminaries and Related Works}\label{sec:related}
 We follow the standard computational RL framework \citep{suttonReinforcementLearningIntroduction2018} based on the Markov decision process (MDP). MDP $\M{}$ consists of a tuple $(\X{}, \A{}, p, r, \gamma)$, where $\X{}$ is state space, $\A{}$ is action space, $p: \X\times\A\times \X \rightarrow [0, 1]$ is state transition function, $r: \X\times\A \rightarrow \mathcal{R}$ is reward function, and $\gamma \in [0, 1]$ is the discount factor. A standard objective in MDP is the discounted cumulative return $G \defequal{} \sum_{t=0}^{\infty}\gamma^t R_{t}$, where $R_t$ is the reward received at time $t$. An RL agent has policy $\pi: \X \times \A \rightarrow [0, 1]$ and seeks to find the the optimal policy $\pi^{*}$ that maximizes $\E \left[G|\pi\right]$. The state-value function $V^\pi(s) \defequal \sum_{a \in \A} \pi(a|s) \left( r(s, a) + \gamma \sum_{s' \in \X} P(s'|s, a) V^\pi(s') \right)$ is often used in RL algorithms. Observation $o \in \Omega~(\Omega \subseteq \X)$ often refers to a part of the state that an agent can observe.
 
-Our reward model is inspired by the neuroscience of reward system \citep{schultzNeuronalRewardDecision2015, berridgePleasureSystemsBrain2015}. Notably, \citet{berridgeDissectingComponentsReward2009} argue that the brain reward system consists of three independent components: liking, wanting, and learning. In analogy with computational RL, liking corresponds to reward function, wanting corresponds to learned policy, and learning corresponds to learning state value $V$. \citet{dayanLikingEarlyEditable2022} discussed the idea that liking is related to reward shaping \citep{ngPolicyInvarianceReward1999} in computational RL that helps an agent to learn faster. This aligns with our view of rewards, although we don't focus on the quality of rewards in this paper.
+Our reward model is inspired by the neuroscience of reward system \citep{schultzNeuronalRewardDecision2015, berridgePleasureSystemsBrain2015}. Notably, \citet{berridgeDissectingComponentsReward2009} argue that the brain reward system consists of three independent components: liking, wanting, and learning. In analogy with computational RL, liking corresponds to reward function, wanting corresponds to learned policy, and learning corresponds to learning state value $V$. %\citet{dayanLikingEarlyEditable2022} discussed the idea that liking is related to reward shaping \citep{ngPolicyInvarianceReward1999} in computational RL that helps an agent to learn faster. This aligns with our view of rewards, although we don't focus on the quality of rewards in this paper.
 
-Our distributed evolutionary simulation framework shares many concepts with embodied evolution (EE) \citep{watsonEmbodiedEvolutionDistributing2002,bredecheEmbodiedEvolutionCollective2018}. Evolutionary robotics \citep{nolfiEvolutionaryRoboticsBiology2004} usually employs a centralized selection scheme similar to genetic algorithm \citep{mitchellIntroductionGeneticAlgorithms1998}, where highly evaluated elites are selected as parents. On the contrary, EE employs a decentralized evolution without centralized evaluation where agents evolves locally following give birth and death rules. This method has an advantage that the evaluation of genetic traits depends population dynamics, which is more natural.
+While 
+%we are focusing on the distributed evolution of rewards in a multi-agent setting, 
+there were previous attempts to evolve rewards in a single-agent setting \citep{singhWhereRewardsCome2009,niekumEvolutionRewardFunctions2011,zhengWhatCanLearned2020},
+%While evolutionary robotics studies \citep{nolfiEvolutionaryRoboticsBiology2004} often employ a centralized selection scheme similar to genetic algorithm \citep{mitchellIntroductionGeneticAlgorithms1998}, 
+%where highly evaluated elites are selected as parents. On the contrary, 
+we take a distributed embodied evolution (EE) framework \citep{watsonEmbodiedEvolutionDistributing2002,bredecheEmbodiedEvolutionCollective2018}
+%that employs a decentralized evolution without centralized evaluation 
+where agents evolve locally following birth and death rules. This method has an advantage that the evaluation of genetic traits depends population dynamics, which is more natural.
 
-Our work is mainly inspired by the series of studies \citep{elfwingBiologicallyInspiredEmbodied2005,elfwingDarwinianEmbodiedEvolution2011,elfwingEmergencePolymorphicMating2014}, which tried to evolve parameters related to RL through EE framework. Notably, \citet{elfwingDarwinianEmbodiedEvolution2011} evolved reward-shaping parameters of RL agents, and \citet{elfwingEmergencePolymorphicMating2014} evolved agents with a hierarchical RL mechanism, where the higher module chooses either foraging or mating, and the lower module outputs more primitive actions. Inspired by these works, we attempt to evolve innate reward functions instead of hyperparameters.
+Our work is inspired by the series of studies \citep{elfwingBiologicallyInspiredEmbodied2005,elfwingDarwinianEmbodiedEvolution2011,elfwingEmergencePolymorphicMating2014}, which tried to evolve parameters related to RL through EE framework. Notably, \citet{elfwingDarwinianEmbodiedEvolution2011} evolved supplementary shapring rewards and parameters of RL agents.
+%, and \citet{elfwingEmergencePolymorphicMating2014} evolved agents with a hierarchical RL mechanism, where the higher module chooses either foraging or mating, and the lower module outputs more primitive actions. 
+Inspired by these works, we attempt to evolve all reward functions in this experiment.
+%instead of hyperparameters.
 
-While we are focusing on the distributed evolution of rewards in a multi-agent setting, there were some previous attempts to evolve rewards for a specific task in a single-agent setting \citep{singhWhereRewardsCome2009,niekumEvolutionRewardFunctions2011,zhengWhatCanLearned2020}. Among them, \citet{singhWhereRewardsCome2009} was pioneering in suggesting the idea that rewards should be internal to agents from the RL community, and \citet{zhengWhatCanLearned2020} was inspiring to us in trying large-scale evolutionary simulation of rewards utilizing hardware accelerators.
+%Among them, \citet{singhWhereRewardsCome2009} was pioneering in suggesting the idea that rewards should be internal to agents from the RL community.
+\citet{zhengWhatCanLearned2020} was also inspiring to us in trying large-scale evolutionary simulation of rewards utilizing hardware accelerators.
 
 \section{Simulation Model and Environment}\label{sec:method}
 
@@ -36,13 +57,31 @@ While we are focusing on the distributed evolution of rewards in a multi-agent s
 \end{figure}
 
 \paragraph{Energy-based death and birth model}
-As a simple but biologically plausible way of simulating the birth and death of agents, we employ an energy-based model similar to \citet{hamonEcoevolutionaryDynamicsNonepisodic2023}. Each agent maintains their energy level $e$. Energy level $e$ increases by eating and decreases by primary metabolism and taking action in the environment. We design the agent's death and birth model to maintain a higher energy level $e$, which leads to longer lives and many offspring. With $e$ and an agent's age $t$, we let $h(t, e)$ be the hazard function for agents that evaluates the probability of an agent dying:
-
+%As a simple but biologically plausible way of simulating the birth and death of agents, w
+We employ an energy-based model similar to \citet{hamonEcoevolutionaryDynamicsNonepisodic2023}. Each agent maintains their energy level $e$, %Energy level $e$ 
+which increases by eating a food and decreases by the basal metabolism and taking a motor action. 
+We design the agent's death and birth model
+%to maintain a higher energy level $e$, which leads to longer lives and many offspring. With 
+based on $e$ and an agent's age $t$.
+We adopt a Gompertz hazard model \citep{gompertzXXIVNatureFunction1825,kirkwoodDecipheringDeathCommentary2015}, in which the probability of an agent dying in a time step is given by:
 \begin{align}
-  h(t, e) = \kappa_{h} \left(1 - \frac{1}{1 + \alpha_{he} \exp(-e)} \right) + \alpha_{ht} \exp(\beta t). \label{eq:h}
+  h(t, e) = \frac{\kappa_{h}}{1 +  \exp(e - \theta_h)} + \alpha_{ht} \exp(\beta t). 
+  % \theta_h = \log\alpha_{he}
+  %h(t, e) = \kappa_{h} \left(1 - \frac{1}{1 + \alpha_{he} \exp(-e)} \right) + \alpha_{ht} \exp(\beta t). 
+  \label{eq:h}
 \end{align}
 
-This hazard function\label{eq:h} consists of two terms. The first term increases as energy levels decrease and follow a sigmoidal curve, where $\kappa_{h}$ and $\alpha_{he}$ are hyperparameters. The latter term $\alpha_{ht} \exp(\beta t)$ exponentially increases when the agent gets older, where $\alpha_{ht}$ and $\beta$ are hyperparameters. In population statistics, this is called the Gompertz hazard model\citep{gompertzXXIVNatureFunction1825,kirkwoodDecipheringDeathCommentary2015}. The left figure in \cref{figure:hs} shows the shape of the hazard function with the specific parameters used in our experiments. To intuitively understand the behavior $h$, we plot survival function $S(t, e) = \exp (-\int_{0}^{t}(h(t, e)) dt)$ in the right of \cref{figure:hs}. $S(t, e)$ is the probability for an agent to survive to the age $t$ if it keeps the same energy level $e$. We can see that the survival probability more sharply decays with aging when the energy level is low.
+  %This hazard function\label{eq:h} consists of two terms. 
+The first term increases as energy levels decrease and follow a sigmoidal curve, where $\kappa_{h}$ is the maximum death rate and $\theta_h$ is the energy threshold of increased death. %$\alpha_{he}$ are hyperparameters. 
+The latter term %$\alpha_{ht} \exp(\beta t)$ 
+exponentially increases as the agent gets older.
+%, where $\alpha_{ht}$ and $\beta$ are hyperparameters. 
+%In population statistics, this is called the Gompertz hazard model \citep{gompertzXXIVNatureFunction1825,kirkwoodDecipheringDeathCommentary2015}. 
+The left panel in \Cref{figure:hs} shows the shape of the hazard function with the specific parameters used in our experiments. 
+%To intuitively understand the behavior $h$, we plot 
+The right panel in \Cref{figure:hs} shows the
+survival function $S(t, e) = \exp (-\int_{0}^{t}(h(t, e)) dt)$, the probability for an agent to survive to the age $t$ if it keeps the same energy level $e$. 
+We can see that the survival probability more sharply decays with aging when the energy level is low.
 
 \begin{figure}[t]
   \centering{}
@@ -52,11 +91,20 @@ This hazard function\label{eq:h} consists of two terms. The first term increases
   }\label{figure:bnc}
 \end{figure}
 
-For simplicity, we employ an asexual reproduction model where all agents can have a chance to make their children. We let $b(e)$ the birth function that evaluates the probability for an agent with energy level $e$ to make its child. Similarly to the first term of \cref{eq:h}, we design the birth function $b$ as:
+For simplicity, we employ an asexual reproduction model 
+%where all agents can have a chance to make their children. We let $b(e)$ the birth function that evaluates the probability for an agent with energy level $e$ to make its child. Similarly to the first term of \cref{eq:h}, we design 
+with the birth function, the probability for an agent with energy level $e$ to produce a child in a time step as:
 \begin{align}
- b(e) &= \frac{\kappa_{b}}{1 + \alpha_{b}\exp(\theta_{b} - e)}. \label{eq:b}
+ b(e) &= \frac{\kappa_{b}}{1 + \alpha_{b}\exp(\theta_{b} - e)}. 
+ % This parameterizaiton is redundant:
+ % \alpha_{b}\exp(\theta_{b} - e)} = \exp(\log\alpha_{b} + \theta_{b} - e)}
+ % It is more reasonable to use \beta_e inside \exp() to control the slope...
+ \label{eq:b}
 \end{align}
-Modeled as a generalized logistic function \citep{richardsFlexibleGrowthFunction1959}, $b(e)$ increases with $e$ following a sigmoidal curve where $\kappa_{b}$ is the scale, $\theta_{b}$ controls the threshold of reaction, and $\alpha_{e}$ defines the shape of when $e = \theta_{b}$. The left figure of \cref{figure:bnc} shows the shape of $b$. For chosen $b$ and $h$, we plot the expected lifetime and number of children when an agent keeps the same energy level in the center and right figure in \cref{figure:bnc}. Parameters are chosen so that the maximum expected lifetime is around \num{200000} and the maximum expected number of children is around 40. All experiment parameters are shown in \cref{ap:param}.
+%Modeled as a generalized logistic function \citep{richardsFlexibleGrowthFunction1959}, 
+The birth rate $b(e)$ increases with $e$ following a sigmoidal curve where $\kappa_{b}$ is the scale, $\theta_{b}$ controls the threshold of reaction, and $\alpha_{e}$ defines the shape of when $e = \theta_{b}$. 
+The left figure of \Cref{figure:bnc} shows the shape of $b$ for the parameters used in the experiment. 
+Based on the birth model $b(e)$ and the death model $h(e,t)$, we plot the expected lifetime and number of children if an agent keeps the same energy level in the center and right figure in \cref{figure:bnc}. Parameters are chosen so that the maximum expected lifetime is around \num{200000} and the maximum expected number of children is around 40. All experiment parameters are shown in \cref{ap:param}.
 
 \paragraph{Environment}
 
@@ -77,9 +125,20 @@ Modeled as a generalized logistic function \citep{richardsFlexibleGrowthFunction
   }\label{figure:env}
 \end{figure}
 
-As a simple simulation environment with biologically plausible sensorimotor interaction, we design a continuous 2D environment shown in \cref{figure:env}. Blue circles indicate agents, and red circles indicate food. The environment is implemented by a 2D rigid-body physics simulation, where agents can move by adding motor outputs at two points in the diagonal back part of the circle. We use these two motor outputs as an action of agent in RL. An agent has multiple distance sensors at its front, which can sense the distance to each object (food, agent, and wall) if it's within a certain range and closest among three. We explain the details in \cref{ap:env}.
+%As a simple simulation environment with biologically plausible sensorimotor interaction, w
+We designed a continuous 2D environment shown in \Cref{figure:env}. Blue circles indicate agents and red circles indicate foods. The environment is implemented by a 2D rigid-body physics simulation, where agents can move by 
+%adding motor outputs 
+producing driving forces on the left and right sides of the body.
+%at two points in the diagonal back part of the circle. 
+%We use these two motor outputs as an action of agent in RL. 
+An agent has multiple range sensors in its front, which can sense the type and the distance to the closest object (food, agent, and wall) within a certain range 
+%and closest among three. We explain the details in 
+(see \cref{ap:env}).
 
-An agent can eat food by touching it, gaining energy $e_{\mathrm{food}}$. After foods are eaten, they are regenerated in a random place. The rate of food regeneration follows logistic growth function $\frac{dN_{food}}{dt} = g N_{food} (1 - \frac{N_{food}}{N_{food}^{\mathrm{max}}}$, where $N_{food}$ is the number of food, $g$ is growth rate, and $N_{food}^{\mathrm{max}}$ is the maximum number of food. Eating food increases an agent's internal energy by $e_{\mathrm{food}}$. In some experiments, we use poisonous food that decreases energy level by $e_{\mathrm{poison}}$.
+An agent can eat food by touching it and gain energy $e_{\mathrm{food}}$. After foods are eaten, they are regenerated in a random place.
+% This eat-driven emergence is not consistent with the growth equation below...
+The rate of food regeneration follows logistic growth function $\frac{dN_{food}}{dt} = g N_{food} (1 - \frac{N_{food}}{N_{food}^{\mathrm{max}}}$, where $N_{food}$ is the number of food, $g$ is growth rate, and $N_{food}^{\mathrm{max}}$ is the maximum number of food. 
+Eating food increases an agent's internal energy by $e_{\mathrm{food}}$. In some experiments, we use poisonous food that decreases energy level by $e_{\mathrm{poison}}$.
 
 When an agent makes a child, a new agent is placed in a random location sampled from a Gaussian distribution centered around its parent. However, to speed up the simulation, reproduction fails when all sampled locations are not available. Thus, keeping away from other agents is beneficial for agents in order to make more children. When the parent's energy level is $e$, a proportion of energy level $\eta e$ is given to the child, and the parent loses it, where $\eta \in [0, 1]$ is the ratio of energy sharing. The child also inherits its reward function from the parent with some mutation.
 
@@ -148,14 +207,14 @@ We show the pseudocode of our entire simulation procedure in \cref{alg:reward-ev
   }\label{figure:baseline-result}
 \end{figure}
 
-As a baseline environment, we use the setting where food is always regenerated in the upper right of the room, as the left figure in \cref{figure:env} shows. In this environment, we tuned environmental parameters (e.g., maximum number of foods and growth rate) to stabilize the population around $100$. We show all environmental parameters in \cref{ap:param}. All experiments start with $50$ agents that have energy level $40.0$ and randomly initialized reward weights. We conducted \num{1e7} step of the simulation, resulting in 10 \todo{actual number} generations, which takes $14\sim16$ hours on NVIDIA P100 GPUs.
+As a baseline environment, we use the setting where food is always regenerated in the upper right of the room, as the left figure in \Cref{figure:env} shows. In this environment, we tuned environmental parameters (e.g., maximum number of foods and growth rate) to stabilize the population around $100$. We show all environmental parameters in \cref{ap:param}. All experiments start with $50$ agents that have energy level $40.0$ and randomly initialized reward weights. We conducted \num{1e7} step of the simulation, resulting in 10 \todo{actual number} generations, which takes $14\sim16$ hours on NVIDIA P100 GPUs.
 
 \Cref{subfigure:bl} shows the evolved reward weights with 5 random seeds in the baseline environment. Surprisingly, the food reward weight is only stable positive for one random seed. It unstably goes up and down or stays negative in one random seed. On the contrary, reward weights for colliding with walls and other agents are stably negative, which is reasonable because sticking around walls is not good for foraging, and sticking to other agents might reduce the chance of making a child. The reward weight for action tends to be positive, which contradicts our expectations that it would evolve to negative to represent fatigue.
 
 To investigate the reason why the evolution of food reward can be unstable, we closely look at our simulation run with seed $5$, where food reward decreases. \Cref{subfigure:s5corr} shows
 
 To confirm that
-the right figure in \cref{figure:baseline-result} shows the evolved reward weights with multiple settings.
+the right figure in \Cref{figure:baseline-result} shows the evolved reward weights with multiple settings.
 
 \begin{figure}[t]
   \begin{subfigure}[t]{6cm}
