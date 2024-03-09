@@ -1,4 +1,4 @@
-\begin{thebibliography}{27}
+\begin{thebibliography}{28}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
@@ -130,6 +130,14 @@ Thomas B.~L. Kirkwood.
 \newblock \emph{Philosophical Transactions of the Royal Society B: Biological
   Sciences}, 370\penalty0 (1666):\penalty0 20140379, April 2015.
 \newblock \doi{10.1098/rstb.2014.0379}.
+
+\bibitem[LeDoux(2022)]{ledouxSoonThereWas2022a}
+Joseph~E. LeDoux.
+\newblock As soon as there was life, there was danger: The deep history of
+  survival behaviours and the shallower history of consciousness.
+\newblock \emph{Philosophical Transactions of the Royal Society B: Biological
+  Sciences}, 377\penalty0 (1844):\penalty0 20210292, February 2022.
+\newblock \doi{10.1098/rstb.2021.0292}.
 
 \bibitem[Mitchell(1998)]{mitchellIntroductionGeneticAlgorithms1998}
 Melanie Mitchell.
