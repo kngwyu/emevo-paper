@@ -1,18 +1,9 @@
-\begin{thebibliography}{28}
+\begin{thebibliography}{21}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
   \providecommand{\doi}[1]{doi: #1}\else
   \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
-
-\bibitem[Berridge \& Kringelbach(2008)Berridge and
-  Kringelbach]{berridgeAffectiveNeurosciencePleasure2008}
-Kent~C. Berridge and Morten~L. Kringelbach.
-\newblock Affective neuroscience of pleasure: Reward in humans and animals.
-\newblock \emph{Psychopharmacology}, 199\penalty0 (3):\penalty0 457--480,
-  August 2008.
-\newblock ISSN 1432-2072.
-\newblock \doi{10.1007/s00213-008-1099-6}.
 
 \bibitem[Berridge \& Kringelbach(2015)Berridge and
   Kringelbach]{berridgePleasureSystemsBrain2015}
@@ -52,15 +43,6 @@ Nicolas Bredeche, Evert Haasdijk, and Abraham Prieto.
 Erin Catto.
 \newblock Iterative dynamics with temporal coherence.
 \newblock In \emph{Game developer conference}, volume~2, 2005.
-
-\bibitem[Dayan(2022)]{dayanLikingEarlyEditable2022}
-Peter Dayan.
-\newblock ``{{Liking}}'' as an early and editable draft of long-run affective
-  value.
-\newblock \emph{PLOS Biology}, 20\penalty0 (1):\penalty0 e3001476, January
-  2022.
-\newblock ISSN 1545-7885.
-\newblock \doi{10.1371/journal.pbio.3001476}.
 
 \bibitem[Elfwing et~al.(2005)Elfwing, Uchibe, Doya, and
   Christensen]{elfwingBiologicallyInspiredEmbodied2005}
@@ -131,28 +113,6 @@ Thomas B.~L. Kirkwood.
   Sciences}, 370\penalty0 (1666):\penalty0 20140379, April 2015.
 \newblock \doi{10.1098/rstb.2014.0379}.
 
-\bibitem[LeDoux(2022)]{ledouxSoonThereWas2022a}
-Joseph~E. LeDoux.
-\newblock As soon as there was life, there was danger: The deep history of
-  survival behaviours and the shallower history of consciousness.
-\newblock \emph{Philosophical Transactions of the Royal Society B: Biological
-  Sciences}, 377\penalty0 (1844):\penalty0 20210292, February 2022.
-\newblock \doi{10.1098/rstb.2021.0292}.
-
-\bibitem[Mitchell(1998)]{mitchellIntroductionGeneticAlgorithms1998}
-Melanie Mitchell.
-\newblock \emph{An {{Introduction}} to {{Genetic Algorithms}}}.
-\newblock {The MIT Press}, March 1998.
-\newblock ISBN 978-0-262-28001-3.
-\newblock \doi{10.7551/mitpress/3927.001.0001}.
-
-\bibitem[Ng et~al.(1999)Ng, Harada, and Russell]{ngPolicyInvarianceReward1999}
-A.~Ng, Daishi Harada, and Stuart~J. Russell.
-\newblock Policy {{Invariance Under Reward Transformations}}: {{Theory}} and
-  {{Application}} to {{Reward Shaping}}.
-\newblock In \emph{International {{Conference}} on {{Machine Learning}}}, June
-  1999.
-
 \bibitem[Niekum et~al.(2011)Niekum, Spector, and
   Barto]{niekumEvolutionRewardFunctions2011}
 Scott Niekum, Lee Spector, and Andrew Barto.
@@ -162,22 +122,6 @@ Scott Niekum, Lee Spector, and Andrew Barto.
   {New York, NY, USA}, July 2011. {Association for Computing Machinery}.
 \newblock ISBN 978-1-4503-0690-4.
 \newblock \doi{10.1145/2001858.2001957}.
-
-\bibitem[Nolfi \& Floreano(2004)Nolfi and
-  Floreano]{nolfiEvolutionaryRoboticsBiology2004}
-Stefano Nolfi and Dario Floreano.
-\newblock \emph{Evolutionary {{Robotics}}: {{The Biology}}, {{Intelligence}},
-  and {{Technology}} of {{Self-Organizing Machines}}}.
-\newblock January 2004.
-\newblock \doi{10.7551/mitpress/2889.001.0001}.
-
-\bibitem[Richards(1959)]{richardsFlexibleGrowthFunction1959}
-F.~J. Richards.
-\newblock A {{Flexible Growth Function}} for {{Empirical Use}}.
-\newblock \emph{Journal of Experimental Botany}, 10\penalty0 (2):\penalty0
-  290--301, June 1959.
-\newblock ISSN 0022-0957.
-\newblock \doi{10.1093/jxb/10.2.290}.
 
 \bibitem[Schulman et~al.(2017)Schulman, Wolski, Dhariwal, Radford, and
   Klimov]{schulmanProximalPolicyOptimization2017}
