@@ -242,20 +242,20 @@ To investigate the reason why the evolution of food reward can be unstable, we c
   \begin{subfigure}[t]{7cm}
     \centering
     \includegraphics[width=7cm]{seed5-lh-orange.png}
-    \subcaption{A case study for decreasing food reward.}\label{subfigure:s5lh}
+    \subcaption{Life history of agents in Fig. 4b.}\label{subfigure:s5lh}
   \end{subfigure}
   \begin{subfigure}[t]{7cm}
     \centering
     \includegraphics[width=7cm]{seed2-lh-orange.png}
-    \subcaption{A case study for decreasing food reward.}\label{subfigure:s2lh}
+    \subcaption{Life history of agents in Fig. 4c.}\label{subfigure:s2lh}
   \end{subfigure}
   \caption{
     Agent's life history. The left figure corresponds to the period filled with orange in \cref{subfigure:s5}, and the right figure corresponds to the period filled with orange in \cref{subfigure:s2}. Lines show the trajectories of agents, and dots show places where agents made a child. Colors correspond to negative and positive food rewards.
   }\label{figure:s5-lh}
 \end{figure}
 
-To investigate the difference in the two cases, we focus on the period we filled orange in the first row of \cref{subfigure:s5} and \cref{subfigure:s2}, where both negative and positive food rewards coexist. We plot agents' life history in this period in \cref{figure:s5-lh}, where thin lines show the agents' trajectories, dots show places where agents got children, and different colors correspond to the value of food rewards. In both figures, we can see that agents' trajectories are concentrated around the food location, while they make children in more distributed places because of the environmental constraint that makes it more difficult to have a child in a crowded area.
-Although we don't see significant differences in agents' trajectories, we can see a tendency that agents with negative food rewards are distributed more distant from the food rewards because of the smaller negative food reward in \cref{subfigure:s2lh}. On the contrary, we guess that relatively larger negative food rewards in \cref{subfigure:s5lh} are not very harmful, especially with stronger rewards for collision with agents and walls.
+To investigate the difference in the two cases, we focus on the period we filled orange in the first row of \cref{subfigure:s5} and \cref{subfigure:s2}, where both negative and positive food rewards coexist. We plot agents' life history in this period in \cref{figure:s5lh}, where thin lines show the agents' trajectories, dots show places where agents got children, and different colors correspond to the value of food rewards. In both figures, we can see that agents' trajectories are concentrated around the food location, while they make children in more distributed places because of the environmental constraint that makes it more difficult to have a child in a crowded area.
+Although we don't see significant differences in agents' trajectories, we can see a tendency that agents with negative food rewards are distributed more distant from the food rewards because of the smaller negative food reward in \cref{subfigure:s2lh}. On the contrary, we guess that relatively larger negative food rewards in \cref{subfigure:s5lh} are not very harmful, especially with stronger rewards for collision with agents and walls. Instead, it looks like the negative rewards for colliding each other helps agents to form a collective behavior that doesn't look very directed.
 
 \begin{figure}[t]
   \begin{subfigure}[t]{6cm}
@@ -266,24 +266,23 @@ Although we don't see significant differences in agents' trajectories, we can se
   \begin{subfigure}[t]{4.5cm}
     \centering
     \includegraphics[width=4.5cm]{lv-s1.png}
-    \subcaption{Unstable food reward in \texttt{spread food} setting}\label{subfigure:lv1}
+    \subcaption{Unstable food reward in \texttt{spread food} setting.}\label{subfigure:lv1}
   \end{subfigure}
   \begin{subfigure}[t]{4.5cm}
     \centering
     \includegraphics[width=4.5cm]{season-s4.png}
-    \subcaption{Unstable food reward in \texttt{food reloc.} setting}\label{subfigure:season4}
+    \subcaption{Unstable food reward in \texttt{food reloc.} setting.}\label{subfigure:season4}
   \end{subfigure}
   \caption{
     The left figure shows evolved rewards in multiple settings, including the baseline environment.
     Each line shows the reward weight averaged over all agents alive at that time.
     Different colors indicate different settings.
-    In the center and right figures, reward weights are colorized per food reward weight, as in \cref{sigure:s5-lh}
-  }\label{figure:baseline-result}
+    In the center and right figures, reward weights are colorized per food reward weight, as in \cref{figure:s5-lh}. The center figure show the case where food reward is unstable in \texttt{spread food} setting, and the right one shows one in \texttt{food reloc} setting.
+    \label{figure:foodloc-comp}
+  }
 \end{figure}
 
-In the baseline environment, agents are densely located in the food location, which seems to influence the evolution of rewards. For example, negative rewards for food or another agent would help them move to sparser locations where they are more likely to produce offspring. Therefore, we conduct another experiment with more distributed food regeneration (\texttt{spread foods} in the figure) and moving food location after eating $1000$ foods (\texttt{food reloc.} in the figure).
-
-\Cref{subfigure:blcomp} compares the evolved reward functions with the baseline. Although food rewards can be unstable with all these three settings, the \texttt{spread foods}
+In the baseline environment, agents are densely located in the food location, which seems to influence the evolution of rewards. For example, negative rewards for food or another agent would help them move to sparser locations where they are more likely to produce offspring. Therefore, we conduct another experiment with more distributed food regeneration (\texttt{spread foods} in the figure) and moving food location after eating $1000$ foods (\texttt{food reloc.} in the figure). \Cref{subfigure:blcomp} compares the evolved reward functions with the baseline. To make the comparison easier, we average the reward weight of all available agent at a certain step, and plot the mean for $5$ runs each. Although food rewards can be unstable with all these three settings, the \texttt{spread foods} setting is the most stable in the sense that food reward is stable in 3 runs within 5 random seeds. Reward weights for colliding with walls and other agents are almost always negative, as in the baseline setting. The reward for action is generally positive, but sometimes goes negative with \texttt{spread foods} setting, producing the population that sticks to the wall.
 
 \begin{figure}[t]
   \begin{subfigure}[t]{7cm}
