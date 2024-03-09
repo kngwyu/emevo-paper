@@ -136,11 +136,12 @@ An agent has multiple range sensors in its front, which can sense the type and t
 (see \cref{ap:env}).
 
 An agent can eat food by touching it and gain energy $e_{\mathrm{food}}$. After foods are eaten, they are regenerated in a random place.
-% This eat-driven emergence is not consistent with the growth equation below...
-The rate of food regeneration follows logistic growth function $\frac{dN_{food}}{dt} = g N_{food} (1 - \frac{N_{food}}{N_{food}^{\mathrm{max}}}$, where $N_{food}$ is the number of food, $g$ is growth rate, and $N_{food}^{\mathrm{max}}$ is the maximum number of food. 
+% This eat-driven emergence is not consistent with the growth model below. Better report the actual food producing process rather than theoretical approximation.
+%The rate of food regeneration follows logistic growth function $\frac{dN_{food}}{dt} = g N_{food} (1 - \frac{N_{food}}{N_{food}^{\mathrm{max}}}$, where $N_{food}$ is the number of food, $g$ is growth rate, and $N_{food}^{\mathrm{max}}$ is the maximum number of food. 
 Eating food increases an agent's internal energy by $e_{\mathrm{food}}$. In some experiments, we use poisonous food that decreases energy level by $e_{\mathrm{poison}}$.
 
-When an agent makes a child, a new agent is placed in a random location sampled from a Gaussian distribution centered around its parent. However, to speed up the simulation, reproduction fails when all sampled locations are not available. Thus, keeping away from other agents is beneficial for agents in order to make more children. When the parent's energy level is $e$, a proportion of energy level $\eta e$ is given to the child, and the parent loses it, where $\eta \in [0, 1]$ is the ratio of energy sharing. The child also inherits its reward function from the parent with some mutation.
+When an agent makes a child, a new agent is placed in a random location sampled from a Gaussian distribution centered around its parent. #However, to speed up the simulation, r
+Reproduction fails when all sampled locations are not available. Thus, keeping away from other agents is beneficial for agents in order to make more children. When the parent's energy level is $e$, a proportion of energy level $\eta e$ is given to the child, and the parent loses it, where $\eta \in [0, 1]$ is the ratio of energy sharing. The child also inherits its reward function from the parent with some mutation.
 
 Simulating many agents to maintain a reasonable size population (e.g., $50\sim 100$) is key in our evolution scheme. To speed up the simulation, we implement our environment using JAX Python library \citep{jax2018github} to utilize GPU or other hardware accelerators. Inspired by recent works on 3D rigid body physics simulation using JAX (e.g., \citet{brax2021github} and MuJoCo \citep{todorov2012mujoco} MJX\footnote{\url{https://mujoco.readthedocs.io/en/stable/mjx.html}}), we implement our 2D physics engine using JAX and build our environment on top of that, optimizing it for multi-agent setting. We explain the implementation detail in \cref{ap:phys}.
 
