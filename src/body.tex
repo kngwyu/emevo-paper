@@ -133,19 +133,18 @@ We show the pseudocode of our entire simulation procedure in \cref{alg:reward-ev
 \section{Results}
 
 \begin{figure}[t]
-  \begin{subfigure}[t]{8cm}
+  \begin{subfigure}[t]{7.5cm}
     \centering
-    \includegraphics[width=8cm]{baseline.png}
+    \includegraphics[width=7.5cm]{baseline.png}
     \subcaption{Evolved rewards in the baseline environment.}\label{subfigure:bl}
   \end{subfigure}
-  \begin{subfigure}[t]{7cm}
+  \begin{subfigure}[t]{6.4cm}
     \centering
-    \includegraphics[width=7cm]{seed5-corr.png}
-    \subcaption{A case study for decreasing food reward.}\label{subfigure:bcomp}
+    \includegraphics[width=6.4cm]{seed5-corr.png}
+    \subcaption{A case study for decreasing food reward.}\label{subfigure:s5corr}
   \end{subfigure}
   \caption{
-    In the left figure, the X-axis shows the birth time of each agent, and the y-axis shows the value of rewards for food, agent, wall, and action from top to bottom. The difference in colors and shapes of dots corresponds to the difference in the random seed.
-    In the right figure, each line shows the reward weight averaged over all agents alive, and different colors indicate different settings.
+    In the left figure, the X-axis shows the birth time of each agent, and the y-axis shows the value of rewards for food, agent, wall, and action from top to bottom. The difference in colors and shapes of dots corresponds to the difference in the random seed. The right figure plots several statistics when the food reward increases. Simulation run with seed $5$ from \num{6.25e6} to \num{6.45e6} is selected. From top to bottom, average food rewards, population, the correlation coefficient between the agent's energy and food reward, the standard deviation of energy, and the standard deviation of the number of children are plotted.
   }\label{figure:baseline-result}
 \end{figure}
 
@@ -153,29 +152,27 @@ As a baseline environment, we use the setting where food is always regenerated i
 
 \Cref{subfigure:bl} shows the evolved reward weights with 5 random seeds in the baseline environment. Surprisingly, the food reward weight is only stable positive for one random seed. It unstably goes up and down or stays negative in one random seed. On the contrary, reward weights for colliding with walls and other agents are stably negative, which is reasonable because sticking around walls is not good for foraging, and sticking to other agents might reduce the chance of making a child. The reward weight for action tends to be positive, which contradicts our expectations that it would evolve to negative to represent fatigue.
 
-To investigate the reason why the evolution of food reward can be unstable, we closely look at our simulation run with seed $5$, where food reward decreases. \cref{figure}
+To investigate the reason why the evolution of food reward can be unstable, we closely look at our simulation run with seed $5$, where food reward decreases. \Cref{subfigure:s5corr} shows
 
 To confirm that
 the right figure in \cref{figure:baseline-result} shows the evolved reward weights with multiple settings.
 
 \begin{figure}[t]
-  \setkeys{Gin}{width=15.0cm, keepaspectratio}
-  \begin{subfigure}[t]{9cm}
-    \centering
-    \includegraphics[width=9cm]{seed5-corr.png}
-  \end{subfigure}
   \begin{subfigure}[t]{6cm}
     \centering
     \includegraphics[width=6cm]{seed5-scatter-red.png}
-    \includegraphics[width=6cm]{seed5-scatter-green.png}
-    \subcaption{Comparison between multiple settings.}\label{subfigure:bcomp}
+  \end{subfigure}
+  \begin{subfigure}[t]{6cm}
+    \centering
+    \includegraphics[width=6cm]{resources/seed5-scatter-green.png}
   \end{subfigure}
   \caption{
-    \textbf{Left:} Evolved rewards in the baseline environment. The X-axis shows the birth time of each agent, and the y-axis shows the value of rewards for food, agent, wall, and action from top to bottom. The difference in colors and shapes of dots corresponds to the difference in the random seed.
-    \textbf{Right:} Evolved rewards in multiple settings, including the baseline environment. Each line shows the reward weight averaged over all agents alive at that time. Different colors indicate different settings.
+    Agent's life history corresponding to \cref{subfigure:s5corr}. The left figure corresponds to the period filled with red, and the right figure corresponds to the period filled with green. Lines show trajectories of agents, colored by their food reward weight. Dots show places where agents made a child.
   }\label{figure:baseline-result}
 \end{figure}
 
 Here is the conclusion.
+
+%   \textbf{Right:} Evolved rewards in multiple settings, including the baseline environment. Each line shows the reward weight averaged over all agents alive at that time. Different colors indicate different settings.
 
 \section{Conclusion}
