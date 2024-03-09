@@ -213,40 +213,50 @@ We show the pseudocode of our entire simulation procedure in \cref{alg:reward-ev
 \section{Results}
 
 \begin{figure}[t]
-  \begin{subfigure}[t]{7.5cm}
+  \begin{subfigure}[t]{5cm}
     \centering
-    \includegraphics[width=7.5cm]{baseline.png}
-    \subcaption{Evolved rewards in the baseline environment.}\label{subfigure:bl}
+    \includegraphics[width=5cm]{baseline.png}
+    \subcaption{Evolved rewards.}\label{subfigure:bl}
   \end{subfigure}
-  \begin{subfigure}[t]{7.5cm}
+  \begin{subfigure}[t]{5cm}
     \centering
-    \includegraphics[width=7.5cm]{seed5-frdecay.png}
-    \subcaption{A case study for decreasing food reward.}\label{subfigure:s5cs}
+    \includegraphics[width=5cm]{seed5-frdecay.png}
+    \subcaption{Decreasing food reward.}\label{subfigure:s5}
+  \end{subfigure}
+  \begin{subfigure}[t]{5cm}
+    \centering
+    \includegraphics[width=5cm]{seed2-frstable.png}
+    \subcaption{Stable food reward.}\label{subfigure:s2}
   \end{subfigure}
   \caption{
-    In the left figure, the X-axis shows the birth time of each agent, and the y-axis shows the value of rewards for food, agent, wall, and action from top to bottom. The difference in colors and shapes of dots corresponds to the difference in the random seed. The right figure colarized the reward weights per food reward in case the food reward decreases. We selected the run with seed $5$ from \num{4e6} to \num{9e6} steps for this purpose.
+    In the left figure, the X-axis shows the birth time of each agent, and the y-axis shows the value of rewards for food, agent, wall, and action from top to bottom. The difference in colors and shapes of dots corresponds to the difference in the random seed. In the center and right figures, reward weights are colorized per food reward weight. The center figure shows the case where food reward decreases (seed $5$), and the right figure shows one with stable food reward,  from \num{4e6} to \num{9e6} steps.
   }\label{figure:baseline-result}
 \end{figure}
 
-As a baseline environment, we use the setting where food is always regenerated in the upper right of the room, as the left figure in \Cref{figure:env} shows. In this environment, we tuned environmental parameters (e.g., maximum number of foods and growth rate) to stabilize the population around $100$. We show all environmental parameters in \cref{ap:param}. All experiments start with $50$ agents that have energy level $40.0$ and randomly initialized reward weights. We conducted \num{1e7} step of the simulation, resulting in 10 \todo{actual number} generations, which takes $14\sim16$ hours on NVIDIA P100 GPUs.
+As a baseline environment, we use the setting where food is always regenerated in the upper right of the room, as the left figure in \Cref{figure:env} shows. In this environment, we tuned environmental parameters (e.g., maximum number of foods and growth rate) to stabilize the population around $100$. We show all environmental parameters in \cref{ap:param}. All experiments start with $50$ agents that have energy level $40.0$ and randomly initialized reward weights. We conducted \num{1e7} step of the simulation, resulting from $300$ to $400$ generations, which takes $14\sim16$ hours on NVIDIA P100 GPUs.
 
 \Cref{subfigure:bl} shows the evolved reward weights with 5 random seeds in the baseline environment. Surprisingly, the food reward weight is only stable positive for one random seed. It unstably goes up and down or stays negative in one random seed. On the contrary, reward weights for colliding with walls and other agents are stably negative, which is reasonable because sticking around walls is not good for foraging, and sticking to other agents might reduce the chance of making a child. The reward weight for action tends to be positive. This contradicts our expectations that it would evolve to negative like fatigue.
+
+To investigate the reason why the evolution of food reward can be unstable, we closely look at our simulation run with seed $5$, where food reward decreases. \Cref{subfigure:s5cs} shows the scatter plot of reward weights in this run from \num{4e6} to \num{9e6} steps, where blue color indicates smaller food rewards and red color indicates larger. We can see a tendency that agents with lower food rewards tend to have higher wall and action rewards, which is reasonable because both sticking around walls and just moving can help foraging. On the contrary, we can see two different modes in agent and action rewards. In the medium of \cref{subfigure:s5} (between \num{6e6} and \num{7e6} steps), agents with smaller rewards tend to have smaller negative rewards for colliding with agent, while they tend to have larger agent rewards later. On the contrary, in the case where the food reward remains stable (seed $2$), the magnitude of other collision rewards (agent and wall) is relatively small, and they don't look have large effect. The reward for action increases over the course of evolution, which might help foraging with food rewards.
 
 \begin{figure}[t]
   \begin{subfigure}[t]{7cm}
     \centering
     \includegraphics[width=7cm]{seed5-lh-orange.png}
+    \subcaption{A case study for decreasing food reward.}\label{subfigure:s5lh}
   \end{subfigure}
   \begin{subfigure}[t]{7cm}
     \centering
-    \includegraphics[width=7cm]{seed5-lh-green.png}
+    \includegraphics[width=7cm]{seed2-lh-orange.png}
+    \subcaption{A case study for decreasing food reward.}\label{subfigure:s2lh}
   \end{subfigure}
   \caption{
-    Agent's life history corresponding to \cref{subfigure:s5cs}. The left figure corresponds to the period filled with orange and \texttt{/}, and the right figure corresponds to the period filled with green and \texttt{\textbackslash}. Lines show trajectories of agents, colored by their food reward weight. Dots show places where agents made a child.
+    Agent's life history. The left figure corresponds to the period filled with orange in \cref{subfigure:s5}, and the right figure corresponds to the period filled with orange in \cref{subfigure:s2}. Lines show trajectories of agents, and dots show places where agents made a child. Colors correspond to negative and positive food rewards.
   }\label{figure:s5-lh}
 \end{figure}
 
-To investigate the reason why the evolution of food reward can be unstable, we closely look at our simulation run with seed $5$, where food reward decreases. \Cref{subfigure:s5cs} shows the scatter plot of reward weights in this run from \num{4e6} to \num{9e6} steps, where blue color indicates smaller food rewards and red color indicates larger. We can see a tendency that agents with lower food rewards tend to have higher wall and action rewards, which is reasonable because both sticking around walls and just moving can help foraging. On the contrary, we can see two different modes in agent and action rewards. In the medium of \cref{subfigure:s5cs} (between \num{6e6} and \num{7e6} steps), agents with smaller rewards tend to have smaller negative rewards for colliding with agent, while they tend to have larger agent rewards later. To investigate the reason why food reward decreases more, we focus on the period we filled orange and green in the first row of \cref{subfigure:s5cs}, where both negative and positive food rewards coexist. We plot life history of agents in these period in \cref{figure:s5-lh}, where thin lines show the agents' trajectories, dots show places where agents got child, and different colors corresponds to the value of food rewards. In both figures, we can see that agents trajectories are concentrated around the food location, but places where agents got child are more distributed because of the environmental constraint that it's difficult to make a child in a crowded area. Here, we don't see significant differences in trajectory or birth location in either case. In the figure on the left, the locations where agents with high food rewards gave birth are often a bit distant from the top right corner of the figure where the food is located. We suspect that this is because the food location is too crowded, and this is the reason why large negative agent reward started to evolve in this situation. Keeping distance from another agents is beneficial to get more opportunity to get children. Interestingly, we can't see this tendency in the right figure, because overconcentration of populations is suppressed by agents with negative food rewards, although they still tend to gather around the food location thanks to the positive rewards for colliding with another agent.
+To investigate the difference in two cases, we focus on the period we filled orange in the first row of \cref{subfigure:s5} and \cref{subfigure:s2}, where both negative and positive food rewards coexist. We plot life history of agents in these period in \cref{figure:s5-lh}, where thin lines show the agents' trajectories, dots show places where agents got child, and different colors corresponds to the value of food rewards. In both figures, we can see that agents trajectories are concentrated around the food location, but places where agents got child are more distributed because of the environmental constraint that it's difficult to make a child in a crowded area.
+Alghouth we don't see significant differences in agents' trajectories, we can see a tendency that agents with negative food rewards are distributed more distant from the food rewards because of the smaller negative food reward in \cref{subfigure:s2lh}. On the contrary, we guess that relatively larger negative food rewards in \cref{subfigure:s5lh} are not very harmful, especially with stronger rewards for collision with agents and walls
 
 %   \textbf{Right:} Evolved rewards in multiple settings, including the baseline environment. Each line shows the reward weight averaged over all agents alive at that time. Different colors indicate different settings.
 
