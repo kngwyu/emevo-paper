@@ -27,17 +27,17 @@ We follow the standard computational RL framework \citep{suttonReinforcementLear
 
 Our reward model is inspired by the neuroscience of reward system \citep{schultzNeuronalRewardDecision2015, berridgePleasureSystemsBrain2015}. Notably, \citet{berridgeDissectingComponentsReward2009} argue that the brain reward system consists of three independent components: liking, wanting, and learning. In analogy with computational RL, liking corresponds to reward function, wanting corresponds to learned policy, and learning corresponds to learning state value $V$. %\citet{dayanLikingEarlyEditable2022} discussed the idea that liking is related to reward shaping \citep{ngPolicyInvarianceReward1999} in computational RL that helps an agent to learn faster. This aligns with our view of rewards, although we don't focus on the quality of rewards in this paper.
 
-While 
-%we are focusing on the distributed evolution of rewards in a multi-agent setting, 
+While
+%we are focusing on the distributed evolution of rewards in a multi-agent setting,
 there were previous attempts to evolve rewards in a single-agent setting \citep{singhWhereRewardsCome2009,niekumEvolutionRewardFunctions2011,zhengWhatCanLearned2020},
-%While evolutionary robotics studies \citep{nolfiEvolutionaryRoboticsBiology2004} often employ a centralized selection scheme similar to genetic algorithm \citep{mitchellIntroductionGeneticAlgorithms1998}, 
-%where highly evaluated elites are selected as parents. On the contrary, 
+%While evolutionary robotics studies \citep{nolfiEvolutionaryRoboticsBiology2004} often employ a centralized selection scheme similar to genetic algorithm \citep{mitchellIntroductionGeneticAlgorithms1998},
+%where highly evaluated elites are selected as parents. On the contrary,
 we take a distributed embodied evolution (EE) framework \citep{watsonEmbodiedEvolutionDistributing2002,bredecheEmbodiedEvolutionCollective2018}
-%that employs a decentralized evolution without centralized evaluation 
+%that employs a decentralized evolution without centralized evaluation
 where agents evolve locally following birth and death rules. This method has the advantage that the evaluation of genetic traits depends on population dynamics, which is more natural.
 
 Our work is inspired by the series of studies \citep{elfwingBiologicallyInspiredEmbodied2005,elfwingDarwinianEmbodiedEvolution2011,elfwingEmergencePolymorphicMating2014}, which tried to evolve parameters related to RL through EE framework. Notably, \citet{elfwingDarwinianEmbodiedEvolution2011} evolved supplementary sharing rewards and parameters of RL agents.
-%, and \citet{elfwingEmergencePolymorphicMating2014} evolved agents with a hierarchical RL mechanism, where the higher module chooses either foraging or mating, and the lower module outputs more primitive actions. 
+%, and \citet{elfwingEmergencePolymorphicMating2014} evolved agents with a hierarchical RL mechanism, where the higher module chooses either foraging or mating, and the lower module outputs more primitive actions.
 Inspired by these works, we attempt to evolve all reward functions in this experiment.
 %instead of hyperparameters.
 
@@ -63,18 +63,13 @@ We design the agent's death and birth model
 based on $e$ and an agent's age $t$.
 We adopt a Gompertz hazard model \citep{gompertzXXIVNatureFunction1825,kirkwoodDecipheringDeathCommentary2015}, in which the probability of an agent dying in a time step is given by:
 \begin{align}
-  h(t, e) = \frac{\kappa_{h}}{1 +  \alpha_{e}\exp(\beta_{he}e)} + \alpha_{t} \exp(\beta_{ht} t).
+  h(t, e) = \frac{\kappa_{h}}{1 + \alpha_{e}\exp(\beta_{he}e)} + \alpha_{t} \exp(\beta_{ht} t).
   \label{eq:h}
 \end{align}
-The first term increases as energy levels decrease and follows a sigmoidal curve, where $\kappa_{h}$ is the maximum death rate and $\theta_h$ is of increased death.
-The latter term %$\alpha_{ht} \exp(\beta t)$ 
-exponentially increases as the agent gets older.
-%, where $\alpha_{ht}$ and $\beta$ are hyperparameters. 
-%In population statistics, this is called the Gompertz hazard model \citep{gompertzXXIVNatureFunction1825,kirkwoodDecipheringDeathCommentary2015}. 
-The left panel in \Cref{figure:hs} shows the shape of the hazard function with the specific parameters used in our experiments. 
-%To intuitively understand the behavior $h$, we plot 
-The right panel in \Cref{figure:hs} shows the
-survival function $S(t, e) = \exp (-\int_{0}^{t}(h(t, e)) dt)$, the probability for an agent to survive to the age $t$ if it keeps the same energy level $e$. 
+The first term increases as energy levels decrease following a sigmoidal curve where the scale $\kappa_{h}$ is the scale, $\beta_{he}$ is the slope, and $\alpha_{e}$ defines the shape when $e=0$.
+The latter term exponentially increases as the agent gets older with the cale $\alpha_{t}$ and the slope $\beta_{ht}$.
+The left panel in \Cref{figure:hs} shows the shape of the hazard function with the specific parameters used in our experiments.
+The right panel in \Cref{figure:hs} shows the survival function $S(t, e) = \exp (-\int_{0}^{t}(h(t, e)) dt)$, the probability for an agent to survive to the age $t$ if it keeps the same energy level $e$.
 We can see that the survival probability more sharply decays with aging when the energy level is low.
 
 \begin{figure}[t]
@@ -85,16 +80,14 @@ We can see that the survival probability more sharply decays with aging when the
   }\label{figure:bnc}
 \end{figure}
 
-For simplicity, we employ an asexual reproduction model
-%where all agents can have a chance to make their children. We let $b(e)$ the birth function that evaluates the probability for an agent with energy level $e$ to make its child. Similarly to the first term of \cref{eq:h}, we design
-with the birth function, the probability for an agent with energy level $e$ to produce a child in a time step as:
+For simplicity, we employ an asexual reproduction model \cref{eq:h} with the birth function, the probability for an agent with energy level $e$ to produce a child in a time step:
 \begin{align}
  b(e) &= \frac{\kappa_{b}}{1 + \exp(\beta_{b}e)}.
  \label{eq:b}
 \end{align}
-%Modeled as a generalized logistic function \citep{richardsFlexibleGrowthFunction1959}, 
-The birth rate $b(e)$ increases with $e$ following a sigmoidal curve where $\kappa_{b}$ is the scale, $\theta_{b}$ controls the threshold of reaction, and $\alpha_{e}$ defines the shape of when $e = \theta_{b}$. 
-The left figure of \Cref{figure:bnc} shows the shape of $b$ for the parameters used in the experiment. 
+%Modeled as a generalized logistic function \citep{richardsFlexibleGrowthFunction1959},
+The birth rate $b(e)$ increases with $e$ following a sigmoidal curve where $\kappa_{b}$ is the scale and $\beta_{b}$ is the slope.
+The left figure of \Cref{figure:bnc} shows the shape of $b$ for the parameters used in the experiment.
 Based on the birth model $b(e)$ and the death model $h(e,t)$, we plot the expected lifetime and number of children if an agent keeps the same energy level in the center and right figure in \cref{figure:bnc}. Parameters are chosen so that the maximum expected lifetime is around \num{200000} and the maximum expected number of children is around 40. All experiment parameters are shown in \cref{ap:param}.
 
 \paragraph{Environment}
@@ -117,28 +110,28 @@ Based on the birth model $b(e)$ and the death model $h(e,t)$, we plot the expect
 \end{figure}
 
 %As a simple simulation environment with biologically plausible sensorimotor interaction, w
-We designed a continuous 2D environment shown in \Cref{figure:env}. Blue circles indicate agents, and red circles indicate foods. The environment is implemented by a 2D rigid-body physics simulation, where agents can move by 
-%adding motor outputs 
+We designed a continuous 2D environment shown in \Cref{figure:env}. Blue circles indicate agents, and red circles indicate foods. The environment is implemented by a 2D rigid-body physics simulation, where agents can move by
+%adding motor outputs
 producing driving forces on the left and right sides of the body.
-%at two points in the diagonal back part of the circle. 
-%We use these two motor outputs as an action of agent in RL. 
+%at two points in the diagonal back part of the circle.
+%We use these two motor outputs as an action of agent in RL.
 An agent has multiple range sensors in its front, which can sense the type and the distance to the closest object (food, agent, and wall) within $120$ degree.
 
 An agent can eat food by touching it and gain energy $e_{\mathrm{food}}$. After foods are eaten, they are regenerated in a random place.
 % This eat-driven emergence is not consistent with the growth model below. Better report the actual food producing process rather than theoretical approximation.
-The rate of food regeneration follows logistic growth function $\frac{dN_{food}}{dt} = g N_{food} (1 - \frac{N_{food}}{N_{food}^{\mathrm{max}}}$, where $N_{food}$ is the number of food, $g$ is growth rate, and $N_{food}^{\mathrm{max}}$ is the maximum number of food. 
+The rate of food regeneration follows logistic growth function $\frac{dN_{food}}{dt} = g N_{food} (1 - \frac{N_{food}}{N_{food}^{\mathrm{max}}}$, where $N_{food}$ is the number of food, $g$ is growth rate, and $N_{food}^{\mathrm{max}}$ is the maximum number of food.
 Eating food increases an agent's internal energy by $e_{\mathrm{food}}$. In some experiments, we use poisonous food that decreases energy level by $e_{\mathrm{poison}}$.
 
 When an agent makes a child, a new agent is placed in a random location sampled from a Gaussian distribution centered around its parent. %However, to speed up the simulation, r
 Reproduction fails when all
 % report how many times.
 sampled locations are not available. Thus, keeping away from the wall and other agents is beneficial for agents to make more children. When a child is produced
-%the parent's energy level is $e$, 
+%the parent's energy level is $e$,
 a proportion of the parent's energy $\eta e \in [0, 1]$ is given to the child, and the parent's energy level decreases to $(1-\eta)e$.
-%, where $\eta \in [0, 1]$ is the ratio of energy sharing. 
+%, where $\eta \in [0, 1]$ is the ratio of energy sharing.
 The child also inherits its reward function from the parent with some mutation.
 
-%Simulating many agents to maintain a reasonable size population (e.g., $50\sim 100$) is critical in our evolution scheme. 
+%Simulating many agents to maintain a reasonable size population (e.g., $50\sim 100$) is critical in our evolution scheme.
 To speed up the simulation, we implement our environment using JAX Python library \citep{jax2018github} to utilize GPU or other hardware accelerators. Inspired by recent works on 3D rigid body physics simulation using JAX (e.g., \citet{brax2021github} and MuJoCo \citep{todorov2012mujoco} MJX\footnote{\url{https://mujoco.readthedocs.io/en/stable/mjx.html}}), we implement our 2D physics engine using JAX and build our environment on top of that, optimizing it for multi-agent setting. Our simulator implements projected Gauss-Seidel method with position correction \citep{catto2005iterative} that is pretty common in 2D game physics engines such as Box2D\footnote{\url{https://box2d.org}} and Chipmunk\footnote{\url{https://chipmunk-physics.net}}.
 
 \paragraph{Reward Function with Evolving Weights} %Parameters}
@@ -153,9 +146,9 @@ We take a linear model of the reward function with weights for each sensory inpu
 \end{align}
 where $w_i$ is the weight for a sensorimotor event $f_i$ for $i\in{\mbox{\{foood, wall, agent,  action\}}}$.
 % This redundant coding is better put in Appendix
-%For example, the reward weight for getting food is modeled as $r_{\mathrm{food}} = 10^{s_{\mathrm{food}}} w_{\mathrm{food}}$, where $s_{\mathrm{food}} \in [0, 1]$ and $w_{\mathrm{food}} \in [-1, 1]$ are evolvable parameters that represent scale and weight for the food reward weight. 
-%We model reward weights for other sensory inputs by $r_\mathrm{wall}$, $r_\mathrm{agent}$, and $r_\mathrm{agent}$ in the same way. 
-%Our intention in using two independent parameters $s$ and $w$ is to balance stability and plasticity. Our preliminary experiments found that rewards can be too unstable if we allow significant change via a single parameter. Having a parameter for adjusting the scale separately makes the significant reward change more challenging while still possible. Reward weights are multiplied by collision events or action magnitude and then summed up to the reward that an agent uses in RL. 
+%For example, the reward weight for getting food is modeled as $r_{\mathrm{food}} = 10^{s_{\mathrm{food}}} w_{\mathrm{food}}$, where $s_{\mathrm{food}} \in [0, 1]$ and $w_{\mathrm{food}} \in [-1, 1]$ are evolvable parameters that represent scale and weight for the food reward weight.
+%We model reward weights for other sensory inputs by $r_\mathrm{wall}$, $r_\mathrm{agent}$, and $r_\mathrm{agent}$ in the same way.
+%Our intention in using two independent parameters $s$ and $w$ is to balance stability and plasticity. Our preliminary experiments found that rewards can be too unstable if we allow significant change via a single parameter. Having a parameter for adjusting the scale separately makes the significant reward change more challenging while still possible. Reward weights are multiplied by collision events or action magnitude and then summed up to the reward that an agent uses in RL.
 We explain the details of implementation in \cref{ap:reward}.
 
 % Add a line for reward acquisition; after observation or action?
