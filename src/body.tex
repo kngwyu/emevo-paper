@@ -56,22 +56,17 @@ Inspired by these works, we attempt to evolve all reward functions in this exper
 % \end{figure}
 
 \paragraph{Energy-based death and birth model}
-%As a simple but biologically plausible way of simulating the birth and death of agents, w
-We employ an energy-based model similar to \citet{hamonEcoevolutionaryDynamicsNonepisodic2023}. Each agent maintains their energy level $e$, %Energy level $e$ 
-which increases by eating food and decreases by the basal metabolism and taking a motor action. 
+We employ an energy-based model similar to \citet{hamonEcoevolutionaryDynamicsNonepisodic2023}. Each agent maintains their energy level $e$,
+which increases by eating food and decreases by the basal metabolism and taking a motor action.
 We design the agent's death and birth model
-%to maintain a higher energy level $e$, which leads to longer lives and many offspring. With 
+% to maintain a higher energy level $e$, which leads to longer lives and many offspring. With
 based on $e$ and an agent's age $t$.
 We adopt a Gompertz hazard model \citep{gompertzXXIVNatureFunction1825,kirkwoodDecipheringDeathCommentary2015}, in which the probability of an agent dying in a time step is given by:
 \begin{align}
-  h(t, e) = \frac{\kappa_{h}}{1 +  \exp(e - \theta_h)} + \alpha_{ht} \exp(\beta t). 
-  % \theta_h = \log\alpha_{he}
-  %h(t, e) = \kappa_{h} \left(1 - \frac{1}{1 + \alpha_{he} \exp(-e)} \right) + \alpha_{ht} \exp(\beta t). 
+  h(t, e) = \frac{\kappa_{h}}{1 +  \alpha_{e}\exp(\beta_{he}e)} + \alpha_{t} \exp(\beta_{ht} t).
   \label{eq:h}
 \end{align}
-
-  %This hazard function\label{eq:h} consists of two terms. 
-The first term increases as energy levels decrease and follows a sigmoidal curve, where $\kappa_{h}$ is the maximum death rate and $\theta_h$ is the energy threshold of increased death. %$\alpha_{he}$ are hyperparameters. 
+The first term increases as energy levels decrease and follows a sigmoidal curve, where $\kappa_{h}$ is the maximum death rate and $\theta_h$ is of increased death.
 The latter term %$\alpha_{ht} \exp(\beta t)$ 
 exponentially increases as the agent gets older.
 %, where $\alpha_{ht}$ and $\beta$ are hyperparameters. 
@@ -90,14 +85,11 @@ We can see that the survival probability more sharply decays with aging when the
   }\label{figure:bnc}
 \end{figure}
 
-For simplicity, we employ an asexual reproduction model 
-%where all agents can have a chance to make their children. We let $b(e)$ the birth function that evaluates the probability for an agent with energy level $e$ to make its child. Similarly to the first term of \cref{eq:h}, we design 
+For simplicity, we employ an asexual reproduction model
+%where all agents can have a chance to make their children. We let $b(e)$ the birth function that evaluates the probability for an agent with energy level $e$ to make its child. Similarly to the first term of \cref{eq:h}, we design
 with the birth function, the probability for an agent with energy level $e$ to produce a child in a time step as:
 \begin{align}
- b(e) &= \frac{\kappa_{b}}{1 + \alpha_{b}\exp(\theta_{b} - e)}. 
- % This parameterization is redundant:
- % \alpha_{b}\exp(\theta_{b} - e)} = \exp(\log\alpha_{b} + \theta_{b} - e)}
- % It is more reasonable to use \beta_e inside \exp() to control the slope...
+ b(e) &= \frac{\kappa_{b}}{1 + \exp(\beta_{b}e)}.
  \label{eq:b}
 \end{align}
 %Modeled as a generalized logistic function \citep{richardsFlexibleGrowthFunction1959}, 
@@ -183,7 +175,7 @@ We explain the details of implementation in \cref{ap:reward}.
     \ForAll{$agent \in Pop$}
       \State{$o \gets agent$'s observation in $Env$}
       \State{$a \sim agents$'s policy $\pi_{agent}(\cdot|o)$}
-      \State{Update $agent$'s energy level $e$ based on the taken action $a$ and eaten food}
+      \State{Update $agent$'s energy level}
       \Once{in $N$ steps}
         \State{Update $agent$'s policy $\pi_{agent}$ via RL}
       \EndOnce{}
