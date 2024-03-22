@@ -1,8 +1,6 @@
 \section{Introduction}\label{sec:intro}
-%Producing r
 Reward is a fundamental signal that shapes our behavior through reinforcement learning (RL).
 Positive rewards encourage us to eat food and find mating partners, while negative rewards, such as pain and fatigue, help us protect ourselves.
-%Our brain produces a reward signal to a specific stimulus, such as good food, reinforcing our behavior to get more rewards. RL has been extensively studied in neuroscience and computer science. Neuroscientists have revealed that our brain has some hot or cold spots that respond to good or bad events~\citep{berridgeAffectiveNeurosciencePleasure2008}, and how those signals are used for learning~\citep{schultzNeuronalRewardDecision2015}, while computational reinforcement learning has provided theoretical models and several applications including game-playing agents and robotics~\citep{suttonReinforcementLearningIntroduction2018}.
 
 % Problem: Reward evolution
 % Why this topic has been underexplored, and how we can find some interesting points from this line of research
@@ -48,14 +46,14 @@ Inspired by these works, we attempt to evolve all reward functions in this exper
 
 \section{Simulation Model and Environment}\label{sec:method}
 
-\begin{figure}[t]
-  \centering{}
-  \includegraphics[width=15cm]{hazard_and_survival.pdf}
-  \caption{
-    \textbf{Left:} Designed hazard function $h(t)$ used for RL agents.
-    \textbf{Right:} Survival function $S(t)$ corresponding to the hazard function.
-  }\label{figure:hs}
-\end{figure}
+% \begin{figure}[t]
+%   \centering{}
+%   \includegraphics[width=15cm]{hazard_and_survival.pdf}
+%   \caption{
+%     \textbf{Left:} Designed hazard function $h(t)$ used for RL agents.
+%     \textbf{Right:} Survival function $S(t)$ corresponding to the hazard function.
+%   }\label{figure:hs}
+% \end{figure}
 
 \paragraph{Energy-based death and birth model}
 %As a simple but biologically plausible way of simulating the birth and death of agents, w
@@ -172,35 +170,34 @@ We explain the details of implementation in \cref{ap:reward}.
 \begin{algorithm}
   \caption{Reward evolution with asexual reproduction}\label{alg:reward-evo}
   \begin{tabular}{lll}
-    \textbf{Input:} & $Pop$ & Initial population \\
+    \textbf{Input:} & $Pop$ & Initial population of agents \\
                     & $Env$ & Simulation environment \\
-                    & $h(t, e)$ & Hazard function \\
-                    & $b(e)$ & Birth function \\
-                    & $mut(r)$ & Mutation function for reward function \\
-                    & $\eta$ & Energy share ratio used in reproduction
+                    & $h, b$ & Hazard and birth functions \\
+                    & $m$ & mutation function \\
+                    & $N$ & Rollout step used in RL \\
+                    & $\eta$ & Energy share ratio
   \end{tabular}
   \begin{algorithmic}[1]
     \Loop{}
+    \LComment{Interact with environment}
     \ForAll{$agent \in Pop$}
       \State{$o \gets agent$'s observation in $Env$}
-      \State{Sample an action $a$ from $agent$'s policy $\pi_{agent}(\cdot|o)$}
+      \State{$a \sim agents$'s policy $\pi_{agent}(\cdot|o)$}
       \State{Update $agent$'s energy level $e$ based on the taken action $a$ and eaten food}
       \Once{in $N$ steps}
-        \State{Update $agent$'s policy $\pi_{agent}$ and value function $\vh_{agent}$ via RL}
+        \State{Update $agent$'s policy $\pi_{agent}$ via RL}
       \EndOnce{}
     \EndFor{}
-
-    \State{Step the simulated environment $Env$ one step using collected actions}
-    \LComment{Process death and birth}
-    \ForAll{$agent \in Pop$ with energy level $e$, age $t$, and reward function $r$}
-      \With{Probability $b(e)$}
-        \State{$e_\mathrm{new} \gets \eta e$, $r_\mathrm{new} \gets mut(r)$}
-        \State{Add a new agent with reward function $r_\mathrm{new}$ and energy level $e_\mathrm{new}$ to $Pop$ and $Env$}
-        \State{Update parent's energy to $(1 - \eta) e$}
+    \State{Step $Env$ using collected actions}
+    \LComment{Process birth and death}
+    \ForAll{$agent \in Pop$ with energy $e$ and age $t$}
+      \With{Probability $b(e)$} \Comment{Birth}
+        \State{Update $agent$'s energy to $(1 - \eta) e$}
+        \State{$r \gets agent$'s reward function}
+        \State{Create a new agent with $\eta e$ and $m(r)$}
       \EndWith{}
-      \With{Probability $h(t, e)$}
+      \With{Probability $h(t, e)$} \Comment{Death}
         \State{$agent$ is removed from $Pop$ and $Env$}
-        \Comment{agent is dead}
       \EndWith{}
     \EndFor{}
   \EndLoop{}

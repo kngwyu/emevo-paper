@@ -1,4 +1,4 @@
-\documentclass[10pt]{article} % For LaTeX2e
+\documentclass[letterpaper]{article}
 
 %%%%% Math
 \usepackage{amssymb}
@@ -17,6 +17,7 @@
 \usepackage{alifeconf}
 \usepackage{url}
 \usepackage{booktabs}
+\usepackage{hyperref}
 \usepackage{cleveref}
 %%%%%% End: ALife conf recommendation
 
@@ -25,6 +26,17 @@
 \usepackage{subcaption}
 \usepackage[space]{grffile}
 %%%%% End: Graphics
+
+%%%%% Hyperref
+\usepackage{xcolor}
+\definecolor{dark-blue}{rgb}{0.05,0.1,0.75}
+\hypersetup{
+  colorlinks,
+  linkcolor={dark-blue},
+  citecolor={dark-blue},
+  urlcolor={dark-blue}
+}
+%%%%% End: Hyperref
 
 %%%%%% Cut padding
 \setlength{\belowcaptionskip}{-10pt}
@@ -66,7 +78,7 @@
 %%%%% End: Graphics
 
 %%%%% Pseudo codes
-\usepackage{algpseudocodex}
+\usepackage[indLines=false]{algpseudocodex}
 \usepackage{algorithm}
 \makeatletter
 \algnewcommand\algorithmiconce{\textbf{Once}}%
@@ -104,14 +116,10 @@
 \maketitle
 
 \begin{abstract}
-  The reward system is one of the fundamental drivers for animals to live, motivating behaviors required for survival and reproduction and serving as an objective for reinforcement learning. Despite its importance, the problem of how the reward system has evolved is underexplored. In this paper, we study in what environmental conditions biologically plausible reward functions can evolve. For this purpose, we employ a population-based decentralized evolutionary simulation framework where each agent inherits its reward function from its parent and learns to get more rewards via reinforcement learning throughout its lifetime. Our simulation results show that the evolution of food reward is often unstable under many conditions because of food regeneration and spatial constraints. We show that the sparseness of the population and foods can be an important factor in the evolution of stable food rewards.
+  The reward system is one of the fundamental drivers for animals to live, motivating behaviors required for survival and reproduction. Despite its importance, the problem of how the reward system has evolved is underexplored. In this paper, we study in what environmental conditions biologically plausible reward functions can evolve. For this purpose, we employ a population-based decentralized evolutionary simulation framework where each agent inherits its reward function from its parent and learns to get more rewards via reinforcement learning throughout its lifetime. Our simulation results show that the evolution of food reward is often unstable under many conditions because of food regeneration and spatial constraints. We show that the sparseness of the population and foods can be an important factor in the evolution of stable food rewards.
 \end{abstract}
 
 \input{src/body.tex}
-
-\subsubsection*{Broader Impact Statement}
-\label{sec:broaderImpact}
-Our work depends only on artificial simulation, and we don't have any idea about negative social impact that our work can have.
 
 %\subsubsection*{Acknowledgments}\label{sec:ack}
 % Use unnumbered third level headings for the acknowledgments. All acknowledgments, including those to funding agencies, go at the end of the paper. Only add this information once your submission is accepted and deanonymized.
@@ -119,8 +127,8 @@ Our work depends only on artificial simulation, and we don't have any idea about
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Bibliography
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\bibliographystyle{apalike}
 \bibliography{references}
-\bibliographystyle{rlc}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Appendices
