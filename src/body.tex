@@ -1,26 +1,26 @@
 \section{Introduction}\label{sec:intro}
 %Producing r
-Reward is a fundamental signal that shapes our behavior through reinforcement learning (RL). 
-Positive rewards encourage us to eat food and find mating partners, while negative rewards, such as pain and fatigue, help us protect ourselves. 
+Reward is a fundamental signal that shapes our behavior through reinforcement learning (RL).
+Positive rewards encourage us to eat food and find mating partners, while negative rewards, such as pain and fatigue, help us protect ourselves.
 %Our brain produces a reward signal to a specific stimulus, such as good food, reinforcing our behavior to get more rewards. RL has been extensively studied in neuroscience and computer science. Neuroscientists have revealed that our brain has some hot or cold spots that respond to good or bad events~\citep{berridgeAffectiveNeurosciencePleasure2008}, and how those signals are used for learning~\citep{schultzNeuronalRewardDecision2015}, while computational reinforcement learning has provided theoretical models and several applications including game-playing agents and robotics~\citep{suttonReinforcementLearningIntroduction2018}.
 
 % Problem: Reward evolution
 % Why this topic has been underexplored, and how we can find some interesting points from this line of research
-%In addition to RL, how the system for producing rewards has evolved is an interesting open question to understand our reward system. A common explanation is based on natural selection, arguing that 
+%In addition to RL, how the system for producing rewards has evolved is an interesting open question to understand our reward system. A common explanation is based on natural selection, arguing that
 Reward signals should have evolved to help animals survive and reproduce offspring (e.g., by~\cite{schultzNeuronalRewardDecision2015}), but how the variety or rewards, such as smells of foods or vision of s partners, evolved remains unclear.
 %, although some neuroscientists guess external threats and the need for hunting could be infuential~\citep{ledouxSoonThereWas2022a}.
 
 % Aim
-This paper addresses this question from a computational perspective. 
+This paper addresses this question from a computational perspective.
 Because it is difficult to observe the biological process of evolution of reward signals, we develop a simplified model of the birth and death of RL agents in a 2D environment and examine what types of rewards evolve in a
 % Why the population-based model is important
-%For this purpose, we propose to use a population-based 
+%For this purpose, we propose to use a population-based
 distributed evolution framework.
 Previous studies on the evolution of learning \citep{hintonHowLearningCan1987,singhWhereRewardsCome2009} employed a centralized evolution scheme where all agents in the population are ranked and elites are selected as parents.
-% This approach is simple and computationally efficient but sacrifices the biological reality. Instead, 
+% This approach is simple and computationally efficient but sacrifices the biological reality. Instead,
 Our simulation model employs birth and death conditions depending on the energy level and the age. Each agent inherits a reward function from its parent and learns to get more rewards by RL during its lifetime. %Through this process, we expect that naturalistic reward functions will evolve.
 
-We implement this framework using JAX\citep{jax2018github} to accelerate simulation by utilizing GPU. Our simulation results show that the evolution of food reward is surprisingly unstable due to space and food resource constraints. In our qualitative analysis, we found that 
+We implement this framework using JAX\citep{jax2018github} to accelerate simulation by utilizing GPU. Our simulation results show that the evolution of food reward is surprisingly unstable due to space and food resource constraints. In our qualitative analysis, we found that
 
 We show that the sparseness of the population and foods can be an important factor in the evolution of stable food rewards.
 
@@ -172,9 +172,10 @@ We explain the details of implementation in \cref{ap:reward}.
 \begin{algorithm}
   \caption{Reward evolution with asexual reproduction}\label{alg:reward-evo}
   \begin{tabular}{lll}
-    \textbf{Input:} & $Pop, Env$ & Initial population and simulation environment\\
-                    & $N$ & Number of rollout steps used in RL \\
-                    & $h(t, e)$, $b(e)$ & Hazard and birth function for agents \\
+    \textbf{Input:} & $Pop$ & Initial population \\
+                    & $Env$ & Simulation environment \\
+                    & $h(t, e)$ & Hazard function \\
+                    & $b(e)$ & Birth function \\
                     & $mut(r)$ & Mutation function for reward function \\
                     & $\eta$ & Energy share ratio used in reproduction
   \end{tabular}
