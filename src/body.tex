@@ -110,31 +110,21 @@ Based on the birth model $b(e)$ and the death model $h(e,t)$, we plot the expect
 \end{figure}
 
 %As a simple simulation environment with biologically plausible sensorimotor interaction, w
-We designed a continuous 2D environment shown in \Cref{figure:env}. Blue circles indicate agents, and red circles indicate foods. The environment is implemented by a 2D rigid-body physics simulation, where agents can move by
-%adding motor outputs
-producing driving forces on the left and right sides of the body.
-%at two points in the diagonal back part of the circle.
+We designed a continuous 2D environment shown in \Cref{figure:env}. Blue circles indicate agents, and red circles indicate foods. The environment is implemented by a 2D rigid-body physics simulation, where agents can move by producing driving forces on the left and right sides of the body.
 %We use these two motor outputs as an action of agent in RL.
 An agent has multiple range sensors in its front, which can sense the type and the distance to the closest object (food, agent, and wall) within $120$ degree.
 
-An agent can eat food by touching it and gain energy $e_{\mathrm{food}}$. After foods are eaten, they are regenerated in a random place.
 % This eat-driven emergence is not consistent with the growth model below. Better report the actual food producing process rather than theoretical approximation.
-The rate of food regeneration follows logistic growth function $\frac{dN_{food}}{dt} = g N_{food} (1 - \frac{N_{food}}{N_{food}^{\mathrm{max}}}$, where $N_{food}$ is the number of food, $g$ is growth rate, and $N_{food}^{\mathrm{max}}$ is the maximum number of food.
-Eating food increases an agent's internal energy by $e_{\mathrm{food}}$. In some experiments, we use poisonous food that decreases energy level by $e_{\mathrm{poison}}$.
+An agent can eat food by touching it and gain energy $e_{\mathrm{food}}$. After foods are eaten, they are regenerated in a random place. To regulate the rate of food regeneration, we maintain the internal food state at time $t$ $n^{t}$ that follows a logistic growth function: $n^{t + 1} = n^{t} + gn^{t}(1 - \frac{n^{t}}{n_{\mathrm{max}}}) - n_{\mathrm{eaten}}^{t}$, where $g$ is the growth rate, $n_{\mathrm{max}}$ is the capacity of food, and $n_{\mathrm{eaten}}^{t}$ is the number of eaten foods at time $t$. Food is actually regenerated when the interger part of $n^{t}$ is more than the number of foods in the environment.
+% In some experiments, we use poisonous food that decreases energy level by $e_{\mathrm{poison}}$.
 
-When an agent makes a child, a new agent is placed in a random location sampled from a Gaussian distribution centered around its parent. %However, to speed up the simulation, r
-Reproduction fails when all
-% report how many times.
-sampled locations are not available. Thus, keeping away from the wall and other agents is beneficial for agents to make more children. When a child is produced
-%the parent's energy level is $e$,
-a proportion of the parent's energy $\eta e \in [0, 1]$ is given to the child, and the parent's energy level decreases to $(1-\eta)e$.
-%, where $\eta \in [0, 1]$ is the ratio of energy sharing.
-The child also inherits its reward function from the parent with some mutation.
+When an agent makes a child, a new agent is placed in a random location sampled from a Gaussian distribution centered around its parent. Reproduction fails when all $10$ sampled locations are not available.
+% Thus, keeping away from the wall and other agents is beneficial for agents to make more children.
+The child inherits a proportion of the parent's energy $\eta e \in [0, 1]$, and the parent's energy level decreases to $(1-\eta)e$, where $\eta \in [0, 1]$ is the ratio of energy sharing. The child also inherits its reward function from the parent with some mutation.
 
-%Simulating many agents to maintain a reasonable size population (e.g., $50\sim 100$) is critical in our evolution scheme.
 To speed up the simulation, we implement our environment using JAX Python library \citep{jax2018github} to utilize GPU or other hardware accelerators. Inspired by recent works on 3D rigid body physics simulation using JAX (e.g., \citet{brax2021github} and MuJoCo \citep{todorov2012mujoco} MJX\footnote{\url{https://mujoco.readthedocs.io/en/stable/mjx.html}}), we implement our 2D physics engine using JAX and build our environment on top of that, optimizing it for multi-agent setting. Our simulator implements projected Gauss-Seidel method with position correction \citep{catto2005iterative} that is pretty common in 2D game physics engines such as Box2D\footnote{\url{https://box2d.org}} and Chipmunk\footnote{\url{https://chipmunk-physics.net}}.
 
-\paragraph{Reward Function with Evolving Weights} %Parameters}
+\paragraph{Reward Function with Evolving Weights}
 We assume that the reward function is determined at birth with mutation and does not change during an agent's lifetime. As inputs to the reward function, we consider \rnum{1} collision to food (eating), \rnum{2} collision to the wall, \rnum{3} collision to some other agent, and \rnum{4} the magnitude of agent's action (motor output). In experiments with poisonous food, the collision with food is also included.
 We expect that a positive reward for food evolves to acquire energy
 and a negative reward for action evolves to save energy. Collisions with the wall and other agents are chosen to test if the reward function can distinguish unrelevant signals for survival, as we do not penalize agents for colliding with walls or each other.
@@ -144,12 +134,7 @@ We take a linear model of the reward function with weights for each sensory inpu
   r = \sum_i r_i = \sum_i w_i f_i
   \label{eq:reward}
 \end{align}
-where $w_i$ is the weight for a sensorimotor event $f_i$ for $i\in{\mbox{\{foood, wall, agent,  action\}}}$.
-% This redundant coding is better put in Appendix
-%For example, the reward weight for getting food is modeled as $r_{\mathrm{food}} = 10^{s_{\mathrm{food}}} w_{\mathrm{food}}$, where $s_{\mathrm{food}} \in [0, 1]$ and $w_{\mathrm{food}} \in [-1, 1]$ are evolvable parameters that represent scale and weight for the food reward weight.
-%We model reward weights for other sensory inputs by $r_\mathrm{wall}$, $r_\mathrm{agent}$, and $r_\mathrm{agent}$ in the same way.
-%Our intention in using two independent parameters $s$ and $w$ is to balance stability and plasticity. Our preliminary experiments found that rewards can be too unstable if we allow significant change via a single parameter. Having a parameter for adjusting the scale separately makes the significant reward change more challenging while still possible. Reward weights are multiplied by collision events or action magnitude and then summed up to the reward that an agent uses in RL.
-We explain the details of implementation in \cref{ap:reward}.
+where $w_i$ is the weight for a sensorimotor event $f_i$ for $i\in{\mbox{\{foood, wall, agent,  action\}}}$. We explain the details of implementation in \cref{ap:reward}.
 
 % Add a line for reward acquisition; after observation or action?
 \begin{algorithm}
