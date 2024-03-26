@@ -1,16 +1,13 @@
 \section{Introduction}\label{sec:intro}
-Reward is a fundamental signal that shapes our behavior through reinforcement learning (RL).
-Positive rewards encourage us to eat food and find mating partners, while negative rewards, such as pain and fatigue, help us protect ourselves.
+Reward is a fundamental signal that shapes our behavior through reinforcement learning (RL). Positive rewards encourage us to eat food and find mating partners, while negative rewards, such as pain and fatigue, help us protect ourselves.
 
 % Problem: Reward evolution
 % Why this topic has been underexplored, and how we can find some interesting points from this line of research
-%In addition to RL, how the system for producing rewards has evolved is an interesting open question to understand our reward system. A common explanation is based on natural selection, arguing that
 Reward signals should have evolved to help animals survive and reproduce offspring (e.g., by~\cite{schultzNeuronalRewardDecision2015}), but how the variety or rewards, such as smells of foods or vision of s partners, evolved remains unclear.
 %, although some neuroscientists guess external threats and the need for hunting could be infuential~\citep{ledouxSoonThereWas2022a}.
 
 % Aim
-This paper addresses this question from a computational perspective.
-Because it is difficult to observe the biological process of evolution of reward signals, we develop a simplified model of the birth and death of RL agents in a 2D environment and examine what types of rewards evolve in a
+This paper addresses this question from a computational perspective. Because it is difficult to observe the biological process of evolution of reward signals, we develop a simplified model of the birth and death of RL agents in a 2D environment and examine what types of rewards evolve in a
 % Why the population-based model is important
 %For this purpose, we propose to use a population-based
 distributed evolution framework.
@@ -66,7 +63,7 @@ We adopt a Gompertz hazard model \citep{gompertzXXIVNatureFunction1825,kirkwoodD
   \label{eq:h}
 \end{align}
 The first term increases as energy levels decrease following a sigmoidal curve where the scale $\kappa_{h}$ is the scale, $\beta_{he}$ is the slope, and $\alpha_{e}$ defines the shape when $e=0$.
-The latter term exponentially increases as the agent gets older with the cale $\alpha_{t}$ and the slope $\beta_{ht}$.
+The latter term increases exponentially as the agent ages with the cale $\alpha_{t}$ and the slope $\beta_{ht}$.
 The left panel in \Cref{figure:hs} shows the shape of the hazard function with the specific parameters used in our experiments.
 The right panel in \Cref{figure:hs} shows the survival function $S(t, e) = \exp (-\int_{0}^{t}(h(t, e)) dt)$, the probability for an agent to survive to the age $t$ if it keeps the same energy level $e$.
 We can see that the survival probability more sharply decays with aging when the energy level is low.
@@ -96,8 +93,8 @@ Based on the birth model $b(e)$ and the death model $h(e,t)$, we plot the expect
   \includegraphics[width=6cm]{emevo-ss.png}
   \caption{
     Simulation environment used in our experiments.
-    Blue circles are agents, red circles are foods, outer gray lines are walls.
-    Thin gray lines around agents are indicate distance sensors.
+    Blue circles are agents, red circles are foods, and outer gray lines are walls.
+    Thin gray lines around agents indicate distance sensors.
   }\label{figure:env}
 \end{figure}
 
@@ -113,16 +110,16 @@ Based on the birth model $b(e)$ and the death model $h(e,t)$, we plot the expect
   \caption{
     Description of the environment.
     The left figure shows an agent, foods, distance sensors, and the positions of motor outputs.
-    The right figure shows ranges of an agent's mouth and each collision sensor.
+    The right figure shows the ranges of an agent's mouth and each collision sensor.
   }\label{figure:env-discr}
 \end{figure}
 
 %As a simple simulation environment with biologically plausible sensorimotor interaction, w
-We designed a continuous 2D environment shown in \cref{figure:env}. Blue circles indicate agents, and red circles indicate foods. The environment is implemented by a 2D rigid-body physics simulation. Agents can move by producing driving forces on the left and right sides of the body, as showin in \cref{figure:env-discr}.
+We designed a continuous 2D environment shown in \cref{figure:env}. Blue circles indicate agents and red circles indicate foods. The environment is implemented by a 2D rigid-body physics simulation. Agents can move by producing driving forces on the left and right sides of the body, as shown in \cref{figure:env-discr}.
 An agent has multiple range sensors in its front, which can sense the type and the distance to the closest object within $120$ degree. Sensible objects include foods, other agents, and walls. They can also sense the collision with each object and the approximate location of the collision with a resolution of $60$ degree, as shown in \cref{figure:env-discr}.
 
 % This eat-driven emergence is not consistent with the growth model below. Better report the actual food producing process rather than theoretical approximation.
-An agent can eat food by touching it and gain energy $e_{\mathrm{food}}$. After foods are eaten, they are regenerated in a random place. To regulate the rate of food regeneration, we maintain the internal food number $n_{t}$ at time $t$ which follows a logistic growth function: $n_{t + 1} = n_{t} + gn_{t}(1 - \frac{n_{t}}{n_{\mathrm{max}}}) - n_{t}^{\mathrm{eaten}}$, where $g$ is the growth rate, $n_{\mathrm{max}}$ is the capacity of food, and $n_{t}^{\mathrm{eaten}}$ is the number of eaten foods at time $t$. Food is actually regenerated when the interger part of $n^{t}$ is more than the actual number of foods in the environment.
+An agent can eat food by touching it and gain energy $e_{\mathrm{food}}$. After foods are eaten, they are regenerated in a random place. To regulate the rate of food regeneration, we maintain the internal food number $n_{t}$ at time $t$ which follows a logistic growth function: $n_{t + 1} = n_{t} + gn_{t}(1 - \frac{n_{t}}{n_{\mathrm{max}}}) - n_{t}^{\mathrm{eaten}}$, where $g$ is the growth rate, $n_{\mathrm{max}}$ is the capacity of food, and $n_{t}^{\mathrm{eaten}}$ is the number of eaten foods at time $t$. Food is regenerated when the integer part of $n^{t}$ is more than the actual number of foods in the environment.
 % In some experiments, we use poisonous food that decreases energy level by $e_{\mathrm{poison}}$.
 
 When an agent makes a child, a new agent is placed in a random location sampled from a Gaussian distribution centered around its parent. Reproduction fails when all $10$ sampled locations are not available. The child inherits a proportion of the parent's energy $\eta e \in [0, 1]$, and the parent's energy level decreases to $(1-\eta)e$, where $\eta \in [0, 1]$ is the ratio of energy sharing. The child also inherits its reward function from the parent with some mutation.
@@ -130,7 +127,7 @@ When an agent makes a child, a new agent is placed in a random location sampled 
 To speed up the simulation, we implement our environment using JAX Python library \citep{jax2018github} to utilize GPU or other hardware accelerators. Inspired by recent works on 3D rigid body physics simulation using JAX (e.g., \citet{brax2021github} and MuJoCo \citep{todorov2012mujoco} MJX\footnote{\url{https://mujoco.readthedocs.io/en/stable/mjx.html}}), we implement our 2D physics engine using JAX and build our environment on top of that, optimizing it for multi-agent setting. Our simulator implements projected Gauss-Seidel method with position correction \citep{catto2005iterative} that is pretty common in 2D game physics engines such as Box2D\footnote{\url{https://box2d.org}} and Chipmunk\footnote{\url{https://chipmunk-physics.net}}.
 
 \paragraph{Reward Function with Evolving Weights}
-We assume that the reward function is determined at birth with mutation and does not change during an agent's lifetime. As inputs to the reward function, we use food intake and the magnitude of agent's action (motor output). We expect a positive reward for food evolves to acquire energy and a negative reward for action evolves to save energy.
+We assume that the reward function is determined at birth with mutation and does not change during an agent's lifetime. We use food intake and the magnitude of the agent's action (motor output) as inputs to the reward function. We expect a positive food reward evolve to acquire energy and a negative reward for action evolve to save energy.
 We model the reward of an agent $i$ at time $t$ by $r^{i}_{t} = w_{\mathrm{food}}^{i}n_{t}^{i} + c_{\mathrm{act}} w_{\mathrm{act}}^{i}|a_{t}^{i}|$, where $n_{t}^{i}$ is the number of foods that the agent ate and $|a_{t}^{i}|$ is the Euclid norm of the agent's motor output.
 
 % Add a line for reward acquisition; after observation or action?
