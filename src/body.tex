@@ -42,14 +42,14 @@ Inspired by these works, we attempt to evolve all reward functions in this exper
 
 \section{Simulation Model and Environment}\label{sec:method}
 
-% \begin{figure}[t]
-%   \centering{}
-%   \includegraphics[width=15cm]{hazard_and_survival.pdf}
-%   \caption{
-%     \textbf{Left:} Designed hazard function $h(t)$ used for RL agents.
-%     \textbf{Right:} Survival function $S(t)$ corresponding to the hazard function.
-%   }\label{figure:hs}
-% \end{figure}
+\begin{figure}[t]
+  \centering{}
+  \includegraphics[width=6cm]{hazard_and_survival.pdf}
+  \caption{
+    \textbf{Upper:} Hazard function $h(t)$ used in our experiments.
+    \textbf{Lower:} Survival function $S(t)$ corresponding to the hazard function above.
+  }\label{figure:hs}
+\end{figure}
 
 \paragraph{Energy-based death and birth model}
 We employ an energy-based model similar to \citet{hamonEcoevolutionaryDynamicsNonepisodic2023}. Each agent maintains their energy level $e$,
@@ -62,18 +62,14 @@ We adopt a Gompertz hazard model \citep{gompertzXXIVNatureFunction1825,kirkwoodD
   h(t, e) = \frac{\kappa_{h}}{1 + \alpha_{e}\exp(\beta_{he}e)} + \alpha_{t} \exp(\beta_{ht} t).
   \label{eq:h}
 \end{align}
-The first term increases as energy levels decrease following a sigmoidal curve where the scale $\kappa_{h}$ is the scale, $\beta_{he}$ is the slope, and $\alpha_{e}$ defines the shape when $e=0$.
-The latter term increases exponentially as the agent ages with the cale $\alpha_{t}$ and the slope $\beta_{ht}$.
-The left panel in \Cref{figure:hs} shows the shape of the hazard function with the specific parameters used in our experiments.
-The right panel in \Cref{figure:hs} shows the survival function $S(t, e) = \exp (-\int_{0}^{t}(h(t, e)) dt)$, the probability for an agent to survive to the age $t$ if it keeps the same energy level $e$.
-We can see that the survival probability more sharply decays with aging when the energy level is low.
+The first term increases as energy levels decrease following a sigmoidal curve where the scale $\kappa_{h}$ is the scale, $\beta_{he}$ is the slope, and $\alpha_{e}$ defines the shape when $e=0$. The latter term increases exponentially as the agent ages with the cale $\alpha_{t}$ and the slope $\beta_{ht}$.
+The upper panel in \cref{figure:hs} shows the shape of the hazard function with the specific parameters used in our experiments.
+The lower panel in \Cref{figure:hs} shows the survival function $s_{e}(t) = \exp (-\int_{0}^{t}(h(t, e)) dt)$, the probability for an agent to survive to the age $t$ if it keeps the same energy level $e$. We can see that the survival probability more sharply decays with aging when the energy level is low.
 
 \begin{figure}[t]
   \centering{}
-  \includegraphics[width=15cm]{birth_and_nc.pdf}
-  \caption{
-    The left figure shows the designed birth rate $b(e)$ for RL agents, the center figure shows the expected lifetime for each agent, and the right figure shows the expected reproduction number $R$ for RL agents corresponding to the designed hazard and birth functions.
-  }\label{figure:bnc}
+  \includegraphics[width=6cm]{birth.pdf}
+  \caption{Birth function $b(e)$ used in our experiments.}\label{figure:birth}
 \end{figure}
 
 For simplicity, we employ an asexual reproduction model \cref{eq:h} with the birth function, the probability for an agent with energy level $e$ to produce a child in a time step:
@@ -83,8 +79,7 @@ For simplicity, we employ an asexual reproduction model \cref{eq:h} with the bir
 \end{align}
 %Modeled as a generalized logistic function \citep{richardsFlexibleGrowthFunction1959},
 The birth rate $b(e)$ increases with $e$ following a sigmoidal curve where $\kappa_{b}$ is the scale and $\beta_{b}$ is the slope.
-The left figure of \Cref{figure:bnc} shows the shape of $b$ for the parameters used in the experiment.
-Based on the birth model $b(e)$ and the death model $h(e,t)$, we plot the expected lifetime and number of children if an agent keeps the same energy level in the center and right figure in \cref{figure:bnc}. Parameters are chosen so that the maximum expected lifetime is around \num{200000} and the maximum expected number of children is around 40. All experiment parameters are shown in \cref{ap:param}.
+The left figure of \Cref{figure:birth} shows the shape of $b$ for the parameters used in the experiment. Parameters are chosen so that the maximum expected lifetime is around \num{200000} and the maximum expected number of children is around 40. All experiment parameters are shown in \cref{ap:param}.
 
 \paragraph{Environment}
 
