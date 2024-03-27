@@ -1,9 +1,3 @@
-\section{Reward Function}\label{ap:reward}\
-We model one reward weight $w$ by two evolvable parameter $w^{1} \in [0, 1], w^{2} [-1, 1]$, as $w_{\mathrm{food}} = 10^{w^{1}_{\mathrm{food}}} w^{2}_{\mathrm{food}}, w_{\mathrm{agent}} = 10^{w^{1}_{\mathrm{agent}}} w^{2}_{\mathrm{agent}}, w_{\mathrm{wall}} = 10^{w^{1}_{\mathrm{wall}}} w^{2}_{\mathrm{wall}}$, and $w_{\mathrm{action}} = 10^{w^{1}_{\mathrm{action}}} w^{2}_{\mathrm{action}}$.
-
-Our intention in this redundante coding scheme is to balance stability and plasticity. Our preliminary experiments found that rewards can be too unstable if we allow significant change via a single parameter. Having a parameter for adjusting the scale separately makes the significant reward change more challenging while still possible. Reward weights are multiplied by collision events or action magnitude and then summed up to the reward that an agent uses in RL.
-As sensory input signal $f_i$, we use a binary variable for collision events (food, wall, and agent), and scaled magnitude of motor output for action. Note that action is caled to take value between $0$ and $0.001$, because this is the only reward an agent can get at every time step.
-
 \section{Hyperparameters}\label{ap:param}
 
 \begin{table}[t]

@@ -52,19 +52,14 @@ Inspired by these works, we attempt to evolve all reward functions in this exper
 \end{figure}
 
 \paragraph{Energy-based death and birth model}
-We employ an energy-based model similar to \citet{hamonEcoevolutionaryDynamicsNonepisodic2023}. Each agent maintains their energy level $e$,
-which increases by eating food and decreases by the basal metabolism and taking a motor action.
-We design the agent's death and birth model
-% to maintain a higher energy level $e$, which leads to longer lives and many offspring. With
-based on $e$ and an agent's age $t$.
-We adopt a Gompertz hazard model \citep{gompertzXXIVNatureFunction1825,kirkwoodDecipheringDeathCommentary2015}, in which the probability of an agent dying in a time step is given by:
+We employ an energy-based metabolic model similar to \citet{hamonEcoevolutionaryDynamicsNonepisodic2023}. Each agent maintains their energy level $e$, which increases by eating food and decreases by the basal metabolism and taking a motor action.
+The mortality of an agent with energy level $e$ and age $t$ is modeled by the hazard function:
 \begin{align}
   h(t, e) = \frac{\kappa_{h}}{1 + \alpha_{e}\exp(\beta_{he}e)} + \alpha_{t} \exp(\beta_{ht} t).
   \label{eq:h}
 \end{align}
-The first term increases as energy levels decrease following a sigmoidal curve where the scale $\kappa_{h}$ is the scale, $\beta_{he}$ is the slope, and $\alpha_{e}$ defines the shape when $e=0$. The latter term increases exponentially as the agent ages with the cale $\alpha_{t}$ and the slope $\beta_{ht}$.
-The upper panel in \cref{figure:hs} shows the shape of the hazard function with the specific parameters used in our experiments.
-The lower panel in \Cref{figure:hs} shows the survival function $s_{e}(t) = \exp (-\int_{0}^{t}(h(t, e)) dt)$, the probability for an agent to survive to the age $t$ if it keeps the same energy level $e$. We can see that the survival probability more sharply decays with aging when the energy level is low.
+The first term in \cref{eq:h} increases as energy levels decrease following a sigmoidal curve where $\kappa_{h}$ is the scale, $\beta_{he}$ is the slope, and $\alpha_{e}$ defines the shape when $e=0$. The latter term increases exponentially as the agent ages with the cale $\alpha_{t}$ and the slope $\beta_{ht}$, called Gompertz hazard model \citep{gompertzXXIVNatureFunction1825,kirkwoodDecipheringDeathCommentary2015}.
+We show the shape of $h$ with parameters used in our experiments in the upper panel in \cref{figure:hs}. The lower panel in \Cref{figure:hs} shows the survival function $s_{e}(t) = \exp (-\int_{0}^{t}(h(t, e)) dt)$ corresponding to $h$, which is the probability for an agent to survive to the age $t$ under the assumption that it keeps the same energy level $e$. We can see that the survival probability more sharply decays with aging when the energy level is low.
 
 \begin{figure}[t]
   \centering{}
@@ -72,15 +67,42 @@ The lower panel in \Cref{figure:hs} shows the survival function $s_{e}(t) = \exp
   \caption{Birth function $b(e)$ used in our experiments.}\label{figure:birth}
 \end{figure}
 
-For simplicity, we employ an asexual reproduction model \cref{eq:h} with the birth function, the probability for an agent with energy level $e$ to produce a child in a time step:
+\begin{table}[t]
+  \begin{subtable}[h]{0.45\columnwidth}
+    \centering
+    \begin{tabular}{cc}
+      \toprule
+      Parameter & Value \\
+      \midrule
+      $\kappa_{h}$ & 0.01 \\
+      $\alpha_{e}$ & 0.02 \\
+      $\beta_{he}$ & 0.2 \\
+      $\alpha_{ht}$ & \num{2e-7} \\
+      $\beta_{t}$ & \num{4e-6} \\
+      \bottomrule
+    \end{tabular}
+  \end{subtable}
+  \begin{subtable}[h]{0.45\columnwidth}
+    \centering
+    \begin{tabular}{cc}
+      \toprule
+      Parameter & Value \\
+      \midrule
+      $\kappa_{b}$ & \num{4e-4} \\
+      $\beta_{b}$ & 0.1 \\
+      \bottomrule
+    \end{tabular}
+  \end{subtable}
+  \caption{Parameters of $h$ (left) and $b$ (right) used in our experiments.}\label{table:hb}
+\end{table}
+
+For simplicity, we employ an asexual reproduction model with the birth function, the probability for an agent with energy level $e$ to produce a child in a time step:
 \begin{align}
  b(e) &= \frac{\kappa_{b}}{1 + \exp(\beta_{b}e)}.
  \label{eq:b}
 \end{align}
-%Modeled as a generalized logistic function \citep{richardsFlexibleGrowthFunction1959},
 The birth rate $b(e)$ increases with $e$ following a sigmoidal curve where $\kappa_{b}$ is the scale and $\beta_{b}$ is the slope.
-The left figure of \Cref{figure:birth} shows the shape of $b$ for the parameters used in the experiment. Parameters are chosen so that the maximum expected lifetime is around \num{200000} and the maximum expected number of children is around 40. All experiment parameters are shown in \cref{ap:param}.
-
+\Cref{figure:birth} shows the shape of $b$ for the parameters used in our experiments. We show all paramters of $h$ and $b$ in \cref{table:hb}. With this choice of paramters, the exepected liftime of an agent is up to \num{6e5}
 \paragraph{Environment}
 
 \begin{figure}[t]
@@ -169,94 +191,17 @@ We show the pseudocode of our entire simulation procedure in \cref{alg:reward-ev
 
 \section{Results}
 
-\begin{figure}[t]
-  \begin{subfigure}[t]{5cm}
-    \centering
-    \includegraphics[width=5cm]{baseline.png}
-    \subcaption{Evolved rewards.}\label{subfigure:bl}
-  \end{subfigure}
-  \begin{subfigure}[t]{5cm}
-    \centering
-    \includegraphics[width=5cm]{seed5-frdecay.png}
-    \subcaption{Decreasing food reward.}\label{subfigure:s5}
-  \end{subfigure}
-  \begin{subfigure}[t]{5cm}
-    \centering
-    \includegraphics[width=5cm]{seed2-frstable.png}
-    \subcaption{Stable food reward.}\label{subfigure:s2}
-  \end{subfigure}
-  \caption{
-    In the left figure, the X-axis shows the birth time of each agent, and the y-axis shows the value of rewards for food, agent, wall, and action from top to bottom. The difference in colors and shapes of dots corresponds to the difference in the random seed. In the center and right figures, reward weights are colorized per food reward weight. The center figure shows the case where food reward decreases (seed $5$), and the right figure shows one with stable food reward,  from \num{4e6} to \num{9e6} steps.
-  }\label{figure:baseline-result}
-\end{figure}
-
 As a baseline environment, we use the setting where food is always regenerated in the upper right of the room, as the left figure in \Cref{figure:env} shows. In this environment, we tuned environmental parameters (e.g., maximum number of foods and growth rate) to stabilize the population around $100$. We show all environmental parameters in \cref{ap:param}. All experiments start with $50$ agents that have energy level $40.0$ and randomly initialized reward weights. We conducted \num{1e7} step of the simulation, resulting from $300$ to $400$ generations, which takes $14\sim16$ hours on NVIDIA P100 GPUs.
 
 \Cref{subfigure:bl} shows the evolved reward weights with 5 random seeds in the baseline environment. Surprisingly, the food reward weight is only stable positive for one random seed. It unstably goes up and down or stays negative in one random seed. On the contrary, reward weights for colliding with walls and other agents are stably negative, which is reasonable because sticking around walls is not good for foraging, and sticking to other agents might reduce the chance of making a child. The reward weight for action tends to be positive. This contradicts our expectations that it would evolve into negative, like fatigue.
 
 To investigate the reason why the evolution of food reward can be unstable, we closely look at our simulation run with seed $5$, where food reward decreases. \Cref{subfigure:s5} shows the scatter plot of reward weights in this run from \num{4e6} to \num{9e6} steps, where blue color indicates smaller food rewards and red color indicates larger. We can see a tendency that agents with lower food rewards tend to have higher wall and action rewards, which is reasonable because both sticking around walls and just moving can help foraging. On the contrary, we can see two different modes in agent and action rewards. In the medium of \cref{subfigure:s5} (between \num{6e6} and \num{7e6} steps), agents with smaller rewards tend to have smaller negative rewards for colliding with an agent, while they tend to have larger agent rewards later. On the contrary, in the case where the food reward remains stable, shown in \cref{subfigure:s2} (seed $2$), the magnitude of other collision rewards (agent and wall) is relatively small, and they don't look have a large effect. The reward for action increases over the course of evolution, which might help foraging with food rewards.
 
-\begin{figure}[t]
-  \begin{subfigure}[t]{7cm}
-    \centering
-    \includegraphics[width=7cm]{seed5-lh-orange.png}
-    \subcaption{Life history of agents in Fig. 4b.}\label{subfigure:s5lh}
-  \end{subfigure}
-  \begin{subfigure}[t]{7cm}
-    \centering
-    \includegraphics[width=7cm]{seed2-lh-orange.png}
-    \subcaption{Life history of agents in Fig. 4c.}\label{subfigure:s2lh}
-  \end{subfigure}
-  \caption{
-    Agent's life history. The left figure corresponds to the period filled with orange in \cref{subfigure:s5}, and the right figure corresponds to the period filled with orange in \cref{subfigure:s2}. Lines show the trajectories of agents, and dots show places where agents made a child. Colors correspond to negative and positive food rewards.
-  }\label{figure:s5-lh}
-\end{figure}
-
 To investigate the difference in the two cases, we focus on the period we filled orange in the first row of \cref{subfigure:s5} and \cref{subfigure:s2}, where both negative and positive food rewards coexist. We plot agents' life history in this period in \cref{figure:s5lh}, where thin lines show the agents' trajectories, dots show places where agents got children, and different colors correspond to the value of food rewards. In both figures, we can see that agents' trajectories are concentrated around the food location, while they make children in more distributed places because of the environmental constraint that makes it more difficult to have a child in a crowded area.
 Although we don't see significant differences in agents' trajectories, we can see a tendency that agents with negative food rewards are distributed more distant from the food rewards because of the smaller negative food reward in \cref{subfigure:s2lh}. On the contrary, we guess that relatively larger negative food rewards in \cref{subfigure:s5lh} are not very harmful, especially with stronger rewards for collision with agents and walls. Instead, it looks like the negative rewards for colliding each other helps agents to form a collective behavior that doesn't look very directed.
 
-\begin{figure}[t]
-  \begin{subfigure}[t]{6cm}
-    \centering
-    \includegraphics[width=6cm]{comp_baseline_linep2.png}
-    \subcaption{Comparison of evolved rewards between food locations settings.}\label{subfigure:blcomp}
-  \end{subfigure}
-  \begin{subfigure}[t]{4.5cm}
-    \centering
-    \includegraphics[width=4.5cm]{lv-s1.png}
-    \subcaption{Unstable food reward in \texttt{spread food} setting.}\label{subfigure:lv1}
-  \end{subfigure}
-  \begin{subfigure}[t]{4.5cm}
-    \centering
-    \includegraphics[width=4.5cm]{season-s4.png}
-    \subcaption{Unstable food reward in \texttt{food reloc.} setting.}\label{subfigure:season4}
-  \end{subfigure}
-  \caption{
-    The left figure shows evolved rewards in multiple settings, including the baseline environment.
-    Each line shows the reward weight averaged over all agents alive at that time.
-    Different colors indicate different settings.
-    In the center and right figures, reward weights are colorized per food reward weight, as in \cref{figure:s5-lh}. The center figure show the case where food reward is unstable in \texttt{spread food} setting, and the right one shows one in \texttt{food reloc} setting.
-    \label{figure:foodloc-comp}
-  }
-\end{figure}
 
 In the baseline environment, agents are densely located in the food location, which seems to influence the evolution of rewards. For example, negative rewards for food or another agent would help them move to sparser locations where they are more likely to produce offspring. Therefore, we conduct another experiment with more distributed food regeneration (\texttt{spread foods} in the figure) and moving food location after eating $1000$ foods (\texttt{food reloc.} in the figure). \Cref{subfigure:blcomp} compares the evolved reward functions with the baseline. To make the comparison easier, we average the reward weight of all available agent at a certain step, and plot the mean for $5$ runs each. Although food rewards can be unstable with all these three settings, the \texttt{spread foods} setting is the most stable in the sense that food reward is stable in 3 runs within 5 random seeds. Reward weights for colliding with walls and other agents are almost always negative, as in the baseline setting. The reward for action is generally positive, but sometimes goes negative with \texttt{spread foods} setting, producing the population that sticks to the wall.
-
-\begin{figure}[t]
-  \begin{subfigure}[t]{7cm}
-    \centering
-    \includegraphics[width=7cm]{lv-lh-orange.png}
-    \subcaption{A case study for decreasing food reward.}\label{subfigure:lvlh}
-  \end{subfigure}
-  \begin{subfigure}[t]{7cm}
-    \centering
-    \includegraphics[width=7cm]{season-lh-orange.png}
-    \subcaption{A case study for decreasing food reward.}\label{subfigure:seasonlh}
-  \end{subfigure}
-  \caption{
-    Agent's life history. The left figure corresponds to the period filled with orange in \cref{subfigure:s5}, and the right figure corresponds to the period filled with orange in \cref{subfigure:s2}. Lines show the trajectories of agents, and dots show places where agents made a child. Colors correspond to negative and positive food rewards.
-  }\label{figure:s5-lh}
-\end{figure}
 
 \section{Conclusion}
 In this paper, we propose a distributed evolutionary simulation to investigate the evolution of reward function. Our simulation results show that the evolution of food reward is often unstable under many conditions because of food regeneration and spatial constraints. We show that the sparseness of the population and foods can be an important factor in the evolution of stable food rewards.
