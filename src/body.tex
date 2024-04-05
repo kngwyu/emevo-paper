@@ -132,6 +132,26 @@ We model the reward of an agent $i$ at time $t$ by $r^{i}_{t} = w_{\mathrm{food}
 \paragraph{Reinforcement Learning}
 We use Proximal Policy Optimization \citep{schulmanProximalPolicyOptimization2017} as an RL algorithm because of its fast computation time. In addition to the touch and collision sensor inputs in \cref{figure:env-discr}, an agent takes its angle, velocity, and energy level as an observation. The action space is a continuous two-dimensional vector $\mathbf{a} = (f_{\mathrm{left}}, f_{\mathrm{right}})$, where $f_{\mathrm{left}}$ and $f_{\mathrm{right}}$ are the forces applied to the left and right sides of the body. The agent's policy is represented by a multi-layer perceptron with hyperbolic tangent activation, similar to the one used in continuous control experiments in \citep{schulmanProximalPolicyOptimization2017}.
 
+\begin{table}[t]
+  \centering
+  \caption{RL parameters}\label{tab:rl-param}
+  \begin{tabular}{ll}
+    \toprule
+    Paremeter & Value \\
+    \midrule
+    Discount factor ($\gamma$) & 0.999 \\
+    Rollout steps ($N$) & 1024 \\
+    Minibatch size & 256 \\
+    Number of optimization epochs & 10 \\
+    PPO Clipping parameter & 0.2 \\
+    Entropy coeff. & 0.0 \\
+    GAE parameter ($\gamma$) & 0.95 \\
+    Adam learning rate & \num{3e-4} \\
+    Adam $\epsilon$ & \num{1e-7} \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
 % Add a line for reward acquisition; after observation or action?
 \begin{algorithm}[t]
   \caption{Reward evolution with asexual reproduction}\label{alg:reward-evo}
