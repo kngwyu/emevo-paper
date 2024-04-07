@@ -16,7 +16,7 @@ Our reward model is inspired by the neuroscience of reward system \citep{schultz
 While there were previous attempts to evolve rewards in a single-agent setting \citep{singhWhereRewardsCome2009,niekumEvolutionRewardFunctions2011,zhengWhatCanLearned2020},
 %While evolutionary robotics studies \citep{nolfiEvolutionaryRoboticsBiology2004} often employ a centralized selection scheme similar to genetic algorithm \citep{mitchellIntroductionGeneticAlgorithms1998},
 %where highly evaluated elites are selected as parents. On the contrary,
-we empoloy a distributed embodied evolution (EE) framework \citep{watsonEmbodiedEvolutionDistributing2002,bredecheEmbodiedEvolutionCollective2018}
+we employ a distributed embodied evolution (EE) framework \citep{watsonEmbodiedEvolutionDistributing2002,bredecheEmbodiedEvolutionCollective2018}
 %that employs a decentralized evolution without centralized evaluation
 where agents evolve locally following birth and death rules. This method has the advantage that the evaluation of genetic traits depends on population dynamics, which is more natural.
 
@@ -120,11 +120,11 @@ We designed a continuous 2D environment shown in \cref{figure:env}. Blue circles
 % This eat-driven emergence is not consistent with the growth model below. Better report the actual food producing process rather than theoretical approximation.
 The agent can eat food by touching it and gain energy $e_{\mathrm{food}}$. After foods are eaten, they are regenerated in a random place. To regulate the rate of food regeneration, we maintain the internal food number $n_{t}$ at time $t$ which follows a logistic growth function: $n_{t + 1} = n_{t} + gn_{t}(1 - \frac{n_{t}}{n_{\mathrm{max}}}) - n_{t}^{\mathrm{eaten}}$, where $g$ is the growth rate, $n_{\mathrm{max}}$ is the capacity of food, and $n_{t}^{\mathrm{eaten}}$ is the number of eaten foods at time $t$. Food is regenerated when the integer part of $n^{t}$ is more than the actual number of foods in the environment. We use $e_{\mathrm{food}} = 1$ in our experiments. In experiments with less nutrient-poor or poisonous foods, they have different energy gain $e_{\mathrm{poor}} = 0.2$ and $e_{\mathrm{poison}} = -0.2$.
 
-The agent consumes energy via basic metabolism and action costs. As an action cost, an agent $i$ losts energy $e_{\mathrm{act}} |a_{t}^{i}|$ at time $t$, where $|a_{t}^{i}|$ is the Euclid norm of the agent's motor output $a_{t}^{i}$ and $e_{\mathrm{act}}$ is a scaling coefficient. In addition, it also consumes energy $e_{\mathrm{basic}}$ at every step. In our experiments, we use $e_{\mathrm{act}} = \num{2e-5}$ and $e_{\mathrm{basic}} = 0.001$, which yields the consumption of $0.002 \sim 0.003$ energy by one step. It means that agents need to eat food at least once in $500$ or $1000$ steps to maintain their energy level.
+The agent consumes energy via active and basic metabolism. At each step $t$, An agent $i$ losts energy $e_{\mathrm{act}} |a_{t}^{i}|$, where $|a_{t}^{i}|$ is the Euclid norm of the agent's motor output $a_{t}^{i}$ and $e_{\mathrm{act}}$ is a scaling coefficient. In addition, it also consumes energy $e_{\mathrm{basic}}$ at every step. In our experiments, we use $e_{\mathrm{act}} = \num{2e-5}$ and $e_{\mathrm{basic}} = 0.001$, leading to the consumption of $0.002 \sim 0.003$ energy by one step. It means that agents need to eat food at least once in $500$ or $1000$ steps to maintain their energy level.
 
 When an agent makes a child, a new agent is placed in a random location sampled from a Gaussian distribution centered around its parent. Reproduction fails when all $10$ sampled locations are not available. The child inherits a proportion of the parent's energy $\eta e \in [0, 1]$, and the parent's energy level decreases to $(1-\eta)e$, where $\eta \in [0, 1]$ is the ratio of energy sharing. We used $\eta = 0.4$ in our experiments. The child also inherits its reward function from the parent with some mutation.
 
-Since we need to maintain agents for evolution, the multi-agent interaction can be a huge bottoleneck in our simulation. To overcome this challenge, we implement our environment using JAX Python library \citep{jax2018github} so that the entire simulation loop is executed on GPU. Inspired by recent works on 3D rigid body physics simulation using JAX (e.g., \citet{brax2021github} and MuJoCo \citep{todorov2012mujoco} MJX\footnote{\url{https://mujoco.readthedocs.io/en/stable/mjx.html}}), we implement our 2D physics engine using JAX and build our
+Since we need to maintain agents for evolution, the multi-agent interaction can be a huge bottleneck in our simulation. To overcome this challenge, we implement our environment using JAX Python library \citep{jax2018github} so that the entire simulation loop is executed on GPU. Inspired by recent works on 3D rigid body physics simulation using JAX (e.g., \citet{brax2021github} and MuJoCo \citep{todorov2012mujoco} MJX\footnote{\url{https://mujoco.readthedocs.io/en/stable/mjx.html}}), we implement our 2D physics engine using JAX and build our
 environment on top of that, optimizing it for multi-agent setting. Our simulator implements projected Gauss-Seidel method with position correction \citep{catto2005iterative} that is pretty common in 2D game physics engines such as Box2D\footnote{\url{https://box2d.org}} and Chipmunk\footnote{\url{https://chipmunk-physics.net}}.
 
 \paragraph{Reward Function with Evolving Weights}
@@ -210,7 +210,7 @@ As a baseline environment, we use the setting where food is always regenerated i
   }\label{figure:result-baseline}
 \end{figure}
 
-\Cref{figure:result-baseline} shows the evolved reward weights with 5 random seeds in the baseline environment. We can observe that food reward is positive in all 5 runs, while action reward tends to be negative in the most of runs.
+\Cref{figure:result-baseline} shows the evolved reward weights with 5 random seeds in the baseline environment. We can observe that food reward is positive in all 5 runs, while action reward tends to be negative in the most of runs. Thus, we can say that agents have acquired rewards contributing to increase their energy level through evolution. The only exception is that action reward is largely positive in one random seed.
 
 \begin{figure}[t]
   \centering
@@ -221,14 +221,17 @@ As a baseline environment, we use the setting where food is always regenerated i
 \begin{figure}[t]
   \centering
   \includegraphics[width=8cm]{comp_foodloc.png}
-  \caption{Comparison of evolved rewards between different metabolic balance.}\label{figure:result-metabolism}
+  \caption{Comparison of evolved rewards between different metabolic balance.}\label{figure:result-foodloc}
 \end{figure}
+
+\paragraph{Effect of metabolic balance}
+To investigate the effect of metabolic balance to rewards, we run simulations with two different metabolic balance. One setting has double active metabolism ($e_{\mathrm{act}} = \num{4e-5}$), and the other has double the basic metabolism ($e_{\mathrm{basic}} = 0.002$). \Cref{figures:result-metabolism} compares the results between the baseline, double active metabolism (\texttt{x2 Active Metabolism}), and double basic metabolism (\texttt{x2 Basic Metabolism}).
+
 
 \begin{figure*}[t]
   \centering
   \includegraphics[width=16cm]{pop-bc2-seed5.png}
-  \caption{
-  }\label{figure:result-population}
+  \caption{}\label{figure:result-population}
 \end{figure*}
 
 \section{Conclusion}
