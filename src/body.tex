@@ -36,7 +36,7 @@ Inspired by these works, we attempt to evolve the entire reward functions in our
 
 \paragraph{Energy-based death and birth model}
 We employ an energy-based metabolic model similar to \citet{hamonEcoevolutionaryDynamicsNonepisodic2023}. Each agent maintains their energy level $e$, which increases by eating food and decreases by the basal metabolism and taking a motor action.
-The mortality of an agent with energy level $e$ and age $t$ is modeled by the hazard function:
+The mortality of the agent with energy level $e$ and age $t$ is modeled by the hazard function:
 \begin{align}
   h(t, e) = \frac{\kappa_{h}}{1 + \alpha_{e}\exp(\beta_{he}e)} + \alpha_{t} \exp(\beta_{ht} t).
   \label{eq:h}
@@ -118,7 +118,9 @@ The birth rate $b(e)$ increases with $e$ following a sigmoidal curve where $\kap
 We designed a continuous 2D environment shown in \cref{figure:env}. Blue circles indicate agents and red circles indicate foods. The environment is implemented by a 2D rigid-body physics simulation. Agents can move by producing driving forces on the left and right sides of the body, as shown in \cref{figure:env-discr}. An agent has multiple range sensors in its front, which can sense the type and the distance to the closest object within $120$ degree. Sensible objects include foods, other agents, and walls. They can also sense the collision with each object and the approximate location of the collision with a resolution of $60$ degree, as shown in \cref{figure:env-discr}.
 
 % This eat-driven emergence is not consistent with the growth model below. Better report the actual food producing process rather than theoretical approximation.
-An agent can eat food by touching it and gain energy $e_{\mathrm{food}}$. After foods are eaten, they are regenerated in a random place. To regulate the rate of food regeneration, we maintain the internal food number $n_{t}$ at time $t$ which follows a logistic growth function: $n_{t + 1} = n_{t} + gn_{t}(1 - \frac{n_{t}}{n_{\mathrm{max}}}) - n_{t}^{\mathrm{eaten}}$, where $g$ is the growth rate, $n_{\mathrm{max}}$ is the capacity of food, and $n_{t}^{\mathrm{eaten}}$ is the number of eaten foods at time $t$. Food is regenerated when the integer part of $n^{t}$ is more than the actual number of foods in the environment. We use $e_{\mathrm{food}} = 1$ in our experiments. In experiments with less nutrient-poor or poisonous foods, they have different energy gain $e_{\mathrm{poor}} = 0.2$ and $e_{\mathrm{poison}} = -0.2$.
+The agent can eat food by touching it and gain energy $e_{\mathrm{food}}$. After foods are eaten, they are regenerated in a random place. To regulate the rate of food regeneration, we maintain the internal food number $n_{t}$ at time $t$ which follows a logistic growth function: $n_{t + 1} = n_{t} + gn_{t}(1 - \frac{n_{t}}{n_{\mathrm{max}}}) - n_{t}^{\mathrm{eaten}}$, where $g$ is the growth rate, $n_{\mathrm{max}}$ is the capacity of food, and $n_{t}^{\mathrm{eaten}}$ is the number of eaten foods at time $t$. Food is regenerated when the integer part of $n^{t}$ is more than the actual number of foods in the environment. We use $e_{\mathrm{food}} = 1$ in our experiments. In experiments with less nutrient-poor or poisonous foods, they have different energy gain $e_{\mathrm{poor}} = 0.2$ and $e_{\mathrm{poison}} = -0.2$.
+
+The agent consumes energy via basic metabolism and action costs. As an action cost, an agent $i$ losts energy $e_{\mathrm{act}} |a_{t}^{i}|$ at time $t$, where $|a_{t}^{i}|$ is the Euclid norm of the agent's motor output $a_{t}^{i}$ and $e_{\mathrm{act}}$ is a scaling coefficient. In addition, it also consumes energy $e_{\mathrm{basic}}$ at every step. In our experiments, we use $e_{\mathrm{act}} = \num{2e-5}$ and $e_{\mathrm{basic}} = 0.001$, which yields the consumption of $0.002 \sim 0.003$ energy by one step. It means that agents need to eat food at least once in $500$ or $1000$ steps to maintain their energy level.
 
 When an agent makes a child, a new agent is placed in a random location sampled from a Gaussian distribution centered around its parent. Reproduction fails when all $10$ sampled locations are not available. The child inherits a proportion of the parent's energy $\eta e \in [0, 1]$, and the parent's energy level decreases to $(1-\eta)e$, where $\eta \in [0, 1]$ is the ratio of energy sharing. We used $\eta = 0.4$ in our experiments. The child also inherits its reward function from the parent with some mutation.
 
@@ -127,10 +129,8 @@ environment on top of that, optimizing it for multi-agent setting. Our simulator
 
 \paragraph{Reward Function with Evolving Weights}
 We assume that the reward function is determined at birth with mutation and does not change during an agent's lifetime. We use food intake and the magnitude of the agent's action (motor output) as inputs to the reward function. We expect a positive food reward evolve to acquire energy and a negative reward for action evolve to save energy.
-We model the reward of an agent $i$ at time $t$ by $r^{i}_{t} = w_{\mathrm{food}}^{i}n_{t}^{i} + c_{\mathrm{act}} w_{\mathrm{act}}^{i}|a_{t}^{i}|$, where $n_{t}^{i}$ is the number of foods that the agent ate and $|a_{t}^{i}|$ is the Euclid norm of the agent's motor output. $w_{\mathrm{food}}^{i}$ and $w_{\mathrm{act}}^{i}$ are evolvable reward parameters of an agent $i$. Because an agent gets the action reward at every step while it doesn't get the food reward so often, we use a fixed parameter $c_{\mathrm{act}}$ to scale the action reward. We use $c_{\mathrm{act}} = 0.01$ in our experiments. In experiments with poor or poisonous foods, we use another evolvable reward parameter $w_{\mathrm{poor}}^{i}$ or $w_{\mathrm{poison}}^{i}$.
-
-\paragraph{Reinforcement Learning}
-We use Proximal Policy Optimization \citep{schulmanProximalPolicyOptimization2017} as an RL algorithm because of its fast computation time. In addition to the touch and collision sensor inputs in \cref{figure:env-discr}, an agent takes its angle, velocity, and energy level as an observation. The action space is a continuous two-dimensional vector $\mathbf{a} = (f_{\mathrm{left}}, f_{\mathrm{right}})$, where $f_{\mathrm{left}}$ and $f_{\mathrm{right}}$ are the forces applied to the left and right sides of the body. The agent's policy is represented by a multi-layer perceptron with hyperbolic tangent activation, similar to the one used in continuous control experiments in \citep{schulmanProximalPolicyOptimization2017}.
+We model the reward of an agent $i$ at time $t$ by $r^{i}_{t} = w_{\mathrm{food}}^{i}n_{t}^{i} + c_\mathrm{act} w_{\mathrm{act}}^{i}|a_{t}^{i}|$, where $n_{t}^{i}$ is the number of foods that the agent at that step. $w_{\mathrm{food}}^{i}$ and $w_{\mathrm{act}}^{i}$ are evolvable reward parameters of an agent $i$. Because an agent gets the action reward at every step while it doesn't get the food reward so often, we use a fixed parameter $c_\mathrm{act}$ to scale the action reward. We use $c_\mathrm{act}=0.01$ in our experiments. In experiments with poor or poisonous foods, we use another evolvable reward parameter $w_{\mathrm{poor}}^{i}$ or $w_{\mathrm{poison}}^{i}$.
+\todo{Cauchy mutation}
 
 \begin{table}[t]
   \centering
@@ -151,6 +151,9 @@ We use Proximal Policy Optimization \citep{schulmanProximalPolicyOptimization201
     \bottomrule
   \end{tabular}
 \end{table}
+
+\paragraph{Reinforcement Learning}
+We use Proximal Policy Optimization \citep{schulmanProximalPolicyOptimization2017} as an RL algorithm because of its fast computation time. In addition to the touch and collision sensor inputs in \cref{figure:env-discr}, an agent takes its angle, velocity, and energy level as an observation. The action space is a continuous two-dimensional vector that corresponds to the forces applied to the left and right sides of the body. The policy of the agent is represented by a multi-layer perceptron with hyperbolic tangent activation, similar to the one used in continuous control experiments in \citep{schulmanProximalPolicyOptimization2017}. An agents cannot inherit any information about its learned policy, and a newborn's policy is randomly initialized. We show RL parameters used in our experiments in \cref{tab:rl-param}.
 
 % Add a line for reward acquisition; after observation or action?
 \begin{algorithm}[t]
@@ -177,7 +180,7 @@ We use Proximal Policy Optimization \citep{schulmanProximalPolicyOptimization201
     \State{Update $agent$'s energy level}
     \LComment{Process birth and death}
     \ForAll{$agent \in Pop$ with energy $e$ and age $t$}
-      \State{$e \gets e + e_{\mathrm{food}} n_{\mathrm{food}} - |a|$}
+      \State{$e \gets e + e_{\mathrm{food}} n_{\mathrm{food}} - e_{\mathrm{act}}|a| - e_{\mathrm{basic}}$}
       \With{Probability $b(e)$} \Comment{Birth}
         \State{$e \gets (1 - \eta) e$}
         \State{$r \gets agent$'s reward function}
@@ -192,21 +195,41 @@ We use Proximal Policy Optimization \citep{schulmanProximalPolicyOptimization201
 \end{algorithm}
 
 \paragraph{Simulation Procedure}
-We show the pseudocode of our entire simulation procedure in \cref{alg:reward-evo}. Each agent has its innate, immutable reward function and learnable neural network policy. At each step, it observes sensory inputs from the environment and takes action. Once in $N$ steps, the agent updates its policy via RL using the past $N$ step experiences. After environmental interaction, all agents can make a child and die based on the birth function $b$ and hazard function $h$. The new agent inherits a fraction of the parent's energy and mutated reward function. As mutation, we add uniform noise to each $s$ and $w$ with probability $0.4$. We show some relevant parameters in \cref{ap:param}.
+We show the pseudocode of our entire simulation procedure in \cref{alg:reward-evo}. Each agent has its innate, immutable reward function and learnable neural network policy. At each step, it observes sensory inputs from the environment and takes action. Once in $N$ steps, the agent updates its policy via RL using the past $N$ step experiences. After environmental interaction, all agents can make a child and die based on the birth function $b$ and hazard function $h$. The new agent inherits a fraction of the parent's energy and mutated reward function.
 
 \section{Results}
+As a baseline environment, we use the setting where food is always regenerated in the upper right of the room, as the left figure in \cref{figure:env} shows. All experiments start with $50$ agents that have energy level $40.0$. Initial reward weights are sampled from a zero-mean Gaussian distribution with standard deviation $0.1$, so that they should take values close to $0$. We conducted \num{1e7} step of the simulation, resulting in from $300$ to $400$ generations, which takes $14\sim16$ hours on NVIDIA P100 GPU.
 
-As a baseline environment, we use the setting where food is always regenerated in the upper right of the room, as the left figure in \Cref{figure:env} shows. In this environment, we tuned environmental parameters (e.g., maximum number of foods and growth rate) to stabilize the population around $100$. We show all environmental parameters in \cref{ap:param}. All experiments start with $50$ agents that have energy level $40.0$ and randomly initialized reward weights. We conducted \num{1e7} step of the simulation, resulting from $300$ to $400$ generations, which takes $14\sim16$ hours on NVIDIA P100 GPUs.
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=8cm]{baseline.png}
+  \caption{
+    Evolved rewards in the baseline setting.
+    The upper figure shows food rewards by agents' birth time, while the lower figure shows the evolution of action rewards.
+    Different colors and marker shapes indicate runs with different random seeds.
+  }\label{figure:result-baseline}
+\end{figure}
 
-\Cref{subfigure:bl} shows the evolved reward weights with 5 random seeds in the baseline environment. Surprisingly, the food reward weight is only stable positive for one random seed. It unstably goes up and down or stays negative in one random seed. On the contrary, reward weights for colliding with walls and other agents are stably negative, which is reasonable because sticking around walls is not good for foraging, and sticking to other agents might reduce the chance of making a child. The reward weight for action tends to be positive. This contradicts our expectations that it would evolve into negative, like fatigue.
+\Cref{figure:result-baseline} shows the evolved reward weights with 5 random seeds in the baseline environment. We can observe that food reward is positive in all 5 runs, while action reward tends to be negative in the most of runs.
 
-To investigate the reason why the evolution of food reward can be unstable, we closely look at our simulation run with seed $5$, where food reward decreases. \Cref{subfigure:s5} shows the scatter plot of reward weights in this run from \num{4e6} to \num{9e6} steps, where blue color indicates smaller food rewards and red color indicates larger. We can see a tendency that agents with lower food rewards tend to have higher wall and action rewards, which is reasonable because both sticking around walls and just moving can help foraging. On the contrary, we can see two different modes in agent and action rewards. In the medium of \cref{subfigure:s5} (between \num{6e6} and \num{7e6} steps), agents with smaller rewards tend to have smaller negative rewards for colliding with an agent, while they tend to have larger agent rewards later. On the contrary, in the case where the food reward remains stable, shown in \cref{subfigure:s2} (seed $2$), the magnitude of other collision rewards (agent and wall) is relatively small, and they don't look have a large effect. The reward for action increases over the course of evolution, which might help foraging with food rewards.
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=8cm]{comp_metabolism.png}
+  \caption{Comparison of evolved rewards between different metabolic balance.}\label{figure:result-metabolism}
+\end{figure}
 
-To investigate the difference in the two cases, we focus on the period we filled orange in the first row of \cref{subfigure:s5} and \cref{subfigure:s2}, where both negative and positive food rewards coexist. We plot agents' life history in this period in \cref{figure:s5lh}, where thin lines show the agents' trajectories, dots show places where agents got children, and different colors correspond to the value of food rewards. In both figures, we can see that agents' trajectories are concentrated around the food location, while they make children in more distributed places because of the environmental constraint that makes it more difficult to have a child in a crowded area.
-Although we don't see significant differences in agents' trajectories, we can see a tendency that agents with negative food rewards are distributed more distant from the food rewards because of the smaller negative food reward in \cref{subfigure:s2lh}. On the contrary, we guess that relatively larger negative food rewards in \cref{subfigure:s5lh} are not very harmful, especially with stronger rewards for collision with agents and walls. Instead, it looks like the negative rewards for colliding each other helps agents to form a collective behavior that doesn't look very directed.
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=8cm]{comp_foodloc.png}
+  \caption{Comparison of evolved rewards between different metabolic balance.}\label{figure:result-metabolism}
+\end{figure}
 
-
-In the baseline environment, agents are densely located in the food location, which seems to influence the evolution of rewards. For example, negative rewards for food or another agent would help them move to sparser locations where they are more likely to produce offspring. Therefore, we conduct another experiment with more distributed food regeneration (\texttt{spread foods} in the figure) and moving food location after eating $1000$ foods (\texttt{food reloc.} in the figure). \Cref{subfigure:blcomp} compares the evolved reward functions with the baseline. To make the comparison easier, we average the reward weight of all available agent at a certain step, and plot the mean for $5$ runs each. Although food rewards can be unstable with all these three settings, the \texttt{spread foods} setting is the most stable in the sense that food reward is stable in 3 runs within 5 random seeds. Reward weights for colliding with walls and other agents are almost always negative, as in the baseline setting. The reward for action is generally positive, but sometimes goes negative with \texttt{spread foods} setting, producing the population that sticks to the wall.
+\begin{figure*}[t]
+  \centering
+  \includegraphics[width=16cm]{pop-bc2-seed5.png}
+  \caption{
+  }\label{figure:result-population}
+\end{figure*}
 
 \section{Conclusion}
 In this paper, we propose a distributed evolutionary simulation to investigate the evolution of reward function. Our simulation results show that the evolution of food reward is often unstable under many conditions because of food regeneration and spatial constraints. We show that the sparseness of the population and foods can be an important factor in the evolution of stable food rewards.
