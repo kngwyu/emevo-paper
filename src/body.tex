@@ -198,7 +198,7 @@ We use Proximal Policy Optimization \citep{schulmanProximalPolicyOptimization201
 We show the pseudocode of our entire simulation procedure in \cref{alg:reward-evo}. Each agent has its innate, immutable reward function and learnable neural network policy. At each step, it observes sensory inputs from the environment and takes action. Once in $N$ steps, the agent updates its policy via RL using the past $N$ step experiences. After environmental interaction, all agents can make a child and die based on the birth function $b$ and hazard function $h$. The new agent inherits a fraction of the parent's energy and mutated reward function.
 
 \section{Results}
-As a baseline environment, we use the setting where food is always regenerated in the upper right of the room, as the left figure in \cref{figure:env} shows. All experiments start with $50$ agents that have energy level $40.0$. Initial reward weights are sampled from a zero-mean Gaussian distribution with standard deviation $0.1$, so that they should take values close to $0$. We conducted \num{1e7} step of the simulation, resulting in from $300$ to $400$ generations, which takes $14\sim16$ hours on NVIDIA P100 GPU.
+As a baseline environment, we use the setting where food is always regenerated in the upper right of the room, as the left figure in \cref{figure:env} shows. All experiments start with $50$ agents that have energy level $40.0$. Birth and hazard parameters in \cref{table:hb} are tuned so that population is size around $130\sim 150$ through the course of evolution. Initial reward weights are sampled from a zero-mean Gaussian distribution with standard deviation $0.1$, so that they should take values close to $0$. We conducted about one hundread thousound steps ($\num{1024e4}$) of the simulation, resulting in from $300$ to $400$ generations, which takes $14\sim16$ hours on NVIDIA P100 GPU.
 
 \begin{figure}[t]
   \centering
@@ -210,7 +210,7 @@ As a baseline environment, we use the setting where food is always regenerated i
   }\label{figure:result-baseline}
 \end{figure}
 
-\Cref{figure:result-baseline} shows the evolved reward weights with 5 random seeds in the baseline environment. We can observe that food reward is positive in all 5 runs, while action reward tends to be negative in the most of runs. Thus, we can say that agents have acquired rewards contributing to increase their energy level through evolution. The only exception is that action reward is largely positive in one random seed.
+\Cref{figure:result-baseline} shows the evolved reward weights with 5 random seeds in the baseline environment. We can observe that food reward is positive in all 5 runs, while action reward tends to be negative in the most of runs. Thus, we can say that agents have acquired rewards contributing to increase their energy level through evolution. The only exception is that action reward is largely positive in one random seed, which has negative impact on the population size. This run has the least average population size $120.6$ in the last $\num{3e6}$, while it is from $136$ to $149$ in other runs with negative action rewards. This result suggests that such unfavorable reward for population growth can be chosen when there is no competition with other species and there are sufficient energy resources.
 
 \begin{figure}[t]
   \centering
@@ -218,15 +218,15 @@ As a baseline environment, we use the setting where food is always regenerated i
   \caption{Comparison of evolved rewards between different metabolic balance.}\label{figure:result-metabolism}
 \end{figure}
 
+\paragraph{Effect of metabolic balance}
+To investigate the effect of metabolic balance to rewards, we run simulations with two different metabolic balance. One setting has double active metabolism ($e_{\mathrm{act}} = \num{4e-5}$), and the other has double the basic metabolism ($e_{\mathrm{basic}} = 0.002$). \Cref{figure:result-metabolism} compares the results between the baseline, double active metabolism (\texttt{x2 Active Metabolism}), and double basic metabolism (\texttt{x2 Basic Metabolism}). Each line shows the reward weight averaged over all agents alive at that time with one random seed, resulting in five lines per each setting.
+
+
 \begin{figure}[t]
   \centering
   \includegraphics[width=8cm]{comp_foodloc.png}
   \caption{Comparison of evolved rewards between different metabolic balance.}\label{figure:result-foodloc}
 \end{figure}
-
-\paragraph{Effect of metabolic balance}
-To investigate the effect of metabolic balance to rewards, we run simulations with two different metabolic balance. One setting has double active metabolism ($e_{\mathrm{act}} = \num{4e-5}$), and the other has double the basic metabolism ($e_{\mathrm{basic}} = 0.002$). \Cref{figures:result-metabolism} compares the results between the baseline, double active metabolism (\texttt{x2 Active Metabolism}), and double basic metabolism (\texttt{x2 Basic Metabolism}).
-
 
 \begin{figure*}[t]
   \centering
