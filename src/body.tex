@@ -5,8 +5,9 @@ Reward is a fundamental brain function that shapes our behavior through reward-b
 % What we do
 While biological studies in evolution are important, the difficulty of observing reward evolution in real animals motivates us the use of artificial evolutionary simulation. Hence, we conduct an evolutionary simulation of RL agents to examine how different environmental conditions lead to different rewards. Each agent inherits a reward function from its parent and learns to get more rewards by RL during its lifetime. Contrary to previous studies on the evolution of learning \citep{hintonHowLearningCan1987,singhWhereRewardsCome2009} with centralized selection strategies, we design a distributed evolutionary model inspired by embodied evolution (EE) framework \citep{watsonEmbodiedEvolutionDistributing2002,bredecheEmbodiedEvolutionCollective2018}. In our model, birth and death for agents are evaluated independently based on their age and internal energy level, allowing the population change. With this approach, we expect that rewards contributing to population growth is selected.
 
+% Foraging environment
 % Simulation
-We implement our distributed evolution framework based on 2D physics simulation using JAX \citep{jax2018github} to accelerate simulation by GPU. In this environment, we let agents to evolve simple reward functions that map food intake and the magnitude of motor output to scalar, which we expect to correspond to food pleasure and fatigue. Our results show that biologically reasonable reward functions evolve from randomly initialized ones given sufficient learning ability. We then find that metabolic balance, food density, and food relocation influence the shape of reward function. Furthermore,
+We implement our distributed evoluton framework in a simple virtual environment where agents needs to hunt foods to live longer and produce children based on 2D physics simulation. In this environment, we let agents to evolve simple reward functions that map food intake and the magnitude of motor output to scalar, which we expect to correspond to food pleasure and fatigue. Our results show that biologically reasonable reward functions evolve from randomly initialized ones given sufficient learning ability. We then find that metabolic balance, food density, and food relocation influence the shape of reward function. Furthermore, we examine the evolution of rewards for poor and poisonous rewards. Our results show more unstable evolution of rewards for such less important foods, sometimes leading to speciation.
 
 \section{Preliminaries and Related Works}\label{sec:related}
 We follow the standard computational RL framework \citep{suttonReinforcementLearningIntroduction2018} based on the Markov decision process (MDP). MDP $\M{}$ consists of a tuple $(\X{}, \A{}, p, r, \gamma)$, where $\X{}$ is reward function, and $\gamma \in [0, 1]$ is the discount factor. A standard objective in MDP is the discounted cumulative return $G \defequal{} \sum_{t=0}^{\infty}\gamma^t R_{t}$, where $R_t$ is the reward received at time $t$. An RL agent has policy $\pi: \X \times \A \rightarrow [0, 1]$ and seeks to find the the optimal policy $\pi^{*}$ that maximizes $\E \left[G|\pi\right]$. The state-value function $V^\pi(s) \defequal \sum_{a \in \A} \pi(a|s) \left( r(s, a) + \gamma \sum_{s' \in \X} P(s'|s, a) V^\pi(s') \right)$ is often used in RL algorithms. Observation $o \in \Omega~(\Omega \subseteq \X)$ refers to a part of the state that an agent can observe.
@@ -310,6 +311,9 @@ In the experiments so far, there is only one kind of food with $e_{\mathrm{food}
     From top to bottom, we show rewards for normal foods, poor foods, and action.
   }\label{figure:result-poor}
 \end{figure}
+
+\Cref{figure:result-poor} shows the results with poor foods. While rewards for normal foods are positive in all five runs, the evolution of rewards for poor foods are unstable.
+\todo{Analysis of behaviral pattern}
 
 \begin{figure}[t]
   \centering
