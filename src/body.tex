@@ -6,7 +6,7 @@ Reward is a fundamental brain function that shapes our behavior through reward-b
 While biological studies in evolution are important, the difficulty of observing reward evolution in real animals motivates us the use of artificial evolutionary simulation. Hence, we conduct an evolutionary simulation of RL agents to examine how different environmental conditions lead to different rewards. Each agent inherits a reward function from its parent and learns to get more rewards by RL during its lifetime. Contrary to previous studies on the evolution of learning \citep{hintonHowLearningCan1987,singhWhereRewardsCome2009} with centralized selection strategies, we design a distributed evolutionary model inspired by embodied evolution (EE) framework \citep{watsonEmbodiedEvolutionDistributing2002,bredecheEmbodiedEvolutionCollective2018}. In our model, birth and death for agents are evaluated independently based on their age and internal energy level, allowing the population change. With this approach, we expect that rewards contributing to population growth is selected.
 
 % Simulation
-We implement our distributed evolution framework based on 2D physics simulation using JAX \citep{jax2018github} to accelerate simulation by GPU. In this environment, we let agents to evolve simple reward functions that map food intake and the magnitude of motor output to scalar, which we expect to correspond to food pleasure and fatigue. Our results show that biologically reasonable reward functions evolve from randomly initialized ones given sufficient learning ability. We further find that metabolic balance, food density, and movement of food locations influence the shape of reward function.
+We implement our distributed evolution framework based on 2D physics simulation using JAX \citep{jax2018github} to accelerate simulation by GPU. In this environment, we let agents to evolve simple reward functions that map food intake and the magnitude of motor output to scalar, which we expect to correspond to food pleasure and fatigue. Our results show that biologically reasonable reward functions evolve from randomly initialized ones given sufficient learning ability. We then find that metabolic balance, food density, and food relocation influence the shape of reward function. Furthermore,
 
 \section{Preliminaries and Related Works}\label{sec:related}
 We follow the standard computational RL framework \citep{suttonReinforcementLearningIntroduction2018} based on the Markov decision process (MDP). MDP $\M{}$ consists of a tuple $(\X{}, \A{}, p, r, \gamma)$, where $\X{}$ is reward function, and $\gamma \in [0, 1]$ is the discount factor. A standard objective in MDP is the discounted cumulative return $G \defequal{} \sum_{t=0}^{\infty}\gamma^t R_{t}$, where $R_t$ is the reward received at time $t$. An RL agent has policy $\pi: \X \times \A \rightarrow [0, 1]$ and seeks to find the the optimal policy $\pi^{*}$ that maximizes $\E \left[G|\pi\right]$. The state-value function $V^\pi(s) \defequal \sum_{a \in \A} \pi(a|s) \left( r(s, a) + \gamma \sum_{s' \in \X} P(s'|s, a) V^\pi(s') \right)$ is often used in RL algorithms. Observation $o \in \Omega~(\Omega \subseteq \X)$ refers to a part of the state that an agent can observe.
@@ -118,7 +118,7 @@ The birth rate $b(e)$ increases with $e$ following a sigmoidal curve where $\kap
 We designed a continuous 2D environment shown in \cref{figure:env}. Blue circles indicate agents and red circles indicate foods. The environment is implemented by a 2D rigid-body physics simulation. Agents can move by producing driving forces on the left and right sides of the body, as shown in \cref{figure:env-discr}. An agent has multiple range sensors in its front, which can sense the type and the distance to the closest object within $120$ degree. Sensible objects include foods, other agents, and walls. They can also sense the collision with each object and the approximate location of the collision with a resolution of $60$ degree, as shown in \cref{figure:env-discr}.
 
 % This eat-driven emergence is not consistent with the growth model below. Better report the actual food producing process rather than theoretical approximation.
-The agent can eat food by touching it and gain energy $e_{\mathrm{food}}$. After foods are eaten, they are regenerated in a random place. To regulate the rate of food regeneration, we maintain the internal food number $n_{t}$ at time $t$ which follows a logistic growth function: $n_{t + 1} = n_{t} + gn_{t}(1 - \frac{n_{t}}{n_{\mathrm{max}}}) - n_{t}^{\mathrm{eaten}}$, where $g$ is the growth rate, $n_{\mathrm{max}}$ is the capacity of food, and $n_{t}^{\mathrm{eaten}}$ is the number of eaten foods at time $t$. Food is regenerated when the integer part of $n^{t}$ is more than the actual number of foods in the environment. We use $e_{\mathrm{food}} = 1$ in our experiments. In experiments with less nutrient-poor or poisonous foods, they have different energy gain $e_{\mathrm{poor}} = 0.2$ and $e_{\mathrm{poison}} = -0.2$.
+The agent can eat food by touching it and gain energy $e_{\mathrm{food}}$. We use $e_{\mathrm{food}} = 1$ in our experiments. In experiments with less nutrient-poor or poisonous foods, they have different energy gain $e_{\mathrm{poor}} = 0.2$ and $e_{\mathrm{poison}} = -0.4$. After foods are eaten, they are regenerated in a random place. To regulate the rate of food regeneration, we maintain the internal food number $n_{t}$ at time $t$ which follows a logistic growth function: $n_{t + 1} = n_{t} + gn_{t}(1 - \frac{n_{t}}{n_{\mathrm{max}}}) - n_{t}^{\mathrm{eaten}}$, where $g$ is the growth rate, $n_{\mathrm{max}}$ is the capacity of food, and $n_{t}^{\mathrm{eaten}}$ is the number of eaten foods at time $t$. Food is regenerated when the integer part of $n^{t}$ is more than the actual number of foods in the environment. We use $n_{\mathrm{max}} = 50$ and $g = 0.01$ in our experimens.
 
 The agent consumes energy via active and basic metabolism. At each step $t$, An agent $i$ losts energy $e_{\mathrm{act}} |a_{t}^{i}|$, where $|a_{t}^{i}|$ is the Euclid norm of the agent's motor output $a_{t}^{i}$ and $e_{\mathrm{act}}$ is a scaling coefficient. In addition, it also consumes energy $e_{\mathrm{basic}}$ at every step. In our experiments, we use $e_{\mathrm{act}} = \num{2e-5}$ and $e_{\mathrm{basic}} = 0.001$, leading to the consumption of $0.002 \sim 0.003$ energy by one step. It means that agents need to eat food at least once in $500$ or $1000$ steps to maintain their energy level.
 
@@ -130,7 +130,7 @@ environment on top of that, optimizing it for multi-agent setting. Our simulator
 \paragraph{Reward Function with Evolving Weights}
 We assume that the reward function is determined at birth with mutation and does not change during an agent's lifetime. We use food intake and the magnitude of the agent's action (motor output) as inputs to the reward function. We expect a positive food reward evolve to acquire energy and a negative reward for action evolve to save energy.
 We model the reward of an agent $i$ at time $t$ by $r^{i}_{t} = w_{\mathrm{food}}^{i}n_{t}^{i} + c_\mathrm{act} w_{\mathrm{act}}^{i}|a_{t}^{i}|$, where $n_{t}^{i}$ is the number of foods that the agent at that step. $w_{\mathrm{food}}^{i}$ and $w_{\mathrm{act}}^{i}$ are evolvable reward parameters of an agent $i$. Because an agent gets the action reward at every step while it doesn't get the food reward so often, we use a fixed parameter $c_\mathrm{act}$ to scale the action reward. We use $c_\mathrm{act}=0.01$ in our experiments. In experiments with poor or poisonous foods, we use another evolvable reward parameter $w_{\mathrm{poor}}^{i}$ or $w_{\mathrm{poison}}^{i}$.
-\todo{Cauchy mutation}
+\todo{Cauchy mutation, clip range (-10, 10)}
 
 \begin{table}[t]
   \centering
@@ -202,7 +202,7 @@ As a baseline environment, we use the setting where food is always regenerated i
 
 \begin{figure}[t]
   \centering
-  \includegraphics[width=8cm]{baseline.png}
+  \includegraphics[width=8cm]{baseline-min.png}
   \caption{
     Evolved rewards in the baseline setting.
     The upper figure shows food rewards by agents' birth time, while the lower figure shows the evolution of action rewards.
@@ -210,24 +210,118 @@ As a baseline environment, we use the setting where food is always regenerated i
   }\label{figure:result-baseline}
 \end{figure}
 
-\Cref{figure:result-baseline} shows the evolved reward weights with 5 random seeds in the baseline environment. We can observe that food reward is positive in all 5 runs, while action reward tends to be negative in the most of runs. Thus, we can say that agents have acquired rewards contributing to increase their energy level through evolution. The only exception is that action reward is largely positive in one random seed, which has negative impact on the population size. This run has the least average population size $120.6$ in the last $\num{3e6}$, while it is from $136$ to $149$ in other runs with negative action rewards. This result suggests that such unfavorable reward for population growth can be chosen when there is no competition with other species and there are sufficient energy resources.
+\Cref{figure:result-baseline} shows the evolved reward weights with 5 random seeds in the baseline environment. We observe that food reward is positive in all 5 runs, while action reward tends to be negative in the most of runs. Thus, we can say that agents have acquired rewards contributing to increase their energy level through evolution. The only exception is that action reward is largely positive in one random seed, which has negative impact on the population size. This run has the least average population size $120.6$ in the last $\num{3e6}$, while it is from $136$ to $149$ in other runs with negative action rewards. This result suggests that such unfavorable reward for population growth can be chosen when there is no competition with other species and there are sufficient energy resources.
 
 \begin{figure}[t]
   \centering
-  \includegraphics[width=8cm]{comp_metabolism.png}
-  \caption{Comparison of evolved rewards between different metabolic balance.}\label{figure:result-metabolism}
+  \includegraphics[width=8cm]{comp_metabolism-min.png}
+  \caption{
+    Comparison of evolved rewards between different metabolic balance.
+    Each line shows the reward weight averaged over all agents alive at that time with one random seed, resulting in five lines per each setting.
+    Different colors indicate different metabolic balances.
+  }\label{figure:result-metabolism}
 \end{figure}
 
-\paragraph{Effect of metabolic balance}
-To investigate the effect of metabolic balance to rewards, we run simulations with two different metabolic balance. One setting has double active metabolism ($e_{\mathrm{act}} = \num{4e-5}$), and the other has double the basic metabolism ($e_{\mathrm{basic}} = 0.002$). \Cref{figure:result-metabolism} compares the results between the baseline, double active metabolism (\texttt{x2 Active Metabolism}), and double basic metabolism (\texttt{x2 Basic Metabolism}). Each line shows the reward weight averaged over all agents alive at that time with one random seed, resulting in five lines per each setting.
+\paragraph{Effect of Metabolic Balance}
+To investigate the effect of metabolic balance to rewards, we run simulations with two different metabolic balance. One setting has double active metabolism ($e_{\mathrm{act}} = \num{4e-5}$), and the other has double the basic metabolism ($e_{\mathrm{basic}} = 0.002$). Note that parameters are adjusted so that energy consumption by active and basic metabolism are roughly equal in the baseline setting.
+\Cref{figure:result-metabolism} compares the results between the baseline, double active metabolism (\texttt{x2 Active Metabolism}), and double basic metabolism (\texttt{x2 Basic Metabolism}). Each line shows the reward weight averaged over all agents alive at that time with one random seed, resulting in five lines per each setting. In the two settings other than the baseline, we don't see any case where action rewards are significantly positive, because of more severe energy consumption.
+Interestingly, we observe some cases with large food rewards and small action rewards only when the basic metabolism is doubled.
+\todo{Why?}
 
+\begin{figure}[t]
+  \begin{subfigure}[t]{4cm}
+    \centering
+    \includegraphics[width=4cm]{moving-annot.png}
+  \end{subfigure}
+  \begin{subfigure}[t]{4cm}
+    \centering
+    \includegraphics[width=4cm]{lv-annot.png}
+  \end{subfigure}
+  \caption{
+    \textbf{Left:} Environment with food relocation.
+    \textbf{Right:} Environment with spread foods.
+  }\label{figure:foodloc}
+\end{figure}
 
 \begin{figure}[t]
   \centering
-  \includegraphics[width=8cm]{comp_foodloc.png}
-  \caption{Comparison of evolved rewards between different metabolic balance.}\label{figure:result-foodloc}
+  \includegraphics[width=8cm]{comp_foodloc-min.png}
+  \caption{
+    Comparison of evolved rewards between different food location.
+  }\label{figure:result-foodloc}
 \end{figure}
 
+\paragraph{Effect of Food Location}
+In the baseline setting, the center of the food location is fixed location with small variance, which can make the agents less active. The penalty for motor action can be smaller in the environment where agents need to hunt foods more actively. To confirm this hypothesis, we compare the evolved rewards in the baseline environment with ones in the environment where the food relocation happens clockwise (\texttt{Food Reloc.}) and the environment with more spread foods (\texttt{Spread Food}) shown in \cref{figure:foodloc}. Note that in the food repositioning setting, the center of food reproduction moves slightly clockwise after 100 foods are eaten. We show the results in \cref{figure:result-foodloc}. In the spread food setting, action rewards are more likely to be positive, as our hypothesis suggests. However, contradicting to our hypothesis, action reward tend to be more negative in the food reloaction setting.
+\todo{Why}
+
+\paragraph{Effect of Poor and Poisonous Foods}
+
+\begin{figure}[t]
+  \begin{subfigure}[t]{4cm}
+    \centering
+    \includegraphics[width=4cm]{poor-annot.png}
+  \end{subfigure}
+  \begin{subfigure}[t]{4cm}
+    \centering
+    \includegraphics[width=4cm]{poison-annot.png}
+  \end{subfigure}
+  \caption{
+    \textbf{Left:} Environment with poor foods.
+    \textbf{Right:} Environment with poisonous foods.
+  }\label{figure:pp}
+\end{figure}
+
+\begin{table}[t]
+  \begin{tabular}{ccl}
+    \toprule
+    Parameter & Description & Value \\
+    \midrule
+    $n_{\textrm{max}}^{\textrm{normal}}$ & maximum number of normal foods & 40\\
+    $g^{\textrm{normal}}$ & Growh rate of normal foods & 0.01 \\
+    $n_{\textrm{max}}^{\textrm{poor}}$ & maximum number of poor foods & 60 \\
+    $g^{\textrm{poor}}$ & Growh rate of poor foods & 0.02 \\
+    \bottomrule
+  \end{tabular}
+  \caption{Food regeneration parameters in the environment with poor foods.}\label{table:poor}
+\end{table}
+
+\begin{table}[t]
+  \begin{tabular}{ccl}
+    \toprule
+    Parameter & Description & Value \\
+    \midrule
+    $n_{\textrm{max}}^{\textrm{normal}}$ & maximum number of normal foods & 60\\
+    $g^{\textrm{normal}}$ & Growh rate of normal foods & 0.01 \\
+    $n_{\textrm{max}}^{\textrm{poison}}$ & maximum number of poisonous foods & 40 \\
+    $g^{\textrm{poison}}$ & Growh rate of poisonous foods & 0.01 \\
+    \bottomrule
+  \end{tabular}
+  \caption{Food regeneration parameters in the environment with poor foods.}\label{table:poison}
+\end{table}
+
+In the experiments so far, there is only one kind of food with $e_{\mathrm{food}} = 1.0$ in the environment. However, one role of our reward system is to distinguish between different external stimuli. For example, our food reward system helps us eating nutouritious food avoiding poisounous foods. Therefore, we conduct simulations with poor and poisonos foods. In \cref{figure:pp}, we show environments with poor and poisounoues rewards. In those environments, we fix the center of poor or poisounous food location at the upper left in the environment. The number of maximum food
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=8cm]{poor-min.png}
+  \caption{
+    Evolved rewards with poor foods.
+    From top to bottom, we show rewards for normal foods, poor foods, and action.
+  }\label{figure:result-poor}
+\end{figure}
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=8cm]{poison-min.png}
+  \caption{
+    Evolved rewards with poisonous foods.
+    From top to bottom, we show rewards for normal foods, poisonous foods, and action.
+  }\label{figure:result-poor}
+\end{figure}
+
+
+\paragraph{Population Dynamcis and Rewards}
 \begin{figure*}[t]
   \centering
   \includegraphics[width=16cm]{pop-bc2-seed5.png}
@@ -235,4 +329,4 @@ To investigate the effect of metabolic balance to rewards, we run simulations wi
 \end{figure*}
 
 \section{Conclusion}
-In this paper, we propose a distributed evolutionary simulation to investigate the evolution of reward function. Our simulation results show that the evolution of food reward is often unstable under many conditions because of food regeneration and spatial constraints. We show that the sparseness of the population and foods can be an important factor in the evolution of stable food rewards.
+In this paper, we propose a distributed evolutionary simulation to investigate the evolution of reward function.
