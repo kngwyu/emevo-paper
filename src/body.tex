@@ -229,7 +229,7 @@ To investigate the effect of metabolic balance to rewards, we run simulations wi
 Interestingly, we observe some cases with large food rewards and small action rewards only when the basic metabolism is doubled.
 \todo{Why?}
 
-\begin{figure}[t]
+\begin{figure}[ht]
   \begin{subfigure}[t]{4cm}
     \centering
     \includegraphics[width=4cm]{moving-annot.png}
@@ -244,7 +244,7 @@ Interestingly, we observe some cases with large food rewards and small action re
   }\label{figure:foodloc}
 \end{figure}
 
-\begin{figure}[t]
+\begin{figure}[ht]
   \centering
   \includegraphics[width=8cm]{comp_foodloc-min.png}
   \caption{
@@ -258,7 +258,7 @@ In the baseline setting, the center of the food location is fixed location with 
 
 \paragraph{Effect of Poor and Poisonous Foods}
 
-\begin{figure}[t]
+\begin{figure}[ht]
   \begin{subfigure}[t]{4cm}
     \centering
     \includegraphics[width=4cm]{poor-annot.png}
@@ -274,36 +274,41 @@ In the baseline setting, the center of the food location is fixed location with 
 \end{figure}
 
 \begin{table}[t]
-  \begin{tabular}{ccl}
-    \toprule
-    Parameter & Description & Value \\
-    \midrule
-    $n_{\textrm{max}}^{\textrm{normal}}$ & maximum number of normal foods & 40\\
-    $g^{\textrm{normal}}$ & Growh rate of normal foods & 0.01 \\
-    $n_{\textrm{max}}^{\textrm{poor}}$ & maximum number of poor foods & 60 \\
-    $g^{\textrm{poor}}$ & Growh rate of poor foods & 0.02 \\
-    \bottomrule
-  \end{tabular}
-  \caption{Food regeneration parameters in the environment with poor foods.}\label{table:poor}
+  \begin{subtable}[h]{0.45\columnwidth}
+    \centering
+    \begin{tabular}{cc}
+      \toprule
+      Parameter & Value \\
+      \midrule
+      $n_{\textrm{max}}^{\textrm{normal}}$ & 40\\
+      $g^{\textrm{normal}}$ & 0.01 \\
+      $n_{\textrm{max}}^{\textrm{poor}}$ & 60 \\
+      $g^{\textrm{poor}}$ & 0.02 \\
+      \bottomrule
+    \end{tabular}
+  \end{subtable}
+  \begin{subtable}[h]{0.45\columnwidth}
+    \centering
+    \begin{tabular}{cc}
+      \toprule
+      Parameter & Value \\
+      \midrule
+      $n_{\textrm{max}}^{\textrm{normal}}$ & 60\\
+      $g^{\textrm{normal}}$ & 0.01 \\
+      $n_{\textrm{max}}^{\textrm{poison}}$ & 40 \\
+      $g^{\textrm{poison}}$ & 0.01 \\
+      \bottomrule
+    \end{tabular}
+  \end{subtable}
+  \caption{
+    Food regeneration parameter with poor foods (left) or poisonous foods (right).
+    $n_{\textrm{max}}^{\textrm{poor}}$ and $n_{\textrm{max}}^{\textrm{poison}}$ are the maximum number of poor or poisonous foods, while $g^{\textrm{poor}}$ and $g^{\textrm{poison}}$ are growth rate of poor or poisonous foods.
+  }\label{table:pp}
 \end{table}
 
-\begin{table}[t]
-  \begin{tabular}{ccl}
-    \toprule
-    Parameter & Description & Value \\
-    \midrule
-    $n_{\textrm{max}}^{\textrm{normal}}$ & maximum number of normal foods & 60\\
-    $g^{\textrm{normal}}$ & Growh rate of normal foods & 0.01 \\
-    $n_{\textrm{max}}^{\textrm{poison}}$ & maximum number of poisonous foods & 40 \\
-    $g^{\textrm{poison}}$ & Growh rate of poisonous foods & 0.01 \\
-    \bottomrule
-  \end{tabular}
-  \caption{Food regeneration parameters in the environment with poor foods.}\label{table:poison}
-\end{table}
+In the experiments so far, there is only one kind of food with $e_{\mathrm{food}} = 1.0$ in the environment. However, one role of our reward system is to distinguish between different external stimuli. For example, our food reward system helps us eating nutouritious food avoiding poisounous foods. Therefore, we conduct simulations with poor and poisonos foods, of which the energy gains are $e_{\mathrm{poor}} = 0.2$ and $e_{\mathrm{poison}} = -0.4$. In \cref{figure:pp}, we show environments with poor and poisounoues rewards. In those environments, we fix the center of poor or poisounous food location at the upper left in the environment. The number of maximum food is smaller in the environment with poor foods, and there is more normal foods in the environment with poisonous foods as shown in \cref{table:pp}, so that the overall energy supply should be roughly the same.
 
-In the experiments so far, there is only one kind of food with $e_{\mathrm{food}} = 1.0$ in the environment. However, one role of our reward system is to distinguish between different external stimuli. For example, our food reward system helps us eating nutouritious food avoiding poisounous foods. Therefore, we conduct simulations with poor and poisonos foods. In \cref{figure:pp}, we show environments with poor and poisounoues rewards. In those environments, we fix the center of poor or poisounous food location at the upper left in the environment. The number of maximum food is smaller in the environment with poor foods as shown in \cref{table:poor}, and there is more normal foods in the environment with poisonous foods as shown in \cref{table:poison}, so that the overall energy supply should be roughly the same.
-
-\begin{figure}[t]
+\begin{figure}[ht]
   \centering
   \includegraphics[width=8cm]{poor-min.png}
   \caption{
@@ -312,17 +317,19 @@ In the experiments so far, there is only one kind of food with $e_{\mathrm{food}
   }\label{figure:result-poor}
 \end{figure}
 
-\Cref{figure:result-poor} shows the results with poor foods. While rewards for normal foods are positive in all five runs, the evolution of rewards for poor foods are unstable.
+\Cref{figure:result-poor} shows the results with poor foods. While rewards for normal foods are consistently positive in all five runs, the evolution of rewards for poor foods are unstable.
 \todo{Analysis of behaviral pattern}
 
-\begin{figure}[t]
+\begin{figure}[ht]
   \centering
   \includegraphics[width=8cm]{poison-min.png}
   \caption{
     Evolved rewards with poisonous foods.
     From top to bottom, we show rewards for normal foods, poisonous foods, and action.
-  }\label{figure:result-poor}
+  }\label{figure:result-poison}
 \end{figure}
+
+\Cref{figure:result-poison} shows the results with poisonous foods. Same as the case with poor foods, rewards for normal foods are positive in all runs. The rewards for poisonous foods are consistently negative in the most runs as expected, but there is a case with positive
 
 
 \paragraph{Population Dynamcis and Rewards}
