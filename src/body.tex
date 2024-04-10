@@ -133,7 +133,7 @@ We assume that the reward function is determined at birth with mutation and does
 We model the reward of an agent $i$ at time $t$ by $r^{i}_{t} = w_{\mathrm{food}}^{i}n_{t}^{i} + c_\mathrm{act} w_{\mathrm{act}}^{i}|a_{t}^{i}|$, where $n_{t}^{i}$ is the number of foods that the agent at that step. $w_{\mathrm{food}}^{i}$ and $w_{\mathrm{act}}^{i}$ are evolvable reward parameters of an agent $i$. Because an agent gets the action reward at every step while it doesn't get the food reward so often, we use a fixed parameter $c_\mathrm{act}$ to scale the action reward. We use $c_\mathrm{act}=0.01$ in our experiments. In experiments with poor or poisonous foods, we use another evolvable reward parameter $w_{\mathrm{poor}}^{i}$ or $w_{\mathrm{poison}}^{i}$.
 \todo{Cauchy mutation, clip range (-10, 10)}
 
-\begin{table}[t]
+\begin{table}[!htb]
   \centering
   \caption{RL parameters}\label{tab:rl-param}
   \begin{tabular}{ll}
@@ -157,7 +157,7 @@ We model the reward of an agent $i$ at time $t$ by $r^{i}_{t} = w_{\mathrm{food}
 We use Proximal Policy Optimization \citep{schulmanProximalPolicyOptimization2017} as an RL algorithm because of its fast computation time. In addition to the touch and collision sensor inputs in \cref{figure:env-discr}, an agent takes its angle, velocity, and energy level as an observation. The action space is a continuous two-dimensional vector that corresponds to the forces applied to the left and right sides of the body. The policy of the agent is represented by a multi-layer perceptron with hyperbolic tangent activation, similar to the one used in continuous control experiments in \citep{schulmanProximalPolicyOptimization2017}. An agents cannot inherit any information about its learned policy, and a newborn's policy is randomly initialized. We show RL parameters used in our experiments in \cref{tab:rl-param}.
 
 % Add a line for reward acquisition; after observation or action?
-\begin{algorithm}[t]
+\begin{algorithm}[!htb]
   \caption{Reward evolution with asexual reproduction}\label{alg:reward-evo}
   \begin{tabular}{lll}
     \textbf{Input:} & $Pop$ & Initial population of agents \\
@@ -201,7 +201,7 @@ We show the pseudocode of our entire simulation procedure in \cref{alg:reward-ev
 \section{Results}
 As a baseline environment, we use the setting where food is always regenerated in the upper right of the room, as the left figure in \cref{figure:env} shows. All experiments start with $50$ agents that have energy level $40.0$. Birth and hazard parameters in \cref{table:hb} are tuned so that population is size around $130\sim 150$ through the course of evolution. Initial reward weights are sampled from a zero-mean Gaussian distribution with standard deviation $0.1$, so that they should take values close to $0$. We conducted about one hundread thousound steps ($\num{1024e4}$) of the simulation, resulting in from $300$ to $400$ generations, which takes $14\sim16$ hours on NVIDIA P100 GPU.
 
-\begin{figure}[t]
+\begin{figure}[!htb]
   \centering
   \includegraphics[width=8cm]{baseline-min.png}
   \caption{
@@ -213,7 +213,7 @@ As a baseline environment, we use the setting where food is always regenerated i
 
 \Cref{figure:result-baseline} shows the evolved reward weights with 5 random seeds in the baseline environment. We observe that food reward is positive in all 5 runs, while action reward tends to be negative in the most of runs. Thus, we can say that agents have acquired rewards contributing to increase their energy level through evolution. The only exception is that action reward is largely positive in one random seed, which has negative impact on the population size. This run has the least average population size $120.6$ in the last $\num{3e6}$, while it is from $136$ to $149$ in other runs with negative action rewards. This result suggests that such unfavorable reward for population growth can be chosen when there is no competition with other species and there are sufficient energy resources.
 
-\begin{figure}[t]
+\begin{figure}[!htb]
   \centering
   \includegraphics[width=8cm]{comp_metabolism-min.png}
   \caption{
@@ -223,20 +223,44 @@ As a baseline environment, we use the setting where food is always regenerated i
   }\label{figure:result-metabolism}
 \end{figure}
 
+\begin{figure}[t]
+  \begin{subfigure}[t]{3cm}
+    \centering
+    \includegraphics[width=3cm]{energy-consumption-min.png}
+  \end{subfigure}
+  \begin{subfigure}[t]{5cm}
+    \centering
+    \includegraphics[width=5cm]{metabo-scatter-min.png}
+  \end{subfigure}
+  \caption{
+    \textbf{Left:} Energy consumption per action norm in three settings.
+    \textbf{Right:} Relationship between the average of action norm ($|a_{t}^{i}|$) and the number of children.
+  }\label{figure:scatter-metabo}
+\end{figure}
+
 \paragraph{Effect of Metabolic Balance}
 To investigate the effect of metabolic balance to rewards, we run simulations with two different metabolic balance. One setting has double active metabolism ($e_{\mathrm{act}} = \num{4e-5}$), and the other has double the basic metabolism ($e_{\mathrm{basic}} = 0.002$). Note that parameters are adjusted so that energy consumption by active and basic metabolism are roughly equal in the baseline setting.
 \Cref{figure:result-metabolism} compares the results between the baseline, double active metabolism (\texttt{x2 Active Metabolism}), and double basic metabolism (\texttt{x2 Basic Metabolism}). Each line shows the reward weight averaged over all agents alive at that time with one random seed, resulting in five lines per each setting. In the two settings other than the baseline, we don't see any case where action rewards are significantly positive, because of more severe energy consumption.
 Interestingly, we observe some cases with large food rewards and small action rewards only when the basic metabolism is doubled.
-\todo{Why?}
 
-\begin{figure}[ht]
+\begin{figure}[t]
+  \begin{subfigure}[t]{7cm}
+    \centering
+    \includegraphics[width=7cm]{actnorm_age-min.png}
+  \end{subfigure}
+  \caption{Change of the average action norm over aging for highly active and productive agents in \texttt{x2 Active Metabolism}. Specifically, agents with more than $60$ average action norm and more than $10$ children are selected for visualization.}\label{figure:actnorm-age}
+\end{figure}
+
+To ingestigate the reason, we plot the relationship between the average of action norm ($|a_{t}^{i}|$) over agents' lifetime and the number of children in the right of \cref{figure:scatter-metabo}. As shown in the left of \cref{figure:scatter-metabo}, agents in the \texttt{x2 Active Metabolism} setting consumes less energy when the action norm is less than $50$, but they consumes more energy otherwise. In the both settings, agents with roughly $30$ to $60$ average action norms produce more children. Suprisingly, we can see that agents with more than $50$ average action norms produce more children in the \texttt{x2 Active Metabolism} setting, although their energy consumption is higher. However, as shown in \cref{figure:actnorm-age}, agents tend to take smaller actions in their early stage of learning. Thus, we can say that doubling active metabolism is milder than doubling basic metabolism, because it's not that harsh for newborns, leading to less smaller action rewards.
+
+\begin{figure}[t]
   \begin{subfigure}[t]{4cm}
     \centering
-    \includegraphics[width=4cm]{moving-annot.png}
+    \includegraphics[width=4cm]{moving-annot-min.png}
   \end{subfigure}
   \begin{subfigure}[t]{4cm}
     \centering
-    \includegraphics[width=4cm]{lv-annot.png}
+    \includegraphics[width=4cm]{lv-annot-min.png}
   \end{subfigure}
   \caption{
     \textbf{Left:} Environment with food relocation.
@@ -244,7 +268,7 @@ Interestingly, we observe some cases with large food rewards and small action re
   }\label{figure:foodloc}
 \end{figure}
 
-\begin{figure}[ht]
+\begin{figure}[!htb]
   \centering
   \includegraphics[width=8cm]{comp_foodloc-min.png}
   \caption{
@@ -254,18 +278,17 @@ Interestingly, we observe some cases with large food rewards and small action re
 
 \paragraph{Effect of Food Location}
 In the baseline setting, the center of the food location is fixed location with small variance, which can make the agents less active. The penalty for motor action can be smaller in the environment where agents need to hunt foods more actively. To confirm this hypothesis, we compare the evolved rewards in the baseline environment with ones in the environment where the food relocation happens clockwise (\texttt{Food Reloc.}) and the environment with more spread foods (\texttt{Spread Food}) shown in \cref{figure:foodloc}. Note that in the food repositioning setting, the center of food reproduction moves slightly clockwise after 100 foods are eaten. We show the results in \cref{figure:result-foodloc}. In the spread food setting, action rewards are more likely to be positive, as our hypothesis suggests. However, contradicting to our hypothesis, action reward tend to be more negative in the food reloaction setting.
-\todo{Why}
 
 \paragraph{Effect of Poor and Poisonous Foods}
 
-\begin{figure}[ht]
+\begin{figure}[t]
   \begin{subfigure}[t]{4cm}
     \centering
-    \includegraphics[width=4cm]{poor-annot.png}
+    \includegraphics[width=4cm]{poor-annot-min.png}
   \end{subfigure}
   \begin{subfigure}[t]{4cm}
     \centering
-    \includegraphics[width=4cm]{poison-annot.png}
+    \includegraphics[width=4cm]{poison-annot-min.png}
   \end{subfigure}
   \caption{
     \textbf{Left:} Environment with poor foods.
