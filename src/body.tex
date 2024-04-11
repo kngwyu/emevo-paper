@@ -1,6 +1,6 @@
 \section{Introduction}\label{sec:intro}
 % Problem, importantness, and specific question
-Reward is a fundamental brain function that shapes our behavior through reward-based learning, or reinforcement learning (RL). Positive rewards encourage us to eat food and find mating partners, while negative rewards, such as pain and fatigue, help us protect ourselves. However, regardless of its importantness to animal lives, the evolutionary process of such a reward system is underexplored. Reward signals should have evolved to help animals survive and reproduce offspring (e.g., by~\cite{schultzNeuronalRewardDecision2015}), but what kind of environmental conditions have influenced the evolution of varieties of rewards remains unclear.
+Reward is a fundamental brain function that shapes our behavior through reward-based learning, or reinforcement learning (RL). Positive rewards encourage us to eat food and find mating partners, while negative rewards, such as pain and fatigue, help us protect ourselves. However, regardless of its importance to animal lives, the evolutionary process of such a reward system is underexplored. Reward signals should have evolved to help animals survive and reproduce offspring (e.g., by~\cite{schultzNeuronalRewardDecision2015}), but what kind of environmental conditions have influenced the evolution of varieties of rewards remains unclear.
 
 \begin{figure}[t]
   \centering{}
@@ -222,7 +222,7 @@ As a baseline environment, we use the setting where food is always regenerated i
   }\label{figure:result-baseline}
 \end{figure}
 
-\Cref{figure:result-baseline} shows the evolved reward weights with 5 random seeds in the baseline environment. We observe that food reward is positive in all 5 runs, while action reward tends to be negative in the most of runs. Thus, we can say that agents have acquired rewards contributing to increasing their energy level through evolution. The only exception is that action reward is largely positive in one random seed, which has a negative impact on the population size. This run has the least average population size $120.6$ in the last $\num{3e6}$, while it is from $136$ to $149$ in other runs with negative action rewards. This result suggests that such unfavorable reward for population growth can be chosen when there is no competition with other species, and there are sufficient energy resources.
+\Cref{figure:result-baseline} shows the evolved reward weights with 5 random seeds in the baseline environment. We observe that food reward is positive in all 5 runs, while action reward tends to be negative in most of the runs. Thus, we can say that agents have acquired rewards that contribute to increasing their energy levels through evolution. The only exception is that action reward is largely positive in one random seed, which has a negative impact on the population size. This run has the least average population size of $120.6$ in the last $\num{3e6}$, while it is from $136$ to $149$ in other runs with negative action rewards. This result suggests that such unfavorable reward for population growth can be chosen when there is no competition with other species and sufficient energy resources.
 
 \begin{figure}[!htb]
   \centering
@@ -262,7 +262,7 @@ Interestingly, we observe some cases with large food rewards and small action re
   \caption{Change of the average action norm over aging for highly active and productive agents in \texttt{x2 Active Metabolism}. Specifically, agents with more than $60$ average action norm and more than $10$ children are selected for visualization.}\label{figure:actnorm-age}
 \end{figure}
 
-To ingestigate the reason, we plot the relationship between the average of action norm ($|a_{t}^{i}|$) over agents' lifetime and the number of children in the right of \cref{figure:scatter-metabo}. As shown in the left of \cref{figure:scatter-metabo}, agents in the \texttt{x2 Active Metabolism} setting consumes less energy when the action norm is less than $50$, but they consumes more energy otherwise. In the both settings, agents with roughly $30$ to $60$ average action norms produce more children. Suprisingly, we can see that agents with more than $50$ average action norms produce more children in the \texttt{x2 Active Metabolism} setting, although their energy consumption is higher. However, as shown in \cref{figure:actnorm-age}, agents tend to take smaller actions in their early stage of learning. Thus, we can say that doubling active metabolism is milder than doubling basic metabolism, because it's not that harsh for newborns, leading to less smaller action rewards.
+To investigate the reason, we plot the relationship between the average of action norm ($|a_{t}^{i}|$) over agents' lifetime and the number of children in the right of \cref{figure:scatter-metabo}. As shown in the left of \cref{figure:scatter-metabo}, agents in the \texttt{x2 Active Metabolism} setting consume less energy when the action norm is less than $50$, but they consume more energy otherwise. In both settings, agents with roughly $30$ to $60$ average action norms produce more children. Surprisingly, we can see that agents with more than $50$ average action norms produce more children in the \texttt{x2 Active Metabolism} setting, although their energy consumption is higher. However, as shown in \cref{figure:actnorm-age}, agents tend to take smaller actions in their early stage of learning. Thus, we can say that doubling active metabolism is milder than doubling basic metabolism because it's not that harsh for newborns, leading to smaller action rewards.
 
 \begin{figure}[t]
   \begin{subfigure}[t]{4cm}
@@ -297,7 +297,7 @@ To ingestigate the reason, we plot the relationship between the average of actio
 \end{figure}
 
 \paragraph{Effect of Food Location}
-In the baseline setting, the center of the food location is fixed location with small variance, which can make the agents less active. The penalty for motor action can be smaller in the environment where agents need to hunt foods more actively. To confirm this hypothesis, we compare the evolved rewards in the baseline environment with ones in the environment where the food relocation happens clockwise (\texttt{Food Reloc.}) and the environment with more spread foods (\texttt{Spread Food}) shown in \cref{figure:foodloc}. Note that in the food repositioning setting, the center of food reproduction moves slightly clockwise after 100 foods are eaten. We show the results in \cref{figure:result-foodloc}. In the spread food setting, action rewards are more likely to be positive, as our hypothesis suggests. However, contradicting to our hypothesis, action reward tend to be more negative in the food reloaction.
+In the baseline setting, the center of the food location is a fixed location with a small variance, which can make the agents less active. The penalty for motor action can be smaller in the environment where agents need to hunt foods more actively. To confirm this hypothesis, we compare the evolved rewards in the baseline environment with ones in the environment where the food relocation happens clockwise (\texttt{Food Reloc.}) and the environment with more spread foods (\texttt{Spread Food}) shown in \cref{figure:foodloc}. Note that in the food repositioning setting, the center of food reproduction moves slightly clockwise after 100 foods are eaten. We show the results in \cref{figure:result-foodloc}. As our hypothesis suggests, action rewards are more likely to be positive in the spread food setting. However, contradicting our hypothesis, action rewards tend to be more negative in the food reloaction.
 
 To explore the reason, we plot the standard deviation of the number of children in the group of agents alive at a certain time step in \cref{figure:result-ncstd}. While the standard deviation is often quite high in the baseline and \texttt{Spread Food} setting, it's constantly low in the \texttt{Food Reloc.} setting.
 
@@ -351,7 +351,7 @@ To explore the reason, we plot the standard deviation of the number of children 
   }\label{table:pp}
 \end{table}
 
-In the experiments so far, there is only one kind of food with $e_{\mathrm{food}} = 1.0$ in the environment. However, one role of our reward system is to distinguish between different external stimuli. For example, our food reward system helps us eat nutritious food avoiding poisonous foods. Therefore, we conduct simulations with poor and poisonous foods, of which the energy gains are $e_{\mathrm{poor}} = 0.2$ and $e_{\mathrm{poison}} = -0.4$. In \cref{figure:pp}, we show environments with poor and poisonous rewards. In those environments, we fix the center of poor or poisonous food location at the upper left. The number of maximum foods is smaller in the environment with poor foods, and there are more normal foods in the environment with poisonous foods as shown in \cref{table:pp}, so that the overall energy supply should be roughly the same.
+In the experiments so far, there is only one kind of food with $e_{\mathrm{food}} = 1.0$ in the environment. However, one role of our reward system is to distinguish between different external stimuli. For example, our food reward system helps us eat nutritious food, avoiding poisonous foods. Therefore, we conduct simulations with poor and poisonous foods, of which the energy gains are $e_{\mathrm{poor}} = 0.2$ and $e_{\mathrm{poison}} = -0.4$. In \cref{figure:pp}, we show environments with poor and poisonous rewards. In those environments, we fix the center of poor or poisonous food location at the upper left. The number of maximum foods is smaller in the environment with poor foods, and there are more normal foods in the environment with poisonous foods as shown in \cref{table:pp}, so that the overall energy supply should be roughly the same.
 
 \begin{figure}[t]
   \centering
@@ -366,9 +366,9 @@ In the experiments so far, there is only one kind of food with $e_{\mathrm{food}
   \centering
   \includegraphics[width=8cm]{lh-f2-min.png}
   \caption{
-    Life history of agents in the red period in the upper figure.
-    Lines indicate the trajectories, and the circle indicates places where agents got their children.
-    The radius of the circle corrensponds to the number of grand children that the newborn produced.
+    The life history of agents in the environment with poor foods.
+    Lines indicate the trajectories and the circle indicates places where agents got their children.
+    The circle's radius corresponds to the number of grandchildren that the newborn produced.
   }\label{figure:lh-poor}
 \end{figure}
 
@@ -377,11 +377,11 @@ In the experiments so far, there is only one kind of food with $e_{\mathrm{food}
   \includegraphics[width=8cm]{popc-poor-min.png}
   \caption{
     The population of agents with positive or negative rewards for poor foods.
-    The area filled red shows the time period corresponding to \cref{figure:lh-poor}.
+    The area filled in red shows the time period corresponding to \cref{figure:lh-poor}.
   }\label{figure:pop-poor}
 \end{figure}
 
-\Cref{figure:result-poor} shows the results with poor foods. While rewards for normal foods are consistently positive in all five runs, the evolution of rewards for poor foods is unstable. In \cref{figure:lh-poor}, we show the lifehistory of agents in a selected period with almost equal number of agents with positive or negative food rewards (seed $4$, step $\num{7.1e6}$ to $\num{7.2e6}$). Lines indicate the trajectories, the circle indicates places where agents got their children. The size of circles corresponds to the number of grand children that the child born in that place made, indicating the influence of the reproduction event. In this period, agents with negative rewards for poor foods tend to produce many children in the right area of the environment with normal foods, leading to the population increase. This case study shows that avoiding poor foods can lead to eating more nutritious foods in this environment. At the same time, eating poor foods is not harmful to agents, leading to very unstable evolution of rewards for poor foods.
+\Cref{figure:result-poor} shows the results with poor foods. While rewards for normal foods are consistently positive in all five runs, the evolution of rewards for poor foods is unstable. In \cref{figure:lh-poor}, we show the life history of agents in a selected period with almost equal number of agents with positive or negative food rewards (seed $4$, step $\num{7.1e6}$ to $\num{7.2e6}$). Lines indicate the trajectories and the circle indicates places where agents got their children. The size of the circles corresponds to the number of grandchildren that the child born in that place made, indicating the influence of the reproduction event. In this period, agents with negative rewards for poor foods tend to produce many children in the right area of the environment with normal foods, leading to a population increase. This case study shows that avoiding poor foods can lead to eating more nutritious foods in this environment. At the same time, eating poor foods is not harmful to agents, leading to a very unstable evolution of rewards for poor foods.
 
 \begin{figure}[!ht]
   \centering
@@ -396,9 +396,9 @@ In the experiments so far, there is only one kind of food with $e_{\mathrm{food}
   \centering
   \includegraphics[width=8cm]{lh-poison2-min.png}
   \caption{
-    Life history of agents in the red period in the upper figure.
-    Lines indicate the trajectories, and the circle indicates places where agents got their children.
-    The radius of the circle corrensponds to the number of grand children that the newborn produced.
+    The life history of agents in the environment with poisonous foods.
+    Lines indicate the trajectories and the circle indicates places where agents got their children.
+    The radius of the circle corresponds to the number of grandchildren that the newborn produced.
   }\label{figure:lh-poison}
 \end{figure}
 
@@ -407,11 +407,11 @@ In the experiments so far, there is only one kind of food with $e_{\mathrm{food}
   \includegraphics[width=8cm]{popc-poison-min.png}
   \caption{
     The population of agents with positive or negative rewards for poor foods.
-    The area filled red shows the time period corresponding to \cref{figure:lh-poison}.
+    The area filled in red shows the time period corresponding to \cref{figure:lh-poison}.
   }\label{figure:pop-poison}
 \end{figure}
 
-\Cref{figure:result-poison} shows the results with poisonous foods. Same as the case with poor foods, rewards for normal foods are positive in all runs. The rewards for poisonous foods are consistently negative in most runs, as expected. Although in seed $5$ agents with positive poison rewards are dominant for a long time, but eventually agents with negative poison rewards branches and replace them, as shown in \cref{figure:pop-poison}. In \cref{figure:lh-poison}, we plot the agent's trajectory and reproduction record during this transition period (step $\num{9.8e6}$ to $\num{9.9e6}$) marked red in \cref{figure:pop-poison}.
+\Cref{figure:result-poison} shows the results with poisonous foods. Like the case with poor foods, rewards for normal foods are positive in all runs. The rewards for poisonous foods are consistently negative in most runs, as expected. Although in seed $5$ agents with positive poison rewards are dominant for a long time, eventually agents with negative poison rewards branch and replace them, as shown in \cref{figure:pop-poison}. In \cref{figure:lh-poison}, we plot the agent's trajectory and reproduction record during this transition period (step $\num{9.8e6}$ to $\num{9.9e6}$) marked red in \cref{figure:pop-poison}.
 
 \section{Conclusion}
 In this paper, we propose a distributed evolutionary simulation to investigate the evolution of reward function.
