@@ -2,8 +2,18 @@
 % Problem, importantness, and specific question
 Reward is a fundamental brain function that shapes our behavior through reward-based learning, or reinforcement learning (RL). Positive rewards encourage us to eat food and find mating partners, while negative rewards, such as pain and fatigue, help us protect ourselves. However, regardless of its importantness to animal lives, the evolutionary process of such a reward system is underexplored. Reward signals should have evolved to help animals survive and reproduce offspring (e.g., by~\cite{schultzNeuronalRewardDecision2015}), but what kind of environmental conditions have influenced the evolution of varieties of rewards remains unclear.
 
+\begin{figure}[t]
+  \centering{}
+  \includegraphics[width=6cm]{emevo-scheme-min.png}
+  \caption{
+    A schematic figure on our evolutionary framework.
+    Aagens learn to maximize their reward functions inherited from their parents.
+    They reproduce children with mutated reward functions and die from aging or hunger.
+  }\label{figure:scheme}
+\end{figure}
+
 % What we do
-While biological studies in evolution are important, the difficulty of observing reward evolution in real animals motivates us to use artificial evolutionary simulation. Hence, we conduct an evolutionary simulation of RL agents to examine how different environmental conditions lead to different rewards. Each agent inherits a reward function from its parent and learns to get more rewards by RL during its lifetime. Contrary to previous studies on the evolution of learning \citep{hintonHowLearningCan1987,singhWhereRewardsCome2009} with centralized selection strategies, we design a distributed evolutionary model inspired by embodied evolution (EE) framework \citep{watsonEmbodiedEvolutionDistributing2002,bredecheEmbodiedEvolutionCollective2018}. In our model, birth and death for agents are evaluated independently based on their age and internal energy level, allowing the population change. With this approach, we expect rewards contributing to population growth to be selected.
+While biological studies in evolution are important, the difficulty of observing reward evolution in real animals motivates us to use artificial evolutionary simulation. Hence, we conduct an evolutionary simulation of RL agents to examine how different environmental conditions lead to different rewards. Each agent inherits a reward function from its parent and learns to get more rewards by RL during its lifetime. Contrary to previous studies on the evolution of learning \citep{hintonHowLearningCan1987,singhWhereRewardsCome2009} with centralized selection strategies, we design a distributed evolutionary model inspired by embodied evolution (EE) framework \citep{watsonEmbodiedEvolutionDistributing2002,bredecheEmbodiedEvolutionCollective2018}. In our model, birth and death for agents are evaluated independently based on their age and internal energy level, allowing the population change. With this approach, we expect rewards contributing to population growth to be selected. We show a schematic figure on our evolutionary framework in \cref{figure:scheme}.
 
 % Foraging environment
 % Simulation
@@ -352,20 +362,28 @@ In the experiments so far, there is only one kind of food with $e_{\mathrm{food}
   }\label{figure:result-poor}
 \end{figure}
 
-\begin{figure}[t]
+\begin{figure}[!htb]
   \centering
-  \includegraphics[width=8cm]{popc-poor-min.png}
   \includegraphics[width=8cm]{lh-f2-min.png}
   \caption{
-    Visualization of life history of agents in the environment with poor foods.
-    \textbf{Upper:} The population of agents with positive or negative rewards for poor foods.
-    \textbf{Lower:} Life history of agents in the red period in the upper figure. Lines indicate the trajectories, and the circle indicates places where agents got their children. The radius of the circle corrensponds to the number of grand children that the newborn produced.
+    Life history of agents in the red period in the upper figure.
+    Lines indicate the trajectories, and the circle indicates places where agents got their children.
+    The radius of the circle corrensponds to the number of grand children that the newborn produced.
   }\label{figure:lh-poor}
 \end{figure}
 
-\Cref{figure:result-poor} shows the results with poor foods. While rewards for normal foods are consistently positive in all five runs, the evolution of rewards for poor foods is unstable. In \cref{figure:lh-poor}, we show the lifehistory of agents in a selected period with almost equal number of agents with positive or negative food rewards (seed $4$, step $7.1e6$ to $7.2e6$). While lines indicate the trajectories, the circle indicates places where agents got their children. The size of circles corresponds to the number of grand children that the child born in that place made, indicating the influence of the reproduction event. In this period, agents with negative rewards for poor foods tend to producemany children in the right are of the environment with normal foods, leading to the population increase of the environment.
+\begin{figure}[!htb]
+  \centering
+  \includegraphics[width=8cm]{popc-poor-min.png}
+  \caption{
+    The population of agents with positive or negative rewards for poor foods.
+    The area filled red shows the time period corresponding to \cref{figure:lh-poor}.
+  }\label{figure:pop-poor}
+\end{figure}
 
-\begin{figure}[t]
+\Cref{figure:result-poor} shows the results with poor foods. While rewards for normal foods are consistently positive in all five runs, the evolution of rewards for poor foods is unstable. In \cref{figure:lh-poor}, we show the lifehistory of agents in a selected period with almost equal number of agents with positive or negative food rewards (seed $4$, step $\num{7.1e6}$ to $\num{7.2e6}$). Lines indicate the trajectories, the circle indicates places where agents got their children. The size of circles corresponds to the number of grand children that the child born in that place made, indicating the influence of the reproduction event. In this period, agents with negative rewards for poor foods tend to produce many children in the right area of the environment with normal foods, leading to the population increase. This case study shows that avoiding poor foods can lead to eating more nutritious foods in this environment. At the same time, eating poor foods is not harmful to agents, leading to very unstable evolution of rewards for poor foods.
+
+\begin{figure}[!ht]
   \centering
   \includegraphics[width=8cm]{poison-min.png}
   \caption{
@@ -374,14 +392,26 @@ In the experiments so far, there is only one kind of food with $e_{\mathrm{food}
   }\label{figure:result-poison}
 \end{figure}
 
-\Cref{figure:result-poison} shows the results with poisonous foods. Same as the case with poor foods, rewards for normal foods are positive in all runs. The rewards for poisonous foods are consistently negative in most runs, as expected, but there is a case with positive
+\begin{figure}[!htb]
+  \centering
+  \includegraphics[width=8cm]{lh-poison2-min.png}
+  \caption{
+    Life history of agents in the red period in the upper figure.
+    Lines indicate the trajectories, and the circle indicates places where agents got their children.
+    The radius of the circle corrensponds to the number of grand children that the newborn produced.
+  }\label{figure:lh-poison}
+\end{figure}
 
-\begin{figure}[t]
+\begin{figure}[!htb]
   \centering
   \includegraphics[width=8cm]{popc-poison-min.png}
-  \includegraphics[width=8cm]{lh-poison2-min.png}
-  \caption{test}
+  \caption{
+    The population of agents with positive or negative rewards for poor foods.
+    The area filled red shows the time period corresponding to \cref{figure:lh-poison}.
+  }\label{figure:pop-poison}
 \end{figure}
+
+\Cref{figure:result-poison} shows the results with poisonous foods. Same as the case with poor foods, rewards for normal foods are positive in all runs. The rewards for poisonous foods are consistently negative in most runs, as expected. Although in seed $5$ agents with positive poison rewards are dominant for a long time, but eventually agents with negative poison rewards branches and replace them, as shown in \cref{figure:pop-poison}. In \cref{figure:lh-poison}, we plot the agent's trajectory and reproduction record during this transition period (step $\num{9.8e6}$ to $\num{9.9e6}$) marked red in \cref{figure:pop-poison}.
 
 \section{Conclusion}
 In this paper, we propose a distributed evolutionary simulation to investigate the evolution of reward function.
