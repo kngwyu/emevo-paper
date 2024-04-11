@@ -269,7 +269,7 @@ To ingestigate the reason, we plot the relationship between the average of actio
   }\label{figure:foodloc}
 \end{figure}
 
-\begin{figure}[!htb]
+\begin{figure}[ht]
   \centering
   \includegraphics[width=8cm]{comp_foodloc-min.png}
   \caption{
@@ -277,8 +277,18 @@ To ingestigate the reason, we plot the relationship between the average of actio
   }\label{figure:result-foodloc}
 \end{figure}
 
+\begin{figure}[!htb]
+  \centering
+  \includegraphics[width=8cm]{comp-nfoods-min.png}
+  \caption{
+    Comparison of the standard deviation of the number of children between different food locations, computed for the population at each time step.
+  }\label{figure:result-ncstd}
+\end{figure}
+
 \paragraph{Effect of Food Location}
-In the baseline setting, the center of the food location is fixed location with small variance, which can make the agents less active. The penalty for motor action can be smaller in the environment where agents need to hunt foods more actively. To confirm this hypothesis, we compare the evolved rewards in the baseline environment with ones in the environment where the food relocation happens clockwise (\texttt{Food Reloc.}) and the environment with more spread foods (\texttt{Spread Food}) shown in \cref{figure:foodloc}. Note that in the food repositioning setting, the center of food reproduction moves slightly clockwise after 100 foods are eaten. We show the results in \cref{figure:result-foodloc}. In the spread food setting, action rewards are more likely to be positive, as our hypothesis suggests. However, contradicting to our hypothesis, action reward tend to be more negative in the food reloaction setting.
+In the baseline setting, the center of the food location is fixed location with small variance, which can make the agents less active. The penalty for motor action can be smaller in the environment where agents need to hunt foods more actively. To confirm this hypothesis, we compare the evolved rewards in the baseline environment with ones in the environment where the food relocation happens clockwise (\texttt{Food Reloc.}) and the environment with more spread foods (\texttt{Spread Food}) shown in \cref{figure:foodloc}. Note that in the food repositioning setting, the center of food reproduction moves slightly clockwise after 100 foods are eaten. We show the results in \cref{figure:result-foodloc}. In the spread food setting, action rewards are more likely to be positive, as our hypothesis suggests. However, contradicting to our hypothesis, action reward tend to be more negative in the food reloaction.
+
+To explore the reason, we plot the standard deviation of the number of children in the group of agents alive at a certain time step in \cref{figure:result-ncstd}. While the standard deviation is often quite high in the baseline and \texttt{Spread Food} setting, it's constantly low in the \texttt{Food Reloc.} setting.
 
 \paragraph{Effect of Poor and Poisonous Foods}
 
@@ -332,7 +342,7 @@ In the baseline setting, the center of the food location is fixed location with 
 
 In the experiments so far, there is only one kind of food with $e_{\mathrm{food}} = 1.0$ in the environment. However, one role of our reward system is to distinguish between different external stimuli. For example, our food reward system helps us eat nutritious food avoiding poisonous foods. Therefore, we conduct simulations with poor and poisonous foods, of which the energy gains are $e_{\mathrm{poor}} = 0.2$ and $e_{\mathrm{poison}} = -0.4$. In \cref{figure:pp}, we show environments with poor and poisonous rewards. In those environments, we fix the center of poor or poisonous food location at the upper left. The number of maximum foods is smaller in the environment with poor foods, and there are more normal foods in the environment with poisonous foods as shown in \cref{table:pp}, so that the overall energy supply should be roughly the same.
 
-\begin{figure}[ht]
+\begin{figure}[t]
   \centering
   \includegraphics[width=8cm]{poor-min.png}
   \caption{
@@ -341,10 +351,20 @@ In the experiments so far, there is only one kind of food with $e_{\mathrm{food}
   }\label{figure:result-poor}
 \end{figure}
 
-\Cref{figure:result-poor} shows the results with poor foods. While rewards for normal foods are consistently positive in all five runs, the evolution of rewards for poor foods is unstable.
-\todo{Analysis of behavioral pattern}
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=8cm]{popc-poor-min.png}
+  \includegraphics[width=8cm]{lh-f2-min.png}
+  \caption{
+    Visualization of life history of agents in the environment with poor foods.
+    \textbf{Upper:} The population of agents with positive or negative rewards for poor foods.
+    \textbf{Lower:} Life history of agents in the red period in the upper figure. Lines indicate the trajectories, and the circle indicates places where agents got their children. The radius of the circle corrensponds to the number of grand children that the newborn produced.
+  }\label{figure:lh-poor}
+\end{figure}
 
-\begin{figure}[ht]
+\Cref{figure:result-poor} shows the results with poor foods. While rewards for normal foods are consistently positive in all five runs, the evolution of rewards for poor foods is unstable. In \cref{figure:lh-poor}, we show the lifehistory of agents in a selected period with almost equal number of agents with positive or negative food rewards (seed $4$, step $7.1e6$ to $7.2e6$). While lines indicate the trajectories, the circle indicates places where agents got their children. The size of circles corresponds to the number of grand children that the child born in that place made, indicating the influence of the reproduction event. In this period, agents with negative rewards for poor foods tend to producemany children in the right are of the environment with normal foods, leading to the population increase of the environment.
+
+\begin{figure}[t]
   \centering
   \includegraphics[width=8cm]{poison-min.png}
   \caption{
@@ -355,27 +375,10 @@ In the experiments so far, there is only one kind of food with $e_{\mathrm{food}
 
 \Cref{figure:result-poison} shows the results with poisonous foods. Same as the case with poor foods, rewards for normal foods are positive in all runs. The rewards for poisonous foods are consistently negative in most runs, as expected, but there is a case with positive
 
-\begin{figure}[ht]
+\begin{figure}[t]
   \centering
-  \includegraphics[width=8cm]{pop-f2-min.png}
-  \caption{test}
-\end{figure}
-
-\begin{figure}[ht]
-  \centering
-  \includegraphics[width=8cm]{lh_f2-min.png}
-  \caption{test}
-\end{figure}
-
-\begin{figure}[ht]
-  \centering
-  \includegraphics[width=8cm]{pop-poison-min.png}
-  \caption{test}
-\end{figure}
-
-\begin{figure}[ht]
-  \centering
-  \includegraphics[width=8cm]{lh_poison-min.png}
+  \includegraphics[width=8cm]{popc-poison-min.png}
+  \includegraphics[width=8cm]{lh-poison2-min.png}
   \caption{test}
 \end{figure}
 
