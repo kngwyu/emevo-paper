@@ -4,7 +4,7 @@ Reward is a fundamental brain function that shapes our behavior through reward-b
 
 \begin{figure}[t]
   \centering{}
-  \includegraphics[width=6cm]{emevo-scheme-min.png}
+  \includegraphics[width=7cm]{emevo-scheme2-min.png}
   \caption{
     A schematic figure on our evolutionary framework.
     Aagens learn to maximize their reward functions inherited from their parents.
@@ -17,7 +17,7 @@ While biological studies in evolution are important, the difficulty of observing
 
 % Foraging environment
 % Simulation
-We implement our distributed evolution framework in a simple virtual environment where agents need to hunt foods to live longer and produce children based on 2D physics simulation. In this environment, we let agents evolve simple reward functions that map food intake and the magnitude of motor output to a scalar, which we expect to correspond to food pleasure and fatigue. Our results show that biologically reasonable reward functions evolve from randomly initialized ones given sufficient learning ability. We then find that metabolic balance, food density, and food relocation influence rewards for taking actions, while food rewards are consistently positive. Furthermore, we examine the evolution of rewards for poor and poisonous rewards. Our results shows that rewards can be pretty unstable for such less important foods, although rewards for normal foods are consistenly positive.
+We implement our distributed evolution framework in a simple virtual environment where agents need to hunt foods to live longer and produce children based on 2D physics simulation. In this environment, we let agents evolve simple reward functions that map food intake and the magnitude of motor output to a scalar, which we expect to correspond to food pleasure and fatigue. Our results show that biologically reasonable reward functions with positive food rewards and negative action rewards evolve from randomly initialized ones given sufficient learning ability. We then find that metabolic balance, food density, and food relocation influence rewards for taking motor action, while food rewards are consistently positive. Furthermore, we examine the evolution of rewards for poor and poisonous rewards. Our results show that rewards can be pretty unstable for less important foods, although rewards for normal foods are consistently positive. We then conclude the paper by discussing possible improvements and plausible future works.
 
 \section{Preliminaries and Related Works}\label{sec:related}
 We follow the standard computational RL framework \citep{suttonReinforcementLearningIntroduction2018} based on the Markov decision process (MDP). MDP $\M{}$ consists of a tuple $(\X{}, \A{}, p, r, \gamma)$, where $\X{}$ is reward function, and $\gamma \in [0, 1]$ is the discount factor. A standard objective in MDP is the discounted cumulative return $G \defequal{} \sum_{t=0}^{\infty}\gamma^t R_{t}$, where $R_t$ is the reward received at time $t$. An RL agent has policy $\pi: \X \times \A \rightarrow [0, 1]$ and seeks to find the the optimal policy $\pi^{*}$ that maximizes $\E \left[G|\pi\right]$. The state-value function $V^\pi(s) \defequal \sum_{a \in \A} \pi(a|s) \left( r(s, a) + \gamma \sum_{s' \in \X} P(s'|s, a) V^\pi(s') \right)$ is often used in RL algorithms. Observation $o \in \Omega~(\Omega \subseteq \X)$ refers to a part of the state that an agent can observe.
@@ -27,9 +27,8 @@ Our reward model is inspired by the neuroscience of reward system \citep{schultz
 While there were previous attempts to evolve rewards in a single-agent setting \citep{singhWhereRewardsCome2009,niekumEvolutionRewardFunctions2011,zhengWhatCanLearned2020},
 %While evolutionary robotics studies \citep{nolfiEvolutionaryRoboticsBiology2004} often employ a centralized selection scheme similar to genetic algorithm \citep{mitchellIntroductionGeneticAlgorithms1998},
 %where highly evaluated elites are selected as parents. On the contrary,
-we employ a distributed embodied evolution (EE) framework \citep{watsonEmbodiedEvolutionDistributing2002,bredecheEmbodiedEvolutionCollective2018}
-%that employs a decentralized evolution without centralized evaluation
-where agents evolve locally following birth and death rules. This method has the advantage that the evaluation of genetic traits depends on population dynamics, which is more natural.
+we employ a distributed embodied evolution (EE) framework \citep{watsonEmbodiedEvolutionDistributing2002,bredecheEmbodiedEvolutionCollective2018} with many agents and population dynamics.
+While the mainstream of evolutionary robotics studies \citep{nolfiEvolutionaryRoboticsBiology2004} employs a centralized elite selection, agents evolve locally following birth and death rules in EE. This method has the advantage that the evaluation of genetic traits depends on population dynamics and is more natural.
 
 Our work is inspired by the series of studies \citep{elfwingBiologicallyInspiredEmbodied2005,elfwingDarwinianEmbodiedEvolution2011,elfwingEmergencePolymorphicMating2014}, which tried to evolve parameters related to RL through EE framework. Notably, \citet{elfwingDarwinianEmbodiedEvolution2011} evolved supplementary sharing rewards and parameters of RL agents.
 Inspired by these works, we attempt to evolve the entire reward functions in our experiments.
@@ -47,7 +46,7 @@ Inspired by these works, we attempt to evolve the entire reward functions in our
 
 \paragraph{Energy-based death and birth model}
 We employ an energy-based metabolic model similar to \citet{hamonEcoevolutionaryDynamicsNonepisodic2023}. Each agent maintains their energy level $e$, which increases by eating food and decreases by the basal metabolism and taking a motor action.
-The mortality of the agent with energy level $e$ and age $t$ is modeled by the hazard function:
+The death probability of the agent with energy level $e$ and age $t$ is modeled by the hazard function:
 \begin{align}
   h(t, e) = \frac{\kappa_{h}}{1 + \alpha_{e}\exp(\beta_{he}e)} + \alpha_{t} \exp(\beta_{ht} t).
   \label{eq:h}
@@ -126,24 +125,24 @@ The birth rate $b(e)$ increases with $e$ following a sigmoidal curve where $\kap
   }\label{figure:env-discr}
 \end{figure}
 
-We designed a continuous 2D environment shown in \cref{figure:env}. Blue circles indicate agents and red circles indicate foods. The environment is implemented by a 2D rigid-body physics simulation. Agents can move by producing driving forces on the left and right sides of the body, as shown in \cref{figure:env-discr}. An agent has multiple range sensors in its front, which can sense the type and the distance to the closest object within $120$ degree. Sensible objects include foods, other agents, and walls. They can also sense the collision with each object and the approximate location of the collision with a resolution of $60$ degree, as shown in \cref{figure:env-discr}.
+We designed a continuous 2D environment shown in \cref{figure:env}. Blue circles indicate agents and red circles indicate foods. The environment is implemented by a 2D rigid-body physics simulation. Agents can move by producing driving forces on the left and right sides of the body, as shown in \cref{figure:env-discr}. An agent has multiple range sensors in its front that can sense the type and distance to the closest object within $120$ degree. Sensible objects include foods, other agents, and walls. In environments with poor or poisonous foods, agents can sense them separately from normal foods. They can also sense the collision with each object and the approximate location of the collision with a resolution of $60$ degree, as shown in \cref{figure:env-discr}.
 
 % This eat-driven emergence is not consistent with the growth model below. Better report the actual food-producing process rather than theoretical approximation.
 The agent can eat food by touching it and gain energy $e_{\mathrm{food}}$. We use $e_{\mathrm{food}} = 1$ in our experiments. In experiments with less nutrient-poor or poisonous foods, they have different energy gain $e_{\mathrm{poor}} = 0.2$ and $e_{\mathrm{poison}} = -0.4$. After foods are eaten, they are regenerated in a random place. To regulate the rate of food regeneration, we maintain the internal food number $n_{t}$ at time $t$ which follows a logistic growth function: $n_{t + 1} = n_{t} + gn_{t}(1 - \frac{n_{t}}{n_{\mathrm{max}}}) - n_{t}^{\mathrm{eaten}}$, where $g$ is the growth rate, $n_{\mathrm{max}}$ is the capacity of food, and $n_{t}^{\mathrm{eaten}}$ is the number of eaten foods at time $t$. Food is regenerated when the integer part of $n^{t}$ is more than the actual number of foods in the environment. We use $n_{\mathrm{max}} = 50$ and $g = 0.01$ in our experimens.
 
 The agent consumes energy via active and basic metabolism. At each step $t$, An agent $i$ losts energy $e_{\mathrm{act}} |a_{t}^{i}|$, where $|a_{t}^{i}|$ is the Euclid norm of the agent's motor output $a_{t}^{i}$ and $e_{\mathrm{act}}$ is a scaling coefficient. In addition, it also consumes energy $e_{\mathrm{basic}}$ at every step. In our experiments, we use $e_{\mathrm{act}} = \num{2e-5}$ and $e_{\mathrm{basic}} = 0.001$, leading to the consumption of $0.002 \sim 0.003$ energy by one step. It means that agents need to eat food at least once in $500$ or $1000$ steps to maintain their energy level.
 
-When an agent makes a child, a new agent is placed in a random location sampled from a Gaussian distribution centered around its parent. Reproduction fails when all $10$ sampled locations are not available. The child inherits a proportion of the parent's energy $\eta e \in [0, 1]$, and the parent's energy level decreases to $(1-\eta)e$, where $\eta \in [0, 1]$ is the ratio of energy sharing. We used $\eta = 0.4$ in our experiments. The child also inherits its reward function from the parent with some mutation.
+When an agent makes a child, a new agent is placed in a random location sampled from a Gaussian distribution centered around its parent. Reproduction fails when all $10$ sampled locations are not available. The child inherits a proportion of the parent's energy $\eta e \in [0, 1]$, and the parent's energy level decreases to $(1-\eta)e$, where $\eta \in [0, 1]$ is the ratio of energy sharing. We used $\eta = 0.4$ in our experiments. The child also inherits its reward function from the parent with some mutation, as described later.
 
-Since we need to maintain agents for evolution, the multi-agent interaction can be a huge bottleneck in our simulation. To overcome this challenge, we implement our environment using JAX Python library \citep{jax2018github} so that the entire simulation loop is executed on GPU. Inspired by recent works on 3D rigid body physics simulation using JAX (e.g., \citet{brax2021github} and MuJoCo \citep{todorov2012mujoco} MJX\footnote{\url{https://mujoco.readthedocs.io/en/stable/mjx.html}}), we implement our 2D physics engine using JAX and build our
-environment on top of that, optimizing it for multi-agent setting. Our simulator implements projected Gauss-Seidel method with position correction \citep{catto2005iterative} that is pretty common in 2D game physics engines such as Box2D\footnote{\url{https://box2d.org}} and Chipmunk\footnote{\url{https://chipmunk-physics.net}}.
+Since we need many agents for evolution, the multi-agent interaction can be a huge bottleneck in our simulation. To overcome this challenge, we implement our environment using JAX Python library \citep{jax2018github} so that the entire simulation loop is executed on GPU. Inspired by recent works on 3D rigid body physics simulation using JAX (e.g., \citet{brax2021github} and MuJoCo \citep{todorov2012mujoco} MJX\footnote{\url{https://mujoco.readthedocs.io/en/stable/mjx.html}}), we implement our 2D physics engine using JAX and build our environment on top of that, optimizing it for multi-agent setting. Our simulator implements projected Gauss-Seidel method with position correction \citep{catto2005iterative} that is pretty common in 2D game physics engines such as Box2D\footnote{\url{https://box2d.org}} and Chipmunk\footnote{\url{https://chipmunk-physics.net}}. We plan to release our simulation framework as open source after publication.
 
 \paragraph{Reward Function with Evolving Weights}
 We assume that the reward function is determined at birth with mutation and does not change during the agent's lifetime. We use food intake and the magnitude of the agent's action (motor output) as inputs to the reward function. We expect a positive food reward to evolve to acquire energy and a negative reward for action to evolve to save energy.
 We model the reward of an agent $i$ at time $t$ by $r^{i}_{t} = w_{\mathrm{food}}^{i}n_{t}^{i} + c_\mathrm{act} w_{\mathrm{act}}^{i}|a_{t}^{i}|$, where $n_{t}^{i}$ is the number of foods that the agent at that step. $w_{\mathrm{food}}^{i}$ and $w_{\mathrm{act}}^{i}$ are evolvable reward parameters of an agent $i$. Because an agent gets the action reward at every step but doesn't get the food reward so often, we use a fixed parameter $c_\mathrm{act}$ to scale the reward. We use $c_\mathrm{act}=0.01$ in our experiments. In experiments with poor or poisonous foods, we use another evolvable reward parameter $w_{\mathrm{poor}}^{i}$ or $w_{\mathrm{poison}}^{i}$.
-\todo{Cauchy mutation, clip range (-10, 10)}
 
-\begin{table}[!htb]
+The newborn inherits reward parameters $w_{\mathrm{food}}$ and $w_{\mathrm{act}}$ from its parent with some mutation added. To allow large jumps, we sample mutation noise from Cauchy distribution with the scale parameter $0.02$ independently for each reward weight. After added Cauchy noise, each parameter is clipped to the range $[-10, 10]$ to prevent too large jumps.
+
+\begin{table}[t]
   \centering
   \caption{RL parameters}\label{tab:rl-param}
   \begin{tabular}{ll}
@@ -165,16 +164,15 @@ We model the reward of an agent $i$ at time $t$ by $r^{i}_{t} = w_{\mathrm{food}
 \end{table}
 
 \paragraph{Reinforcement Learning}
-We use Proximal Policy Optimization \citep{schulmanProximalPolicyOptimization2017} as an RL algorithm because of its fast computation time. In addition to the touch and collision sensor inputs in \cref{figure:env-discr}, the agent takes its angle, velocity, and energy level as an observation. The action space is a continuous two-dimensional vector corresponding to the forces applied to the left and right sides of the body. Following the standard practice in the literature, we use a multi-layer perception (MLP) with hyperbolic tangent activation to represent the agent's policy, which is randomly initialized for each newborn. We show RL parameters used in our experiments in \cref{tab:rl-param}.
+We use Proximal Policy Optimization \citep{schulmanProximalPolicyOptimization2017} as an RL algorithm because of its fast computation time. In addition to the touch and collision sensor inputs in \cref{figure:env-discr}, the agent takes its angle, velocity, and energy level as an observation. The action space is a continuous two-dimensional vector corresponding to the forces applied to the left and right sides of the body, clipped to $[-20, 80]$. Following the standard practice in the literature, we use a multi-layer perception (MLP) with hyperbolic tangent activation to represent the agent's policy, which is randomly initialized for each newborn. We show RL parameters used in our experiments in \cref{tab:rl-param}.
 
 % Add a line for reward acquisition; after observation or action?
-\begin{algorithm}[!htb]
+\begin{algorithm}[t]
   \caption{Reward evolution with asexual reproduction}\label{alg:reward-evo}
   \begin{tabular}{lll}
     \textbf{Input:} & $Pop$ & Initial population of agents \\
                     & $Env$ & Simulation environment \\
                     & $h, b$ & Hazard and birth functions \\
-                    & $m$ & mutation function \\
                     & $N$ & Rollout step used in RL \\
                     & $\eta$ & Energy share ratio
   \end{tabular}
@@ -195,8 +193,11 @@ We use Proximal Policy Optimization \citep{schulmanProximalPolicyOptimization201
       \State{$e \gets e + e_{\mathrm{food}} n_{\mathrm{food}} - e_{\mathrm{act}}|a| - e_{\mathrm{basic}}$}
       \With{Probability $b(e)$} \Comment{Birth}
         \State{$e \gets (1 - \eta) e$}
-        \State{$r \gets agent$'s reward function}
-        \State{Create a new agent with $\eta e$ and $m(r)$}
+        \State{$w_{\mathrm{food}}, w_{\mathrm{act}} \gets agent$'s reward parameters}
+        \State{$\delta_{\mathrm{food}}, \delta_{\mathrm{act}} \gets $ Cauchy noise}
+        \State{$w_{\mathrm{food}}' \gets \max(\min(w_{\mathrm{food}} + \delta_{\mathrm{food}}, 10), -10)$}
+        \State{$w_{\mathrm{act}}' \gets \max(\min(w_{\mathrm{act}} + \delta_{\mathrm{act}}, 10), -10)$}
+        \State{Create a new agent with $\eta e$, $w_{\mathrm{food}}$ and $w_{\mathrm{act}}$}
       \EndWith{}
       \With{Probability $h(t, e)$} \Comment{Death}
         \State{$agent$ is removed from $Pop$ and $Env$}
@@ -207,12 +208,9 @@ We use Proximal Policy Optimization \citep{schulmanProximalPolicyOptimization201
 \end{algorithm}
 
 \paragraph{Simulation Procedure}
-We show the pseudocode of our entire simulation procedure in \cref{alg:reward-evo}. Each agent has its innate, immutable reward function and learnable neural network policy. At each step, it observes sensory inputs from the environment and takes action. Once in $N$ steps, the agent updates its policy via RL using the past $N$ step experiences. After environmental interaction, all agents can make a child and die based on the birth function $b$ and hazard function $h$. The new agent inherits a fraction of the parent's energy and mutated reward function.
+We show the pseudocode of our evolutionary simulation procedure in \cref{alg:reward-evo}. Each agent has reward parameters $w_{\mathrm{food}}$, $w_{\mathrm{act}}$, and MLP policy. At each step, it observes sensory inputs from the environment and takes action using the MLP policy. Once in $N$ steps, the agent updates its policy via RL using the past $N$ step experiences. After environmental interaction, we evaluate all agents using the birth function $b$ and hazard function $h$ to decide whether the agent makes a child or dies. The new agent inherits a fraction of the parent's energy and mutated reward function.
 
-\section{Results}
-As a baseline environment, we use the setting where food is always regenerated in the upper right of the room, as the left figure in \cref{figure:env} shows. All experiments start from $50$ agents with an energy level of $40.0$. Birth and hazard parameters in \cref{table:hb} are tuned so that the population size is around $130\sim 150$ through evolution. Initial reward weights are sampled from a zero-mean Gaussian distribution with a standard deviation of $0.1$, so they should take values close to $0$. We conducted about one hundred thousand steps ($\num{1024e4}$) of the simulation, resulting in $300$ to $400$ generations, which takes $14\sim16$ hours on NVIDIA P100 GPU.
-
-\begin{figure}[!htb]
+\begin{figure}[t]
   \centering
   \includegraphics[width=8cm]{baseline-min.png}
   \caption{
@@ -221,6 +219,10 @@ As a baseline environment, we use the setting where food is always regenerated i
     Different colors and marker shapes indicate runs with different random seeds.
   }\label{figure:result-baseline}
 \end{figure}
+\section{Results}
+In this section, we show our simulation results in some settings. Our aim is \rnum{1} to show that biologically plausible reward functions evolve in our framework, \rnum{2}, to show the variability of action rewards and rewards for less important foods in some settings, and \rnum{3} to show the stability of positive food rewards.
+
+As a baseline environment, we use the setting where food is always regenerated in the upper right of the room, as the left figure in \cref{figure:env} shows. All experiments start from $50$ agents with an energy level of $40.0$. Birth and hazard parameters in \cref{table:hb} are tuned so that the population size is around $130\sim 150$ through evolution. Initial reward weights are sampled from a zero-mean Gaussian distribution with a standard deviation of $0.1$, so they should take values close to $0$. We conducted about one hundred thousand steps ($\num{1024e4}$) of the simulation, resulting in $300$ to $400$ generations, which takes $14\sim16$ hours on NVIDIA P100 GPU.
 
 \Cref{figure:result-baseline} shows the evolved reward weights with 5 random seeds in the baseline environment. We observe that food reward is positive in all 5 runs, while action reward tends to be negative in most of the runs. Thus, we can say that agents have acquired rewards that contribute to increasing their energy levels through evolution. The only exception is that action reward is largely positive in one random seed, which has a negative impact on the population size. This run has the least average population size of $120.6$ in the last $\num{3e6}$, while it is from $136$ to $149$ in other runs with negative action rewards. This result suggests that such unfavorable reward for population growth can be chosen when there is no competition with other species and sufficient energy resources.
 
