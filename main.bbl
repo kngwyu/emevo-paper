@@ -84,6 +84,11 @@ Niekum, S., Spector, L., and Barto, A. (2011).
   {{Genetic}} and Evolutionary Computation}, {{GECCO}} '11, pages 177--178,
   {New York, NY, USA}. {Association for Computing Machinery}.
 
+\bibitem[Nolfi and Floreano, 2004]{nolfiEvolutionaryRoboticsBiology2004}
+Nolfi, S. and Floreano, D. (2004).
+\newblock {\em Evolutionary {{Robotics}}: {{The Biology}}, {{Intelligence}},
+  and {{Technology}} of {{Self-Organizing Machines}}}.
+
 \bibitem[Schulman et~al., 2017]{schulmanProximalPolicyOptimization2017}
 Schulman, J., Wolski, F., Dhariwal, P., Radford, A., and Klimov, O. (2017).
 \newblock Proximal {{Policy Optimization Algorithms}}.
