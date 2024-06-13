@@ -45,8 +45,8 @@ Inspired by these works, we attempt to evolve the entire reward functions in our
   }\label{figure:hs}
 \end{figure}
 
-\paragraph{Energy-based death and birth model}
-We employ an energy-based metabolic model similar to \citet{hamonEcoevolutionaryDynamicsNonepisodic2023}. Each agent maintains their energy level $e$, which increases by eating food and decreases by the basal metabolism and taking a motor action.
+\paragraph{Based death and birth model with simple metabolism}
+We employ a simple metabolic model similar to \citet{hamonEcoevolutionaryDynamicsNonepisodic2023}. Each agent maintains their energy level $e$, which increases by eating food and decreases by the basal metabolism and taking a motor action.
 The death probability of the agent with energy level $e$ and age $t$ is modeled by the hazard function:
 \begin{align}
   h(t, e) = \frac{\kappa_{h}}{1 + \alpha_{e}\exp(\beta_{he}e)} + \alpha_{t} \exp(\beta_{ht} t).
@@ -248,13 +248,13 @@ We show the pseudocode of our evolutionary simulation procedure in \Cref{alg:rew
 \end{figure}
 
 \section{Results}
-In this section, we show our simulation results. We first show that biologically plausible reward functions evolve in our framework and then examine the effect of several environmental conditions, including food density and food distribution. Furthermore, we conduct experiments with poor or poisonous foods and examine their effect on evolved rewards.
+In this section, we show our simulation results. We first show that biologically plausible reward functions evolve in our framework and then examine the effect of several environmental conditions, including food density and food distribution. Furthermore, we conduct experiments with poor or poisonous foods and examine their effect on evolved rewards. The source code is available at \url{https://github.com/oist/emevo}.
 
 As a baseline environment, we use the setting where food is regenerated in a uniformly random location in the 2D environment, as the left figure in \Cref{figure:env} shows. All experiments start from $50$ agents with an energy level of $20.0$. Birth and hazard parameters (\Cref{table:hb}) are tuned to keep the population size around $130\sim 150$ through evolution. We set the population limit to $200$, which is about $30\%$ of the baseline environment.  Notably, metabolic parameters ($e_{\mathrm{basic}} = 0.001$ and $e_{\mathrm{act}} = \num{2e-5}$) are chosen so that agents don't get extinct and the evolution stably goes on. We show the extinction rate with slightly increased metabolism in \Cref{table:er}, measured by 10 runs with different seeds up to about one million steps ($\num{1024e3}$). Because slightly increased metabolism leads to a $30\sim50\%$ extinction rate, we can say that these parameters are slightly milder than the margin where extinction can happen.
 
 Initial reward weights are sampled from a zero-mean Gaussian distribution with a standard deviation of $0.1$, so they should take values close to $0$. We conducted about ten million steps ($\num{1024e4}$) of the simulation, resulting in $300$ to $400$ generations. The full simulation takes $10\sim12$ hours on a cluster node with an NVIDIA A100 GPU, which we think is fairly fast given that the simulation includes the interaction of $100\sim200$ agents.
 
-\Cref{figure:result-baseline} shows the reward weights of the last $5000$ agents with 5 random seeds in the baseline environment. First of all, compared to the result by random walk in \Cref{figure:rew-random}, the resulting reward weight are clearly biased, so we conclude that evolution happend by our simulation. Food rewards are almost positive in all 5 runs; the majority exceeds $4$. Thus, we can say that agents have acquired naturalistic positive food rewards only from birth and death rules.
+\Cref{figure:result-baseline} shows the reward weights of the last $5000$ agents with 5 random seeds in the baseline environment, where the x-axis shows $w_{\mathrm{food}}$ and the y-axis shows $w_{\mathrm{act}}$. First of all, compared to the result by random walk in \Cref{figure:rew-random}, the resulting reward weight are clearly biased, so we conclude that evolution happend by our simulation. Food rewards are almost positive in all 5 runs; the majority exceeds $4$. Thus, we can say that agents have acquired naturalistic positive food rewards only from birth and death rules.
 
 On the contrary, action rewards have evolved into two different modes: largely positive (seed $1$ and $4$) or slightly negative (other seeds). The evolution of slightly negative rewards for motor actions aligns with our hypothesis and is reasonable in that it helps agents save their energy. However, it is surprising for us that positive rewards for taking large motor actions also can be stable. We guess that these positive rewards enhance explorative behavior especially when agents are just born and have less samples for learning, because it can give them good reinforcement signals to move even if they haven't met any food. However, positive rewards for action also can be disruptive for agents who already have learned foraging. This finding suggests us the nessecity of introducing child to adult development of RL parameters or rewards.
 
@@ -268,7 +268,7 @@ On the contrary, action rewards have evolved into two different modes: largely p
 
 \begin{figure}[t]
   \centering
-  \includegraphics[width=8.6cm]{comp2d-envsize-facet.png}
+  \includegraphics[width=8.4cm]{comp2d-envsize-facet.png}
   \caption{
     Comparison of evolved rewards of the last $5000$ agents with small, baseline, and large environment sizes from left to right
     The x-axis shows the weight for the food reward ($w_{\mathrm{food}}$), and the y-axis shows the weight for the action reward ($w_{\mathrm{act}}$).
@@ -294,7 +294,7 @@ On the contrary, action rewards have evolved into two different modes: largely p
 
 \begin{figure}[ht]
   \centering
-  \includegraphics[width=8cm]{dyn-envsize.png}
+  \includegraphics[width=6cm]{dyn-envsize.png}
   \caption{
     Changes in reward weights over time.
     Different colors indicate different environmental sizes.
@@ -316,20 +316,38 @@ Rewards in the small environment show different properties from the ones that ev
   }\label{figure:env-fdist}
 \end{figure}
 
-\begin{figure}[h]
+\begin{figure}[t]
   \centering
-  \includegraphics[width=8.6cm]{comp2d-fdist.png}
+  \includegraphics[width=8.4cm]{comp2d-fdist.png}
   \caption{
-    Comparison of evolved rewards of the last $5000$ agents with small, baseline, and large environment sizes from left to right
+    Comparison of evolved rewards of the last $5000$ agents with the baseline environment, the environment with centered food distribution, and the environment with food relocation from lect to right.
     The x-axis shows the weight for the food reward ($w_{\mathrm{food}}$), and the y-axis shows the weight for the action reward ($w_{\mathrm{act}}$).
     Different colors correspond to runs with different random seeds.
   }\label{figure:result-fdist}
 \end{figure}
 
-\paragraph{Effect of Food Distribution}
-In addition to the food density, how foods are distributed over the environment can also affect the rewards. It may be possible that uniformly sampling food locations makes the 'random-walk' agents survive in the environment, so the bias in food location can make RL more important. To confirm this hypothesis, we conduct experiments with different food distributions as shown in \Cref{figure:env-fdist}. In an environment with a centered food distribution, foods are sampled from the Gaussian distribution around the center of the environment. We also use the environment with food relocation, where foods are sampled from the Gaussian as in the centered' environment, but the center of the Gaussian moves clockwise between each corner of the environment. This food relocation periodically happens after $1000$ foods are eaten. The same food regeneration parameters ($n_{\mathrm{max}} = 100$ and $g = 0.02$) are used.
+\begin{table}[t]
+    \centering
+    \begin{tabular}{lcc}
+      \toprule
+      Food Dist. &  Avg. Lifetime & Avg. Food Consumption \\
+      \midrule
+      Baseline & 6310 & 0.001 \\
+      Centered &  74318 & 0.0039 \\
+      Relocation & 6794 & 0.00096 \\
+      \bottomrule
+    \end{tabular}
+  \caption{
+    Comparison of agents' average lifetime and food consumption per step in environments with different food distributions.
+  }\label{table:fdist}
+\end{table}
 
-We show the evolved rewards of the last $5000$ agents in these environments in \Cref{figure:result-fdist}. We can see that almost nothing has evolved in the centered environment, which suggests that it is too easy for agents to get food in this environment. On the contrary, we can see that reward parameters have evolved in a similar way to the baseline in the environment with food relocation, and the reward for motor action is mostly negative in all five runs with different seeds.
+\paragraph{Effect of Food Distribution}
+In addition to the food density, how foods are distributed over the environment can also affect the rewards. It may be possible that uniformly sampling food locations makes it easy for agents who move randomly to survive in the environment, so the bias in food location can make RL more important. To confirm this hypothesis, we conduct experiments with different food distributions as shown in \Cref{figure:env-fdist}. In an environment with a centered food distribution, foods are sampled from the Gaussian distribution around the center of the environment. We also use the environment with food relocation, where foods are sampled from the Gaussian as in the centered' environment, but the center of the Gaussian moves clockwise between each corner of the environment. This food relocation periodically happens after $1000$ foods are eaten. The same food regeneration parameters ($n_{\mathrm{max}} = 100$ and $g = 0.02$) are used.
+
+We show the evolved rewards of the last $5000$ agents in these environments in \Cref{figure:result-fdist}. We can see that almost nothing has evolved in the centered environment, which suggests that it is too easy for agents to get food in this environment. However, as \Cref{table:fdist} shows, the agent's average lifetime and food consumption is less than the small environment, so we can say that this environment with centered food distribution is easy, but sligtly more difficult than the small environment. Thus, we conclude that the food and action rewards are less likely to evolve in this environment with centered distribution of foods than the environment with uniformly distributed foods. We speculate that this is because the place where agents are born can be a significant bias for survival, making rewards less important.
+
+On the contrary, we can see that reward parameters have evolved in a similar way to the baseline in the environment with food relocation, and the reward for motor action is mostly negative in all five runs with different seeds. To check whether this shift of action rewards is caused by the difference of difficulty, we show the the average lifetime and food consumption in the baseline and the food relocation environment in \Cref{table:fdist}, where we find that their difficulties are very close in. Thus, we argue that this result complements our hypothesis that the bias of the food locations makes RL more important, leading to more energy-efficient rewards.
 
 \begin{table}[t]
   \begin{subtable}[h]{0.45\columnwidth}
@@ -361,13 +379,19 @@ We show the evolved rewards of the last $5000$ agents in these environments in \
 \end{table}
 
 \begin{figure}[t]
-  \centering
-  \includegraphics[width=8cm]{comp2d-poor.png}
+  \begin{subfigure}[t]{4cm}
+    \centering
+    \includegraphics[width=4cm]{comp2d-poor.png}
+  \end{subfigure}
+  \begin{subfigure}[t]{3.5cm}
+    \centering
+    \includegraphics[width=4cm]{comp2d-poison.png}
+  \end{subfigure}
   \caption{
-    Evolved rewards of the last $5000$ agents with poor foods.
-    The x-axis shows the weight for the food reward ($w_{\mathrm{food}}$), and the y-axis shows the weight for the poor food reward ($w_{\mathrm{poor}}$).
-    Different colors and marker shapes correspond to runs with different random seeds.
-  }\label{figure:result-poor}
+    \textbf{Left:} Evolved rewards of the last $5000$ agents with poor foods, where the x-axis shows $w_{\mathrm{food}}$, and the y-axis shows $w_{\mathrm{poor}}$.
+    \textbf{Right:} Evolved rewards with poisonous foods, where the x-axis shows $w_{\mathrm{food}}$, and the y-axis shows $w_{\mathrm{poison}}$.
+    Different colors correspond to runs with different random seeds.
+  }\label{figure:result-pp}
 \end{figure}
 
 \paragraph{Effect of Poor and Poisonous Foods}
@@ -375,13 +399,26 @@ In the experiments, only one kind of food with $e_{\mathrm{food}} = 1.0$ in the 
 
 \begin{figure}[t]
   \centering
-  \includegraphics[width=8cm]{comp2d-poison.png}
+  \includegraphics[width=6cm]{dyn-poor.png}
   \caption{
-    Evolved rewards of the last $5000$ agents with poisonous foods.
-    The x-axis shows the weight for the food reward ($w_{\mathrm{food}}$), and the y-axis shows the weight for the poison reward ($w_{\mathrm{poison}}$).
-    Different colors and marker shapes correspond to runs with different random seeds.
-  }\label{figure:result-poison}
+    Evolved rewards with poor foods.
+    From top to bottom, each row shows the reward weight for food ($w_{\mathrm{food}}$), the reward weight for poor food ($w_{\mathrm{poor}}$), and the reward weight for action ($w_{\mathrm{act}}$).
+    Each line shows the reward weight averaged over all agents alive at that time, while thin lines show the averages within one random seed.
+  }\label{figure:result-dyn-poor}
 \end{figure}
 
+The left panel in \Cref{figure:result-pp} shows the evolved reward weights with poor foods, where the x-axis shows $w_{\mathrm{food}}$, and the y-axis shows $w_{\mathrm{poor}}$. Interestingly, while rewards for normal foods are always largely positive, rewards for poor foods are speread from largely negative to positive. This is a surprising result because agents still gain energy by eating poor foods, and they don't need to avoid them. We suspect that such negative rewards for foods can be useful to prioritize hunting normal foods. This tendency is also seen in the change of rewards over time as shown in \Cref{figure:result-dyn-poor}. We can see that rewards for poor foods are unstable and diverging into various directions, while the reward for normal foods is converging just below $10$.
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=6cm]{dyn-poison.png}
+  \caption{
+    Evolved rewards with poisonous foods.
+    From top to bottom, each row shows the reward weight for food ($w_{\mathrm{food}}$), the reward weight for poisonous food ($w_{\mathrm{poison}}$), and the reward weight for action ($w_{\mathrm{act}}$).
+  }\label{figure:result-dyn-poison}
+\end{figure}
+
+More surprisingly, the same tendency is seen in the environment with poisonous foods. The right panel in \Cref{figure:result-pp} shows the evolved reward weights with poisonous foods, where the x-axis shows $w_{\mathrm{food}}$, and the y-axis shows $w_{\mathrm{poison}}$. We can see that rewards for poisonous foods are positive in the majority of random seeds, though agents lose their energy by eating poisonous foods, so they are actually harmful. It's intriguing that they still can survive with positive poison rewards, although they have larger rewards for normal foods. The dynamics of reward weights shown in \Cref{figure:result-dyn-poison} is also quite similar to the one in the environment with poor foods: rewards for poisonous foods and actions are diverging while the reward for normal foods are converging below $10$. Again, this result suggests that less-important reward signals can have a wide variety, like our preference, while the primal reward signal is very stable.
+
 \section{Conclusion}
-In this paper, we propose a distributed evolution framework with an energy-based birth and death model to study the evolution of reward function. Our results show that biologically reasonable reward functions can evolve from randomly initialized ones. We also find that some environmental conditions, including metabolic balance, food density, and food relocation, can change the selection pressure and influence action rewards, while food rewards are consistently positive. Moreover, we examine the evolution of rewards for poor and poisonous rewards, finding that rewards for such less important foods can be unstable, although rewards for normal foods are consistently positive. These results suggest that the evolution of reward function is led by one nominal reward, in our case, the reward for normal food. The other reward components can be quite unstable, even if they benefit survival. Overall, our results demonstrate our framework's usefulness in studying the evolution of rewards. One interesting future direction is to see the effect of competition between two species, for example, in a predator-and-pray relationship. That can add a stronger motivation to evolve better rewards for competition.
+In this paper, we propose a distributed evolution framework with a simple birth and death model to study the evolution of reward function. Our results show that biologically reasonable reward functions can evolve from randomly initialized ones. We also find that some environmental conditions, including metabolic balance, food density, and food relocation, can change the selection pressure and influence action rewards, while food rewards are consistently positive. Moreover, we examine the evolution of rewards for poor and poisonous rewards, finding that rewards for such less important foods can be unstable, although rewards for normal foods are consistently positive. These results suggest that the evolution of reward function is led by one nominal reward, in our case, the reward for normal food. The other reward components can be quite unstable, even if they benefit survival. Overall, our results demonstrate our framework's usefulness in studying the evolution of rewards. One interesting future direction is to see the effect of competition between two species, for example, in a predator-and-pray relationship. That can add a stronger motivation to evolve better rewards for competition.
