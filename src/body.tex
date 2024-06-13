@@ -266,15 +266,15 @@ On the contrary, action rewards have evolved into two different modes: largely p
   }\label{figure:envsize}
 \end{figure}
 
-\begin{figure*}[t]
+\begin{figure}[t]
   \centering
-  \includegraphics[width=16cm]{comp2d-envsize-facet.png}
+  \includegraphics[width=8.6cm]{comp2d-envsize-facet.png}
   \caption{
     Comparison of evolved rewards of the last $5000$ agents with small, baseline, and large environment sizes from left to right
     The x-axis shows the weight for the food reward ($w_{\mathrm{food}}$), and the y-axis shows the weight for the action reward ($w_{\mathrm{act}}$).
     Different colors correspond to runs with different random seeds.
   }\label{figure:result-envsize}
-\end{figure*}
+\end{figure}
 
 \begin{table}[t]
     \centering
@@ -296,7 +296,7 @@ On the contrary, action rewards have evolved into two different modes: largely p
   \centering
   \includegraphics[width=8cm]{dyn-envsize.png}
   \caption{
-    Changes of reward weights over time.
+    Changes in reward weights over time.
     Different colors indicate different environmental sizes.
     The upper row shows the reward weight for food ($w_{\mathrm{food}}$), and the lower row shows the reward weight for action ($w_{\mathrm{act}}$).
     Each line shows the reward weight averaged over all agents alive at that time, while thin lines show the averages within one random seed.
@@ -304,31 +304,32 @@ On the contrary, action rewards have evolved into two different modes: largely p
 \end{figure}
 
 \paragraph{Effect of Food Density}
-We conduct experiments with different food density to see how environmental affordability affects the evolved rewards. With the same food regeneration parameters ($n_{\mathrm{max}} = 100$ and $g = 0.02$), we use three environmental sizes: small, baseline, and large, as shown in \Cref{figure:envsize}. We show the evolved rewards with these three different environment sizes in \Cref{figure:result-envsize}. Foods are regenerated more densely in smaller environments. Rewards evolved in a large environment show characteristics similar to the baseline. I.e., food rewards are consistently positive, and action rewards are positive or negative. However, action rewards tend to be slightly smaller than the baseline, which may reflect the importance of saving energy in this environment. Actually, as \Cref{table:envsize} shows, agent's average liftime and food consumption is the least in the large environment.
+We conduct experiments with different food densities to see how environmental affordability affects the evolved rewards. With the same food regeneration parameters ($n_{\mathrm{max}} = 100$ and $g = 0.02$), we use three environmental sizes: small, baseline, and large, as shown in \Cref{figure:envsize}. We show the evolved rewards with these three different environment sizes in \Cref{figure:result-envsize}. Foods are regenerated more densely in smaller environments. Rewards evolved in a large environment show characteristics similar to the baseline. I.e., food rewards are consistently positive, and action rewards are positive or negative. However, action rewards tend to be slightly smaller than the baseline, which may reflect the importance of saving energy in this environment. Actually, as \Cref{table:envsize} shows, the agent's average lifetime and food consumption are the least in the large environment.
 
-Rewards in the small environment show different properties from the ones that evolved in the other two environments. Food reward is slightly posiive, but rarely becomes large. We don't see any significant tendency in the weight for action rewards. We guess that this is because it's too easy for agents to get foods in this environment, and the selection pressure is much less. As we show in \Cref{table:envsize}, agent's average liftime and food consumption is much higher in this environment. This tendency is also reflected to the change of reward weight over time shown in \Cref{figure:result-envsize-dyn}. We can see that the evolution of reward parameters is by far the most stable in the small environment. On the contrary, reward parameters are unstably changing in the baseline and large environments. Especially, we can see large jumps in action rewards. This result suggests that the limit of food resources is nessesary for the rapid evolution of food rewards, and too much food supply can stop evolution.
+Rewards in the small environment show different properties from the ones that evolved in the other two environments. Food reward is slightly positive but rarely becomes large. We don't see any significant tendency in the weight for action rewards. We guess this is because it's too easy for agents to get food in this environment, and the selection pressure is much weaker. As we show in \Cref{table:envsize}, the agent's average lifetime and food consumption are much higher in this environment. This tendency is also reflected in the change of reward weights over time shown in \Cref{figure:result-envsize-dyn}. We can see that the evolution of reward parameters is by far the most stable in the small environment. On the contrary, reward parameters change in the baseline and large environments. We can especially see large jumps in action rewards. This result suggests that limiting food resources is necessary for the rapid evolution of food rewards, and too much food supply can stop evolution.
 
-\begin{figure*}[t]
+\begin{figure}[t]
   \centering
-  \includegraphics[width=16cm]{comp2d-fdist.png}
+  \includegraphics[width=8cm]{resources/centered-and-reloc.png}
+  \caption{
+    Environments with centered food distribution (left) and relocating food locations (right).
+  }\label{figure:env-fdist}
+\end{figure}
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=8.6cm]{comp2d-fdist.png}
   \caption{
     Comparison of evolved rewards of the last $5000$ agents with small, baseline, and large environment sizes from left to right
     The x-axis shows the weight for the food reward ($w_{\mathrm{food}}$), and the y-axis shows the weight for the action reward ($w_{\mathrm{act}}$).
     Different colors correspond to runs with different random seeds.
   }\label{figure:result-fdist}
-\end{figure*}
+\end{figure}
 
 \paragraph{Effect of Food Distribution}
+In addition to the food density, how foods are distributed over the environment can also affect the rewards. It may be possible that uniformly sampling food locations makes the 'random-walk' agents survive in the environment, so the bias in food location can make RL more important. To confirm this hypothesis, we conduct experiments with different food distributions as shown in \Cref{figure:env-fdist}. In an environment with a centered food distribution, foods are sampled from the Gaussian distribution around the center of the environment. We also use the environment with food relocation, where foods are sampled from the Gaussian as in the centered' environment, but the center of the Gaussian moves clockwise between each corner of the environment. This food relocation periodically happens after $1000$ foods are eaten. The same food regeneration parameters ($n_{\mathrm{max}} = 100$ and $g = 0.02$) are used.
 
-\begin{figure}[t]
-  \centering
-  \includegraphics[width=8cm]{comp2d-poor.png}
-  \caption{
-    Evolved rewards of the last $5000$ agents with poor foods.
-    The x-axis shows the weight for the food reward ($w_{\mathrm{food}}$), and the y-axis shows the weight for the poor food reward ($w_{\mathrm{poor}}$).
-    Different colors and marker shapes correspond to runs with different random seeds.
-  }\label{figure:result-poor}
-\end{figure}
+We show the evolved rewards of the last $5000$ agents in these environments in \Cref{figure:result-fdist}. We can see that almost nothing has evolved in the centered environment, which suggests that it is too easy for agents to get food in this environment. On the contrary, we can see that reward parameters have evolved in a similar way to the baseline in the environment with food relocation, and the reward for motor action is mostly negative in all five runs with different seeds.
 
 \begin{table}[t]
   \begin{subtable}[h]{0.45\columnwidth}
@@ -359,7 +360,18 @@ Rewards in the small environment show different properties from the ones that ev
   }\label{table:pp}
 \end{table}
 
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=8cm]{comp2d-poor.png}
+  \caption{
+    Evolved rewards of the last $5000$ agents with poor foods.
+    The x-axis shows the weight for the food reward ($w_{\mathrm{food}}$), and the y-axis shows the weight for the poor food reward ($w_{\mathrm{poor}}$).
+    Different colors and marker shapes correspond to runs with different random seeds.
+  }\label{figure:result-poor}
+\end{figure}
+
 \paragraph{Effect of Poor and Poisonous Foods}
+In the experiments, only one kind of food with $e_{\mathrm{food}} = 1.0$ in the environment. However, one role of our reward system is to distinguish between different external stimuli. For example, our food reward system helps us eat nutritious food and avoid poisonous foods. Therefore, we conduct simulations with poor and poisonous foods, of which the energy gains are $e_{\mathrm{poor}} = 0.2$ and $e_{\mathrm{poison}} = -0.6$. In those environments, both normal and poor or poisonous foods are sampled uniformly over the entire environment. The number of maximum foods is smaller in the environment with poor foods, and there are more normal foods in the environment with poisonous foods, as shown in \Cref{table:pp}, so that the overall energy supply should be roughly the same.
 
 \begin{figure}[t]
   \centering
